@@ -1523,7 +1523,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 const ExpensesTable = (param)=>{
-    let { filteredData, isFilterActive = false, onDataChange } = param;
+    let { filteredData, isFilterActive = false, onDataChange, refreshTrigger, onSuccess, onDataLoad } = param;
     _s();
     const [expenses, setExpenses] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
     const [categories, setCategories] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
@@ -1545,9 +1545,11 @@ const ExpensesTable = (param)=>{
         try {
             const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$expenseService$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getExpenseService"])();
             setExpenses(data);
+            // Send loaded data to parent
+            onDataLoad === null || onDataLoad === void 0 ? void 0 : onDataLoad(data);
         } catch (error) {
             console.error("Failed to fetch expenses:", error);
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error(error.message || "Failed to fetch expenses");
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error((error === null || error === void 0 ? void 0 : error.message) || "Failed to fetch expenses");
         }
     };
     // ---------------------------------------------------------
@@ -1574,6 +1576,21 @@ const ExpensesTable = (param)=>{
     }["ExpensesTable.useEffect"], [
         isFilterActive
     ]);
+    // ---------------------------------------------------------
+    // REFRESH WHEN refreshTrigger CHANGES
+    // ---------------------------------------------------------
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "ExpensesTable.useEffect": ()=>{
+            if (refreshTrigger !== undefined && !isFilterActive) {
+                loadExpenses();
+            }
+        }
+    }["ExpensesTable.useEffect"], [
+        refreshTrigger
+    ]);
+    // ---------------------------------------------------------
+    // LOAD CATEGORIES
+    // ---------------------------------------------------------
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "ExpensesTable.useEffect": ()=>{
             loadCategories();
@@ -1631,7 +1648,7 @@ const ExpensesTable = (param)=>{
     // ---------------------------------------------------------
     // DATA
     // ---------------------------------------------------------
-    const dataToDisplay = isFilterActive ? filteredData || [] : expenses;
+    const dataToDisplay = isFilterActive ? filteredData !== null && filteredData !== void 0 ? filteredData : [] : expenses;
     // ---------------------------------------------------------
     // START EDIT
     // ---------------------------------------------------------
@@ -1720,7 +1737,7 @@ const ExpensesTable = (param)=>{
             formData.append("add_expenses", String(editAmount));
             formData.append("expense_category", editCategory);
             // New receipt is optional.
-            // If selected, Laravel will replace/update receipt.
+            // If selected, Laravel can replace/update receipt.
             if (editReceipt) {
                 formData.append("upload_receipt", editReceipt);
             }
@@ -1737,9 +1754,11 @@ const ExpensesTable = (param)=>{
             } else {
                 await loadExpenses();
             }
+            onSuccess === null || onSuccess === void 0 ? void 0 : onSuccess();
             onDataChange === null || onDataChange === void 0 ? void 0 : onDataChange();
         } catch (error) {
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error(error.message || "Failed to update expense");
+            console.error("Failed to update expense:", error);
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error((error === null || error === void 0 ? void 0 : error.message) || "Failed to update expense");
         } finally{
             setLoading(false);
         }
@@ -1761,9 +1780,11 @@ const ExpensesTable = (param)=>{
             } else {
                 await loadExpenses();
             }
+            onSuccess === null || onSuccess === void 0 ? void 0 : onSuccess();
             onDataChange === null || onDataChange === void 0 ? void 0 : onDataChange();
         } catch (error) {
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error(error.message || "Failed to delete expense");
+            console.error("Failed to delete expense:", error);
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error((error === null || error === void 0 ? void 0 : error.message) || "Failed to delete expense");
         } finally{
             setLoading(false);
         }
@@ -1801,7 +1822,7 @@ const ExpensesTable = (param)=>{
                 children: "—"
             }, void 0, false, {
                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                lineNumber: 496,
+                lineNumber: 555,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0));
         }
@@ -1820,7 +1841,7 @@ const ExpensesTable = (param)=>{
                             className: "w-4 h-4"
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 537,
+                            lineNumber: 596,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1828,13 +1849,13 @@ const ExpensesTable = (param)=>{
                             children: "Receipt"
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 539,
+                            lineNumber: 598,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                    lineNumber: 516,
+                    lineNumber: 575,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 openAttachment === key && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1850,7 +1871,7 @@ const ExpensesTable = (param)=>{
                                             className: "w-4 h-4 text-blue-500 shrink-0"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 564,
+                                            lineNumber: 623,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1858,13 +1879,13 @@ const ExpensesTable = (param)=>{
                                             children: "Receipt"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 566,
+                                            lineNumber: 625,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 563,
+                                    lineNumber: 622,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1875,18 +1896,18 @@ const ExpensesTable = (param)=>{
                                         className: "w-4 h-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 584,
+                                        lineNumber: 643,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 571,
+                                    lineNumber: 630,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 562,
+                            lineNumber: 621,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1898,7 +1919,7 @@ const ExpensesTable = (param)=>{
                                         className: "w-4 h-4 text-blue-500 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 597,
+                                        lineNumber: 656,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1909,7 +1930,7 @@ const ExpensesTable = (param)=>{
                                                 children: receiptFileName
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 600,
+                                                lineNumber: 659,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1917,13 +1938,13 @@ const ExpensesTable = (param)=>{
                                                 children: "IMAGE"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 604,
+                                                lineNumber: 663,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 599,
+                                        lineNumber: 658,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1933,30 +1954,30 @@ const ExpensesTable = (param)=>{
                                         children: "View"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 609,
+                                        lineNumber: 668,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                lineNumber: 589,
+                                lineNumber: 648,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 588,
+                            lineNumber: 647,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                    lineNumber: 545,
+                    lineNumber: 604,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-            lineNumber: 510,
+            lineNumber: 569,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -1971,7 +1992,7 @@ const ExpensesTable = (param)=>{
                 children: "—"
             }, void 0, false, {
                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                lineNumber: 652,
+                lineNumber: 711,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0));
         }
@@ -1989,7 +2010,7 @@ const ExpensesTable = (param)=>{
                             className: "w-4 h-4"
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 688,
+                            lineNumber: 747,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2001,13 +2022,13 @@ const ExpensesTable = (param)=>{
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 690,
+                            lineNumber: 749,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                    lineNumber: 667,
+                    lineNumber: 726,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 openAttachment === key && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2023,7 +2044,7 @@ const ExpensesTable = (param)=>{
                                             className: "w-4 h-4 text-purple-500 shrink-0"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 718,
+                                            lineNumber: 777,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2035,13 +2056,13 @@ const ExpensesTable = (param)=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 720,
+                                            lineNumber: 779,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 717,
+                                    lineNumber: 776,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2052,18 +2073,18 @@ const ExpensesTable = (param)=>{
                                         className: "w-4 h-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 738,
+                                        lineNumber: 797,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 725,
+                                    lineNumber: 784,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 716,
+                            lineNumber: 775,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2077,13 +2098,13 @@ const ExpensesTable = (param)=>{
                                             className: "   w-4 h-4   text-red-500   shrink-0   "
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 770,
+                                            lineNumber: 829,
                                             columnNumber: 25
                                         }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Image$3e$__["Image"], {
                                             className: "   w-4 h-4   text-blue-500   shrink-0   "
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 778,
+                                            lineNumber: 837,
                                             columnNumber: 25
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2095,7 +2116,7 @@ const ExpensesTable = (param)=>{
                                                     children: document1.file_name
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                    lineNumber: 788,
+                                                    lineNumber: 847,
                                                     columnNumber: 25
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2103,13 +2124,13 @@ const ExpensesTable = (param)=>{
                                                     children: isPdf ? "PDF" : "IMAGE"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                    lineNumber: 804,
+                                                    lineNumber: 861,
                                                     columnNumber: 25
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 787,
+                                            lineNumber: 846,
                                             columnNumber: 23
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2119,31 +2140,31 @@ const ExpensesTable = (param)=>{
                                             children: "View"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 811,
+                                            lineNumber: 868,
                                             columnNumber: 23
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, document1.id, true, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 760,
+                                    lineNumber: 819,
                                     columnNumber: 21
                                 }, ("TURBOPACK compile-time value", void 0));
                             })
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 742,
+                            lineNumber: 801,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                    lineNumber: 699,
+                    lineNumber: 758,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-            lineNumber: 661,
+            lineNumber: 720,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -2162,7 +2183,7 @@ const ExpensesTable = (param)=>{
                             children: "Replace Receipt"
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 855,
+                            lineNumber: 913,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2174,7 +2195,7 @@ const ExpensesTable = (param)=>{
                             className: "   block w-full   text-xs text-gray-600   border border-gray-300   rounded-md   cursor-pointer   bg-white   file:mr-3   file:py-2   file:px-3   file:rounded-l-md   file:border-0   file:text-xs   file:font-semibold   file:bg-gray-100   file:text-gray-700   hover:file:bg-gray-200   "
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 867,
+                            lineNumber: 925,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         editReceipt && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2186,7 +2207,7 @@ const ExpensesTable = (param)=>{
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 896,
+                            lineNumber: 954,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         !editReceipt && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2194,13 +2215,13 @@ const ExpensesTable = (param)=>{
                             children: "Leave empty to keep current receipt"
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 903,
+                            lineNumber: 961,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                    lineNumber: 854,
+                    lineNumber: 912,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2211,7 +2232,7 @@ const ExpensesTable = (param)=>{
                             children: "Add Documents"
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 911,
+                            lineNumber: 970,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2224,7 +2245,7 @@ const ExpensesTable = (param)=>{
                             className: "   block w-full   text-xs text-gray-600   border border-gray-300   rounded-md   cursor-pointer   bg-white   file:mr-3   file:py-2   file:px-3   file:rounded-l-md   file:border-0   file:text-xs   file:font-semibold   file:bg-gray-100   file:text-gray-700   hover:file:bg-gray-200   "
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 923,
+                            lineNumber: 982,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         editDocuments.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2238,7 +2259,7 @@ const ExpensesTable = (param)=>{
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 953,
+                            lineNumber: 1012,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         editDocuments.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2246,19 +2267,19 @@ const ExpensesTable = (param)=>{
                             children: "Leave empty to keep current documents"
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 963,
+                            lineNumber: 1022,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                    lineNumber: 910,
+                    lineNumber: 969,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-            lineNumber: 851,
+            lineNumber: 908,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -2284,7 +2305,7 @@ const ExpensesTable = (param)=>{
                                                 children: "ID"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 989,
+                                                lineNumber: 1048,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2292,7 +2313,7 @@ const ExpensesTable = (param)=>{
                                                 children: "Expenses"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 993,
+                                                lineNumber: 1052,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2300,7 +2321,7 @@ const ExpensesTable = (param)=>{
                                                 children: "Remarks"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 997,
+                                                lineNumber: 1056,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2308,7 +2329,7 @@ const ExpensesTable = (param)=>{
                                                 children: "Total Expenses"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1001,
+                                                lineNumber: 1060,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2316,7 +2337,7 @@ const ExpensesTable = (param)=>{
                                                 children: "Receipt"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1005,
+                                                lineNumber: 1064,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2324,7 +2345,7 @@ const ExpensesTable = (param)=>{
                                                 children: "Documents"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1009,
+                                                lineNumber: 1068,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2332,7 +2353,7 @@ const ExpensesTable = (param)=>{
                                                 children: "Added Date"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1013,
+                                                lineNumber: 1072,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -2340,18 +2361,18 @@ const ExpensesTable = (param)=>{
                                                 children: "Action"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1017,
+                                                lineNumber: 1076,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 988,
+                                        lineNumber: 1047,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 987,
+                                    lineNumber: 1046,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -2367,7 +2388,7 @@ const ExpensesTable = (param)=>{
                                                             children: expense.id
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1041,
+                                                            lineNumber: 1100,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2379,7 +2400,7 @@ const ExpensesTable = (param)=>{
                                                                 className: "   w-28   h-9   px-2   border   border-gray-300   rounded-md   outline-none   focus:border-[#FFA726]   "
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                lineNumber: 1047,
+                                                                lineNumber: 1106,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
                                                                 children: [
@@ -2389,7 +2410,7 @@ const ExpensesTable = (param)=>{
                                                             }, void 0, true)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1045,
+                                                            lineNumber: 1104,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2405,12 +2426,12 @@ const ExpensesTable = (param)=>{
                                                                 className: "w-56"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                lineNumber: 1088,
+                                                                lineNumber: 1148,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0)) : expense.expense_category
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1086,
+                                                            lineNumber: 1146,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2421,7 +2442,7 @@ const ExpensesTable = (param)=>{
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1111,
+                                                            lineNumber: 1171,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2431,12 +2452,12 @@ const ExpensesTable = (param)=>{
                                                                 children: "Edit below"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                lineNumber: 1121,
+                                                                lineNumber: 1182,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0)) : renderReceipt(expense)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1119,
+                                                            lineNumber: 1180,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2446,12 +2467,12 @@ const ExpensesTable = (param)=>{
                                                                 children: "Edit below"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                lineNumber: 1133,
+                                                                lineNumber: 1194,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0)) : renderDocuments(expense)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1131,
+                                                            lineNumber: 1192,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2459,7 +2480,7 @@ const ExpensesTable = (param)=>{
                                                             children: expense.created_date
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1143,
+                                                            lineNumber: 1204,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -2478,12 +2499,12 @@ const ExpensesTable = (param)=>{
                                                                                 className: "w-4 h-4"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                                lineNumber: 1173,
+                                                                                lineNumber: 1236,
                                                                                 columnNumber: 37
                                                                             }, ("TURBOPACK compile-time value", void 0))
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                            lineNumber: 1152,
+                                                                            lineNumber: 1215,
                                                                             columnNumber: 35
                                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2496,12 +2517,12 @@ const ExpensesTable = (param)=>{
                                                                                 className: "w-4 h-4"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                                lineNumber: 1194,
+                                                                                lineNumber: 1257,
                                                                                 columnNumber: 37
                                                                             }, ("TURBOPACK compile-time value", void 0))
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                            lineNumber: 1176,
+                                                                            lineNumber: 1239,
                                                                             columnNumber: 35
                                                                         }, ("TURBOPACK compile-time value", void 0))
                                                                     ]
@@ -2516,12 +2537,12 @@ const ExpensesTable = (param)=>{
                                                                                 className: "w-4 h-4"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                                lineNumber: 1216,
+                                                                                lineNumber: 1279,
                                                                                 columnNumber: 37
                                                                             }, ("TURBOPACK compile-time value", void 0))
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                            lineNumber: 1199,
+                                                                            lineNumber: 1262,
                                                                             columnNumber: 35
                                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2534,30 +2555,30 @@ const ExpensesTable = (param)=>{
                                                                                 className: "w-4 h-4"
                                                                             }, void 0, false, {
                                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                                lineNumber: 1240,
+                                                                                lineNumber: 1303,
                                                                                 columnNumber: 37
                                                                             }, ("TURBOPACK compile-time value", void 0))
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                            lineNumber: 1219,
+                                                                            lineNumber: 1282,
                                                                             columnNumber: 35
                                                                         }, ("TURBOPACK compile-time value", void 0))
                                                                     ]
                                                                 }, void 0, true)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                lineNumber: 1148,
+                                                                lineNumber: 1211,
                                                                 columnNumber: 29
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1147,
+                                                            lineNumber: 1210,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                    lineNumber: 1035,
+                                                    lineNumber: 1094,
                                                     columnNumber: 25
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 isEditing && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -2575,7 +2596,7 @@ const ExpensesTable = (param)=>{
                                                                             className: "w-4 h-4 text-gray-500"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                            lineNumber: 1259,
+                                                                            lineNumber: 1323,
                                                                             columnNumber: 35
                                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2583,36 +2604,36 @@ const ExpensesTable = (param)=>{
                                                                             children: "Update Attachments"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                            lineNumber: 1261,
+                                                                            lineNumber: 1325,
                                                                             columnNumber: 35
                                                                         }, ("TURBOPACK compile-time value", void 0))
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                    lineNumber: 1258,
+                                                                    lineNumber: 1322,
                                                                     columnNumber: 33
                                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                                 renderEditAttachments()
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1256,
+                                                            lineNumber: 1320,
                                                             columnNumber: 31
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1252,
+                                                        lineNumber: 1316,
                                                         columnNumber: 29
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                    lineNumber: 1251,
+                                                    lineNumber: 1315,
                                                     columnNumber: 27
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, expense.sn, true, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 1032,
+                                            lineNumber: 1091,
                                             columnNumber: 23
                                         }, ("TURBOPACK compile-time value", void 0));
                                     }) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tr", {
@@ -2622,28 +2643,28 @@ const ExpensesTable = (param)=>{
                                             children: "No expenses found."
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 1278,
+                                            lineNumber: 1342,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 1277,
+                                        lineNumber: 1341,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 1023,
+                                    lineNumber: 1082,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 985,
+                            lineNumber: 1044,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                        lineNumber: 984,
+                        lineNumber: 1043,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2663,7 +2684,7 @@ const ExpensesTable = (param)=>{
                                                         children: "ID"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1312,
+                                                        lineNumber: 1379,
                                                         columnNumber: 25
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2671,13 +2692,13 @@ const ExpensesTable = (param)=>{
                                                         children: expense.id
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1316,
+                                                        lineNumber: 1383,
                                                         columnNumber: 25
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1311,
+                                                lineNumber: 1378,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2694,12 +2715,12 @@ const ExpensesTable = (param)=>{
                                                                 className: "w-4 h-4"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                lineNumber: 1345,
+                                                                lineNumber: 1412,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1325,
+                                                            lineNumber: 1392,
                                                             columnNumber: 29
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2712,12 +2733,12 @@ const ExpensesTable = (param)=>{
                                                                 className: "w-4 h-4"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                lineNumber: 1365,
+                                                                lineNumber: 1432,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1348,
+                                                            lineNumber: 1415,
                                                             columnNumber: 29
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
@@ -2732,12 +2753,12 @@ const ExpensesTable = (param)=>{
                                                                 className: "w-4 h-4"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                lineNumber: 1386,
+                                                                lineNumber: 1453,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1370,
+                                                            lineNumber: 1437,
                                                             columnNumber: 29
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2750,25 +2771,25 @@ const ExpensesTable = (param)=>{
                                                                 className: "w-4 h-4"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                                lineNumber: 1409,
+                                                                lineNumber: 1476,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                            lineNumber: 1389,
+                                                            lineNumber: 1456,
                                                             columnNumber: 29
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1321,
+                                                lineNumber: 1388,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 1310,
+                                        lineNumber: 1376,
                                         columnNumber: 21
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2778,7 +2799,7 @@ const ExpensesTable = (param)=>{
                                                 children: "Expenses"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1418,
+                                                lineNumber: 1485,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             isEditing ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2788,7 +2809,7 @@ const ExpensesTable = (param)=>{
                                                 className: "   w-full   h-10   px-3   border   border-gray-300   rounded-md   outline-none   focus:border-[#FFA726]   "
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1423,
+                                                lineNumber: 1490,
                                                 columnNumber: 25
                                             }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "font-semibold text-gray-800",
@@ -2798,13 +2819,13 @@ const ExpensesTable = (param)=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1452,
+                                                lineNumber: 1519,
                                                 columnNumber: 25
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 1417,
+                                        lineNumber: 1484,
                                         columnNumber: 21
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2814,7 +2835,7 @@ const ExpensesTable = (param)=>{
                                                 children: "Remarks"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1463,
+                                                lineNumber: 1531,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             isEditing ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2828,20 +2849,20 @@ const ExpensesTable = (param)=>{
                                                 className: "w-full"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1468,
+                                                lineNumber: 1536,
                                                 columnNumber: 25
                                             }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "font-medium text-gray-700",
                                                 children: expense.expense_category
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1487,
+                                                lineNumber: 1555,
                                                 columnNumber: 25
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 1462,
+                                        lineNumber: 1530,
                                         columnNumber: 21
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2851,7 +2872,7 @@ const ExpensesTable = (param)=>{
                                                 children: "Total Expenses"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1496,
+                                                lineNumber: 1564,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2862,13 +2883,13 @@ const ExpensesTable = (param)=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1500,
+                                                lineNumber: 1568,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 1495,
+                                        lineNumber: 1563,
                                         columnNumber: 21
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     !isEditing && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -2880,7 +2901,7 @@ const ExpensesTable = (param)=>{
                                                         children: "Attachments"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1512,
+                                                        lineNumber: 1581,
                                                         columnNumber: 27
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2891,13 +2912,13 @@ const ExpensesTable = (param)=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1516,
+                                                        lineNumber: 1585,
                                                         columnNumber: 27
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1511,
+                                                lineNumber: 1580,
                                                 columnNumber: 25
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2907,7 +2928,7 @@ const ExpensesTable = (param)=>{
                                                         children: "Added Date"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1528,
+                                                        lineNumber: 1597,
                                                         columnNumber: 27
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2915,13 +2936,13 @@ const ExpensesTable = (param)=>{
                                                         children: expense.created_date
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1532,
+                                                        lineNumber: 1601,
                                                         columnNumber: 27
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1527,
+                                                lineNumber: 1596,
                                                 columnNumber: 25
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
@@ -2936,7 +2957,7 @@ const ExpensesTable = (param)=>{
                                                         className: "w-4 h-4 text-gray-500"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1547,
+                                                        lineNumber: 1616,
                                                         columnNumber: 27
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2944,13 +2965,13 @@ const ExpensesTable = (param)=>{
                                                         children: "Update Attachments"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1549,
+                                                        lineNumber: 1618,
                                                         columnNumber: 27
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1546,
+                                                lineNumber: 1615,
                                                 columnNumber: 25
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             renderEditAttachments(),
@@ -2962,7 +2983,7 @@ const ExpensesTable = (param)=>{
                                                         children: "Added Date"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1557,
+                                                        lineNumber: 1626,
                                                         columnNumber: 27
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2970,25 +2991,25 @@ const ExpensesTable = (param)=>{
                                                         children: expense.created_date
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                        lineNumber: 1561,
+                                                        lineNumber: 1630,
                                                         columnNumber: 27
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1556,
+                                                lineNumber: 1625,
                                                 columnNumber: 25
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 1544,
+                                        lineNumber: 1613,
                                         columnNumber: 23
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, expense.sn, true, {
                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                lineNumber: 1306,
+                                lineNumber: 1371,
                                 columnNumber: 19
                             }, ("TURBOPACK compile-time value", void 0));
                         }) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2996,18 +3017,18 @@ const ExpensesTable = (param)=>{
                             children: "No expenses found."
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 1575,
+                            lineNumber: 1645,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                        lineNumber: 1298,
+                        lineNumber: 1362,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                lineNumber: 978,
+                lineNumber: 1037,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             previewFile && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3027,13 +3048,13 @@ const ExpensesTable = (param)=>{
                                             className: "   w-5 h-5   text-red-500   shrink-0   "
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 1642,
+                                            lineNumber: 1716,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Image$3e$__["Image"], {
                                             className: "   w-5 h-5   text-blue-500   shrink-0   "
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 1650,
+                                            lineNumber: 1724,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3042,13 +3063,13 @@ const ExpensesTable = (param)=>{
                                             children: previewFile.fileName
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 1659,
+                                            lineNumber: 1733,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 1637,
+                                    lineNumber: 1711,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3063,18 +3084,18 @@ const ExpensesTable = (param)=>{
                                                 className: "w-5 h-5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1704,
+                                                lineNumber: 1779,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$maximize$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Maximize2$3e$__["Maximize2"], {
                                                 className: "w-5 h-5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1706,
+                                                lineNumber: 1781,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 1683,
+                                            lineNumber: 1758,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3086,24 +3107,24 @@ const ExpensesTable = (param)=>{
                                                 className: "w-5 h-5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                                lineNumber: 1725,
+                                                lineNumber: 1800,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 1711,
+                                            lineNumber: 1786,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 1678,
+                                    lineNumber: 1753,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 1623,
+                            lineNumber: 1696,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3120,12 +3141,12 @@ const ExpensesTable = (param)=>{
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                        lineNumber: 1762,
+                                        lineNumber: 1838,
                                         columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 1751,
+                                    lineNumber: 1827,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 isPdfFile(previewFile) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("iframe", {
@@ -3134,7 +3155,7 @@ const ExpensesTable = (param)=>{
                                     className: "   w-full   h-[75vh]   sm:h-[80vh]   border-0   "
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 1792,
+                                    lineNumber: 1868,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 !isImageFile(previewFile) && !isPdfFile(previewFile) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3144,7 +3165,7 @@ const ExpensesTable = (param)=>{
                                             className: "   w-12 h-12   mx-auto   mb-3   text-gray-400   "
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 1815,
+                                            lineNumber: 1892,
                                             columnNumber: 21
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3152,36 +3173,36 @@ const ExpensesTable = (param)=>{
                                             children: "Preview is not available for this file type."
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                            lineNumber: 1824,
+                                            lineNumber: 1901,
                                             columnNumber: 21
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                                    lineNumber: 1814,
+                                    lineNumber: 1890,
                                     columnNumber: 19
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                            lineNumber: 1733,
+                            lineNumber: 1808,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                    lineNumber: 1601,
+                    lineNumber: 1673,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseTable.tsx",
-                lineNumber: 1587,
+                lineNumber: 1658,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true);
 };
-_s(ExpensesTable, "NtRLWn4VEFwfsicVoOBj2gAleoQ=");
+_s(ExpensesTable, "4QurPbnIvE4p+vd6RJwe4O5obtI=");
 _c = ExpensesTable;
 const __TURBOPACK__default__export__ = ExpensesTable;
 var _c;

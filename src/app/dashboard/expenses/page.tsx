@@ -228,7 +228,7 @@ function Expenses() {
 
       <ExpenseTable
         refreshTrigger={refreshTrigger}
-        filteredData={isFilterActive ? filteredData : null}
+        filteredData={isFilterActive ? (filteredData ?? undefined) : undefined}
         onSuccess={handleRefresh}
         onDataLoad={setAllData}
         isFilterActive={isFilterActive}
