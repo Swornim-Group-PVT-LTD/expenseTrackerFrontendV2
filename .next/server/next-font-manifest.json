@@ -1,0 +1,43 @@
+{
+  "app": {
+    "[project]/src/app/dashboard/balance/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/catalogue/expenseCatalogue/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/catalogue/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/expenses/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/income/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/investment/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/saving/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pages": {},
+  "pagesUsingSizeAdjust": false
+}
