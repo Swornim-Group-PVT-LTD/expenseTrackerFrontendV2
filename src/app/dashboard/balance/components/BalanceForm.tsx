@@ -139,8 +139,6 @@ export default function BalanceForm({
     <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
 
       <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
-
-    
         <div className="space-y-5">
 
           {/* ===================================================
