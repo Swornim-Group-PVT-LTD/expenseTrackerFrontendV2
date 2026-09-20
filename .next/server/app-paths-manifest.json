@@ -2,7 +2,6 @@
   "/dashboard/balance/page": "app/dashboard/balance/page.js",
   "/dashboard/expenses/page": "app/dashboard/expenses/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/statement/page": "app/dashboard/statement/page.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js"
 }

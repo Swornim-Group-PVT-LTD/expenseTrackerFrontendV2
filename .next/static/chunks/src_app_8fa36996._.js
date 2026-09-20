@@ -59,7 +59,6 @@ __turbopack_context__.s({
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/chevron-down.js [app-client] (ecmascript) <export default as ChevronDown>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$plus$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Plus$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/plus.js [app-client] (ecmascript) <export default as Plus>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$info$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Info$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/info.js [app-client] (ecmascript) <export default as Info>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sweetalert2$2f$dist$2f$sweetalert2$2e$all$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/sweetalert2/dist/sweetalert2.all.js [app-client] (ecmascript)");
 // Services
@@ -82,7 +81,9 @@ function BalanceForm(param) {
     const [currencyId, setCurrencyId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [balanceExists, setBalanceExists] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
-    // Load balance & currency list
+    // ============================================================
+    // 1. Load balance & currencies
+    // ============================================================
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "BalanceForm.useEffect": ()=>{
             const init = {
@@ -95,7 +96,7 @@ function BalanceForm(param) {
                         } else {
                             setBalanceExists(false);
                         }
-                        // Fetch currency list
+                        // Fetch currencies
                         const currencies = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$catalogueServices$2f$currencyCatalogueService$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getCurrencyService"])();
                         setCurrencyList(currencies);
                         // Set default currency
@@ -112,7 +113,11 @@ function BalanceForm(param) {
             init();
         }
     }["BalanceForm.useEffect"], []);
+    // ============================================================
+    // 2. Add opening balance
+    // ============================================================
     const handleAddBalance = async ()=>{
+        // Existing balance check
         if (balanceExists) {
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sweetalert2$2f$dist$2f$sweetalert2$2e$all$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].fire({
                 icon: "info",
@@ -121,11 +126,29 @@ function BalanceForm(param) {
             });
             return;
         }
+        // Validate amount
+        if (amount === "" || Number(amount) <= 0) {
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sweetalert2$2f$dist$2f$sweetalert2$2e$all$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].fire({
+                icon: "warning",
+                title: "Invalid Amount",
+                text: "Please enter a valid opening balance amount."
+            });
+            return;
+        }
+        // Validate currency
+        if (!currencyId) {
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sweetalert2$2f$dist$2f$sweetalert2$2e$all$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].fire({
+                icon: "warning",
+                title: "Select Currency",
+                text: "Please select a currency."
+            });
+            return;
+        }
         try {
             setLoading(true);
             const payload = {
                 add_opening_balance: Number(amount),
-                currency_id: currencyId !== null && currencyId !== void 0 ? currencyId : 0
+                currency_id: currencyId
             };
             await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$balanceService$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addBalanceService"])(payload);
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sweetalert2$2f$dist$2f$sweetalert2$2e$all$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].fire({
@@ -135,9 +158,10 @@ function BalanceForm(param) {
                 timer: 2000,
                 showConfirmButton: false
             });
-            setAmount(0);
+            // Reset
+            setAmount("");
             setBalanceExists(true);
-            if (onSuccess) onSuccess();
+            onSuccess && onSuccess();
         } catch (error) {
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$sweetalert2$2f$dist$2f$sweetalert2$2e$all$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].fire({
                 icon: "error",
@@ -149,27 +173,27 @@ function BalanceForm(param) {
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "w-full max-w-2xl bg-white rounded-2xl shadow-sm p-6",
-        children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "flex items-end gap-3",
+        className: "col-span-full lg:col-span-3 h-fit lg:pb-0",
+        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "space-y-5",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex flex-col gap-1.5",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                className: "text-sm font-medium text-gray-700",
+                                className: "   block   mb-2   text-sm   font-semibold   text-[#374151]   ",
                                 children: "Select Currency"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 106,
-                                columnNumber: 11
+                                lineNumber: 151,
+                                columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "relative",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
-                                        className: "appearance-none w-28 h-12 pl-3 pr-8 text-base font-medium text-gray-800 border border-gray-300 rounded-lg cursor-pointer bg-white outline-none focus:border-green-600",
+                                        className: "   appearance-none   w-full   h-[56px]   px-4   pr-12   rounded-xl   border   border-gray-200   bg-gray-50   text-base   font-semibold   text-gray-800   outline-none   cursor-pointer   transition-all   focus:border-[#64a11f]   focus:bg-white   focus:ring-4   focus:ring-[#64a11f]/10   ",
                                         value: currencyId !== null && currencyId !== void 0 ? currencyId : "",
                                         onChange: (e)=>{
                                             const selected = currencyList.find((item)=>item.id === Number(e.target.value));
@@ -183,114 +207,174 @@ function BalanceForm(param) {
                                                 children: item.symbol
                                             }, item.id, false, {
                                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                                lineNumber: 125,
-                                                columnNumber: 17
+                                                lineNumber: 200,
+                                                columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                        lineNumber: 110,
-                                        columnNumber: 13
+                                        lineNumber: 165,
+                                        columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
-                                        className: "absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
+                                        className: "   absolute   right-4   top-1/2   -translate-y-1/2   w-5   h-5   text-gray-500   pointer-events-none   "
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                        lineNumber: 131,
-                                        columnNumber: 13
+                                        lineNumber: 206,
+                                        columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 109,
-                                columnNumber: 11
+                                lineNumber: 163,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 105,
-                        columnNumber: 9
+                        lineNumber: 149,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex flex-col gap-1.5 flex-1",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                className: "text-sm font-medium text-gray-700",
+                                className: "   block   mb-2   text-sm   font-semibold   text-[#374151]   ",
                                 children: "Amount"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 137,
-                                columnNumber: 11
+                                lineNumber: 228,
+                                columnNumber: 13
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                type: "number",
-                                placeholder: "40,000",
-                                className: "w-full h-12 px-3 text-base text-gray-800 border border-gray-300 rounded-lg bg-gray-50 outline-none focus:border-green-600",
-                                value: amount,
-                                onChange: (e)=>setAmount(e.target.value === "" ? "" : Number(e.target.value))
-                            }, void 0, false, {
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "   flex   items-center   h-[56px]   rounded-xl   border   border-gray-200   bg-gray-50   px-4   transition-all   focus-within:border-[#64a11f]   focus-within:bg-white   focus-within:ring-4   focus-within:ring-[#64a11f]/10   ",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "   text-lg   font-bold   text-gray-500   mr-3   select-none   ",
+                                        children: currencySymbol
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+                                        lineNumber: 258,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "number",
+                                        placeholder: "Enter opening balance",
+                                        className: "   flex-1   h-full   bg-transparent   outline-none   border-none   text-base   font-semibold   text-gray-800   placeholder:text-gray-400   [appearance:textfield]   [&::-webkit-outer-spin-button]:appearance-none   [&::-webkit-inner-spin-button]:appearance-none   ",
+                                        value: amount,
+                                        onChange: (e)=>setAmount(e.target.value === "" ? "" : Number(e.target.value))
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+                                        lineNumber: 270,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 138,
-                                columnNumber: 11
+                                lineNumber: 240,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 136,
-                        columnNumber: 9
+                        lineNumber: 226,
+                        columnNumber: 11
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                        onClick: handleAddBalance,
-                        disabled: loading,
-                        className: "flex items-center gap-1.5 bg-[#297513] hover:bg-green-800 text-white font-semibold text-base px-6 h-12 rounded-lg transition-colors disabled:opacity-50 cursor-pointer",
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "   flex   items-start   gap-3   rounded-xl   border   border-gray-100   bg-gray-50   px-4   py-3   ",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$plus$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Plus$3e$__["Plus"], {
-                                className: "w-4 h-4",
-                                strokeWidth: 3
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "   flex   items-center   justify-center   w-8   h-8   rounded-lg   bg-[#64a11f]/10   shrink-0   ",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$info$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Info$3e$__["Info"], {
+                                    className: "w-4 h-4 text-[#64a11f]",
+                                    strokeWidth: 2.5
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+                                    lineNumber: 329,
+                                    columnNumber: 15
+                                }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 155,
-                                columnNumber: 11
+                                lineNumber: 317,
+                                columnNumber: 13
                             }, this),
-                            loading ? "Saving..." : "Add"
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-sm font-semibold text-[#374151]",
+                                        children: "Opening Balance"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+                                        lineNumber: 336,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-xs text-gray-500 mt-0.5 leading-relaxed",
+                                        children: "This amount will be added to your total balance."
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+                                        lineNumber: 340,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+                                lineNumber: 335,
+                                columnNumber: 13
+                            }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 150,
-                        columnNumber: 9
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                lineNumber: 103,
-                columnNumber: 7
-            }, this),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "flex items-center gap-1.5 mt-3 text-sm text-gray-500",
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$info$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Info$3e$__["Info"], {
-                        className: "w-4 h-4"
-                    }, void 0, false, {
-                        fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 162,
-                        columnNumber: 9
+                        lineNumber: 304,
+                        columnNumber: 11
                     }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                        children: "This amount will be added to your total balance."
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "border-t border-gray-100 pt-1"
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 163,
-                        columnNumber: 9
+                        lineNumber: 349,
+                        columnNumber: 11
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                        onClick: handleAddBalance,
+                        disabled: loading || balanceExists,
+                        className: "\n              w-full\n              h-[56px]\n              rounded-xl\n              bg-[#64a11f]\n              hover:bg-[#579119]\n              active:scale-[0.98]\n              text-white\n              font-bold\n              text-base\n              shadow-sm\n              transition-all\n              flex\n              items-center\n              justify-center\n              gap-3\n              ".concat(loading || balanceExists ? "opacity-50 cursor-not-allowed" : "cursor-pointer", "\n            "),
+                        children: loading ? "Saving..." : balanceExists ? "Balance Already Added" : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    children: "Add Opening Balance"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+                                    lineNumber: 387,
+                                    columnNumber: 17
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    className: "text-xl",
+                                    children: "→"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+                                    lineNumber: 388,
+                                    columnNumber: 17
+                                }, this)
+                            ]
+                        }, void 0, true)
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+                        lineNumber: 354,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                lineNumber: 161,
-                columnNumber: 7
+                lineNumber: 144,
+                columnNumber: 9
             }, this)
-        ]
-    }, void 0, true, {
+        }, void 0, false, {
+            fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
+            lineNumber: 141,
+            columnNumber: 7
+        }, this)
+    }, void 0, false, {
         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-        lineNumber: 102,
+        lineNumber: 139,
         columnNumber: 5
     }, this);
 }

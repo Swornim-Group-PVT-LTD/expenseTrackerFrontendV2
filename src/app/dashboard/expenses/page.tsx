@@ -98,23 +98,39 @@ function Expenses() {
         <span>/Add Expenses</span>
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-        <h1 className="text-2xl font-bold">Add Expenses</h1>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setIsAddThresholdOpen(true)}
-            className="bg-[#FFAA00] hover:bg-[#FFAA00]/90 text-white font-semibold px-4 py-2 rounded transition-colors cursor-pointer"
-          >
-            Add Threshold
-          </button>
+      <div className="flex items-center gap-3 mb-4">
+        {/* Add Threshold */}
+        <button
+          onClick={() => setIsAddThresholdOpen(true)}
+          className="group inline-flex items-center gap-2 rounded-lg bg-[#FFAA00] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e99b00] hover:shadow-md active:translate-y-0"
+        >
+          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-base leading-none">
+            +
+          </span>
+          Add Threshold
+        </button>
 
-          <button
-            onClick={() => setIsViewThresholdOpen(true)}
-            className="bg-[#133840] hover:bg-[#133840]/90 text-white font-semibold px-4 py-2 rounded transition-colors cursor-pointer"
+        {/* View Threshold */}
+        <button
+          onClick={() => setIsViewThresholdOpen(true)}
+          className="group inline-flex items-center gap-2 rounded-lg border border-[#133840]/20 bg-white px-4 py-2.5 text-sm font-semibold text-[#133840] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#133840] hover:bg-[#133840] hover:text-white hover:shadow-md active:translate-y-0"
+        >
+          <svg
+            className="h-4 w-4 transition-transform duration-200 group-hover:scale-110"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
           >
-            View Threshold
-          </button>
-        </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+            />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          View Threshold
+        </button>
       </div>
 
       {/* Threshold Modals */}

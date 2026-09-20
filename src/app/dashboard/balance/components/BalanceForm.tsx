@@ -140,57 +140,7 @@ export default function BalanceForm({
 
       <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
 
-        {/* =====================================================
-            OPENING BALANCE HEADER
-        ====================================================== */}
-        <div
-          className="
-            rounded-2xl
-            bg-gradient-to-r
-            from-[#208120]
-            to-[#319331]
-            p-5
-            mb-5
-            shadow-sm
-          "
-        >
-          <div className="flex items-center justify-between">
-
-            <div>
-              <p className="text-sm font-medium text-white/80">
-                Opening Balance
-              </p>
-
-              <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
-                {currencySymbol}
-                {amount === "" ? "0" : Number(amount).toLocaleString()}
-              </p>
-            </div>
-
-            {/* Currency */}
-            <div
-              className="
-                w-12
-                h-12
-                rounded-xl
-                bg-white/20
-                flex
-                items-center
-                justify-center
-                text-white
-                text-xl
-                font-bold
-              "
-            >
-              {currencySymbol}
-            </div>
-
-          </div>
-        </div>
-
-        {/* =====================================================
-            FORM
-        ====================================================== */}
+    
         <div className="space-y-5">
 
           {/* ===================================================
