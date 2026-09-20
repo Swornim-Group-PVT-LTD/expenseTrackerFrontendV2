@@ -26,12 +26,18 @@ import { getExpenseCategoriesService } from "@/app/services/catalogueServices/ex
 import SearchInput from "@/app/components/SearchInput";
 
 import { ExpenseResponse } from "@/app/types/expenseType";
+
 import { ExpenseCategoryResponse } from "@/app/types/catalolgueType/expenseCatalogueType";
 
 interface ExpensesTableProps {
   filteredData?: ExpenseResponse[];
   isFilterActive?: boolean;
   onDataChange?: () => void;
+
+  // Parent component props
+  refreshTrigger?: number;
+  onSuccess?: () => void;
+  onDataLoad?: (data: ExpenseResponse[]) => void;
 }
 
 interface PreviewFile {
@@ -44,8 +50,12 @@ const ExpensesTable = ({
   filteredData,
   isFilterActive = false,
   onDataChange,
+  refreshTrigger,
+  onSuccess,
+  onDataLoad,
 }: ExpensesTableProps) => {
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([]);
+
   const [categories, setCategories] = useState<
     ExpenseCategoryResponse[]
   >([]);
@@ -53,9 +63,11 @@ const ExpensesTable = ({
   const [editingSn, setEditingSn] = useState<string | null>(null);
 
   const [editAmount, setEditAmount] = useState<number | "">("");
+
   const [editCategory, setEditCategory] = useState("");
 
   const [editReceipt, setEditReceipt] = useState<File | null>(null);
+
   const [editDocuments, setEditDocuments] = useState<File[]>([]);
 
   const editReceiptInputRef =
@@ -81,12 +93,16 @@ const ExpensesTable = ({
   const loadExpenses = async () => {
     try {
       const data = await getExpenseService();
+
       setExpenses(data);
+
+      // Send loaded data to parent
+      onDataLoad?.(data);
     } catch (error: any) {
       console.error("Failed to fetch expenses:", error);
 
       toast.error(
-        error.message || "Failed to fetch expenses"
+        error?.message || "Failed to fetch expenses"
       );
     }
   };
@@ -98,6 +114,7 @@ const ExpensesTable = ({
   const loadCategories = async () => {
     try {
       const data = await getExpenseCategoriesService();
+
       setCategories(data);
     } catch (error: any) {
       console.error(
@@ -120,6 +137,23 @@ const ExpensesTable = ({
       loadExpenses();
     }
   }, [isFilterActive]);
+
+  // ---------------------------------------------------------
+  // REFRESH WHEN refreshTrigger CHANGES
+  // ---------------------------------------------------------
+
+  useEffect(() => {
+    if (
+      refreshTrigger !== undefined &&
+      !isFilterActive
+    ) {
+      loadExpenses();
+    }
+  }, [refreshTrigger]);
+
+  // ---------------------------------------------------------
+  // LOAD CATEGORIES
+  // ---------------------------------------------------------
 
   useEffect(() => {
     loadCategories();
@@ -186,7 +220,7 @@ const ExpensesTable = ({
   // ---------------------------------------------------------
 
   const dataToDisplay = isFilterActive
-    ? filteredData || []
+    ? filteredData ?? []
     : expenses;
 
   // ---------------------------------------------------------
@@ -207,6 +241,7 @@ const ExpensesTable = ({
     );
 
     setEditReceipt(null);
+
     setEditDocuments([]);
 
     if (editReceiptInputRef.current) {
@@ -226,10 +261,13 @@ const ExpensesTable = ({
 
   const cancelEdit = () => {
     setEditingSn(null);
+
     setEditAmount("");
+
     setEditCategory("");
 
     setEditReceipt(null);
+
     setEditDocuments([]);
 
     if (editReceiptInputRef.current) {
@@ -262,7 +300,9 @@ const ExpensesTable = ({
       );
 
       event.target.value = "";
+
       setEditReceipt(null);
+
       return;
     }
 
@@ -297,7 +337,9 @@ const ExpensesTable = ({
       );
 
       event.target.value = "";
+
       setEditDocuments([]);
+
       return;
     }
 
@@ -318,6 +360,7 @@ const ExpensesTable = ({
       toast.error(
         "Please enter a valid expense amount"
       );
+
       return;
     }
 
@@ -331,6 +374,7 @@ const ExpensesTable = ({
       toast.error(
         "Please select a valid category from the list"
       );
+
       return;
     }
 
@@ -350,7 +394,7 @@ const ExpensesTable = ({
       );
 
       // New receipt is optional.
-      // If selected, Laravel will replace/update receipt.
+      // If selected, Laravel can replace/update receipt.
       if (editReceipt) {
         formData.append(
           "upload_receipt",
@@ -384,10 +428,17 @@ const ExpensesTable = ({
         await loadExpenses();
       }
 
+      onSuccess?.();
+
       onDataChange?.();
     } catch (error: any) {
+      console.error(
+        "Failed to update expense:",
+        error
+      );
+
       toast.error(
-        error.message ||
+        error?.message ||
           "Failed to update expense"
       );
     } finally {
@@ -425,10 +476,17 @@ const ExpensesTable = ({
         await loadExpenses();
       }
 
+      onSuccess?.();
+
       onDataChange?.();
     } catch (error: any) {
+      console.error(
+        "Failed to delete expense:",
+        error
+      );
+
       toast.error(
-        error.message ||
+        error?.message ||
           "Failed to delete expense"
       );
     } finally {
@@ -458,6 +516,7 @@ const ExpensesTable = ({
 
   const closePreview = () => {
     setPreviewFile(null);
+
     setFullScreen(false);
   };
 
@@ -796,9 +855,7 @@ const ExpensesTable = ({
                             document.file_name
                           }
                         >
-                          {
-                            document.file_name
-                          }
+                          {document.file_name}
                         </p>
 
                         <p className="text-[10px] text-gray-400 uppercase">
@@ -851,6 +908,7 @@ const ExpensesTable = ({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 w-full">
 
         {/* RECEIPT */}
+
         <div>
           <label
             htmlFor="edit_upload_receipt"
@@ -907,6 +965,7 @@ const ExpensesTable = ({
         </div>
 
         {/* DOCUMENTS */}
+
         <div>
           <label
             htmlFor="edit_upload_doc"
@@ -1076,6 +1135,7 @@ const ExpensesTable = ({
                               <>
                                 {expense.symbol ||
                                   ""}
+
                                 {
                                   expense.add_expenses
                                 }
@@ -1111,6 +1171,7 @@ const ExpensesTable = ({
                           <td className="px-4 py-3 font-semibold">
                             {expense.symbol ||
                               ""}
+
                             {
                               expense.total_expenses
                             }
@@ -1141,7 +1202,9 @@ const ExpensesTable = ({
                           </td>
 
                           <td className="px-4 py-3">
-                            {expense.created_date}
+                            {
+                              expense.created_date
+                            }
                           </td>
 
                           <td className="px-4 py-3">
@@ -1247,6 +1310,7 @@ const ExpensesTable = ({
                         </tr>
 
                         {/* EDIT ATTACHMENTS */}
+
                         {isEditing && (
                           <tr className="border-b bg-gray-50">
                             <td
@@ -1296,6 +1360,7 @@ const ExpensesTable = ({
         ===================================================== */}
 
         <div className="md:hidden divide-y divide-gray-100">
+
           {dataToDisplay.length > 0 ? (
             dataToDisplay.map(
               (expense) => {
@@ -1307,7 +1372,9 @@ const ExpensesTable = ({
                     key={expense.sn}
                     className="p-4 space-y-4"
                   >
+
                     <div className="flex items-center justify-between">
+
                       <div>
                         <p className="text-xs text-gray-400">
                           ID
@@ -1452,6 +1519,7 @@ const ExpensesTable = ({
                         <p className="font-semibold text-gray-800">
                           {expense.symbol ||
                             ""}
+
                           {
                             expense.add_expenses
                           }
@@ -1500,6 +1568,7 @@ const ExpensesTable = ({
                       <p className="font-bold text-gray-800">
                         {expense.symbol ||
                           ""}
+
                         {
                           expense.total_expenses
                         }
@@ -1567,6 +1636,7 @@ const ExpensesTable = ({
 
                       </div>
                     )}
+
                   </div>
                 );
               }
@@ -1576,6 +1646,7 @@ const ExpensesTable = ({
               No expenses found.
             </div>
           )}
+
         </div>
       </div>
 
@@ -1598,6 +1669,7 @@ const ExpensesTable = ({
           "
           onClick={closePreview}
         >
+
           <div
             className={`
               relative
@@ -1618,6 +1690,7 @@ const ExpensesTable = ({
               e.stopPropagation()
             }
           >
+
             {/* HEADER */}
 
             <div
@@ -1634,6 +1707,7 @@ const ExpensesTable = ({
                 bg-white
               "
             >
+
               <div className="flex items-center gap-2 min-w-0">
 
                 {isPdfFile(
@@ -1673,6 +1747,7 @@ const ExpensesTable = ({
                     previewFile.fileName
                   }
                 </p>
+
               </div>
 
               <div className="flex items-center gap-1 shrink-0">
@@ -1745,6 +1820,7 @@ const ExpensesTable = ({
                 }
               `}
             >
+
               {isImageFile(
                 previewFile
               ) && (
@@ -1812,6 +1888,7 @@ const ExpensesTable = ({
                   previewFile
                 ) && (
                   <div className="text-center p-8">
+
                     <FileText
                       className="
                         w-12 h-12
@@ -1825,8 +1902,10 @@ const ExpensesTable = ({
                       Preview is not available
                       for this file type.
                     </p>
+
                   </div>
                 )}
+
             </div>
           </div>
         </div>
