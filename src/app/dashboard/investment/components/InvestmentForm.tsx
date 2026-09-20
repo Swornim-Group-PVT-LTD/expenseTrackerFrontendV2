@@ -15,6 +15,7 @@ import { BalanceResponse } from "@/app/types/balanceType";
 
 import { getInvestmentCategoriesService } from "@/app/services/catalogueServices/investmentCatalogueService";
 import { InvestmentCategoryResponse } from "@/app/types/catalolgueType/investmentCatalogueType";
+
 import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 import { maskAmount } from "@/app/utils/maskAmount";
 
@@ -23,19 +24,21 @@ interface InvestmentFormProps {
 }
 
 const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
-  const [amount, setAmount] = useState<number | "">();
+  const [amount, setAmount] = useState<number | "">("");
   const [currency, setCurrency] = useState("");
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<InvestmentCategoryResponse[]>(
-    [],
-  );
+
+  const [categories, setCategories] = useState<
+    InvestmentCategoryResponse[]
+  >([]);
+
   const [totalInvestment, setTotalInvestment] = useState<number>(0);
 
   const { isVisible } = useBalanceVisibility();
 
   // ============================================================
-  // 1️⃣ Fetch currency symbol from Balance API
+  // 1. Fetch currency symbol
   // ============================================================
   const loadCurrencySymbol = async () => {
     try {
@@ -55,15 +58,13 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
   }, []);
 
   // ============================================================
-  // 2️⃣ Fetch investment categories
+  // 2. Fetch investment categories
   // ============================================================
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getInvestmentCategoriesService();
         setCategories(data);
-
-        // Keep field empty for search input
       } catch (err) {
         console.error("Failed to fetch investment categories:", err);
         toast.error("Failed to fetch investment categories");
@@ -74,14 +75,14 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
   }, []);
 
   // ============================================================
-  // 3️⃣ Fetch Total Investment
+  // 3. Fetch total investment
   // ============================================================
   const loadTotalInvestment = async () => {
     try {
       const total = await getTotalInvestmentService();
       setTotalInvestment(total);
-    } catch (err) {
-      console.error("Failed to fetch total investment:", err);
+    } catch (error) {
+      console.error("Failed to fetch total investment:", error);
       setTotalInvestment(0);
     }
   };
@@ -91,17 +92,20 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
   }, []);
 
   // ============================================================
-  // 4️⃣ Add Investment
+  // 4. Add investment
   // ============================================================
   const handleAddInvestment = async () => {
+    // Validate amount
     if (amount === "" || Number(amount) <= 0) {
-      toast.error("Enter a valid amount");
+      toast.error("Please enter a valid investment amount");
       return;
     }
 
     // Validate category
     const categoryExists = categories.some(
-      (cat) => cat.investment_category.toLowerCase() === category.toLowerCase(),
+      (cat) =>
+        cat.investment_category.toLowerCase() ===
+        category.toLowerCase(),
     );
 
     if (!categoryExists) {
@@ -119,10 +123,16 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
 
       await addInvestmentService(payload);
 
-      toast.success(`Investment of ${currency}${amount} added successfully.`);
+      toast.success(
+        `Investment of ${currency}${amount} added successfully.`,
+      );
 
-      setAmount(0);
+      // Reset
+      setAmount("");
+      setCategory("");
+
       onSuccess && onSuccess();
+
       loadTotalInvestment();
     } catch (error: any) {
       toast.error(error.message || "Failed to add investment");
@@ -132,70 +142,230 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
   };
 
   return (
-    <div className="col-span-full lg:col-span-3 h-fit">
-      <div className="bg-white rounded-md p-4 w-full h-full flex flex-col gap-4">
-        {/* ⭐ Total Investment Display */}
-        <div className="mb-4 p-3 rounded-lg bg-[#ffa726] border border-[#3182CE]/30 flex items-center justify-between">
-          <span className="text-md font-semibold text-white">
-            Total Investment
-          </span>
-          <span className="text-xl font-bold text-white">
-            {maskAmount(totalInvestment, isVisible, currency)}
-          </span>
+    <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
+
+      <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
+
+        {/* =====================================================
+            TOTAL INVESTMENT
+        ====================================================== */}
+        <div
+          className="
+            rounded-2xl
+            bg-gradient-to-r
+            from-[#FF9F00]
+            to-[#FFB52E]
+            p-5
+            mb-5
+            shadow-sm
+          "
+        >
+          <div className="flex items-center justify-between">
+
+            <div>
+              <p className="text-sm font-medium text-white/80">
+                Total Investment
+              </p>
+
+              <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                {maskAmount(
+                  totalInvestment,
+                  isVisible,
+                  currency,
+                )}
+              </p>
+            </div>
+
+            {/* Investment Icon */}
+            <div
+              className="
+                w-12
+                h-12
+                rounded-xl
+                bg-white/20
+                flex
+                items-center
+                justify-center
+                text-white
+                text-xl
+                font-bold
+              "
+            >
+              {currency}
+            </div>
+
+          </div>
         </div>
 
-        {/*  Input Section */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-stretch sm:items-center">
-          {/* AUTO SYMBOL (from Balance API) */}
-          <div className="relative w-full">
-            <div
-              className="flex items-center h-12 border border-[#574A4A]/50 rounded 
-                  focus-within:border-[#FFA726] px-3 gap-2"
+        {/* =====================================================
+            FORM
+        ====================================================== */}
+        <div className="space-y-5">
+
+          {/* ===================================================
+              AMOUNT
+          ==================================================== */}
+          <div>
+
+            <label
+              className="
+                block
+                mb-2
+                text-sm
+                font-semibold
+                text-[#374151]
+              "
             >
-              <span className="text-md font-bold text-[#716A6A] select-none">
+              Amount
+            </label>
+
+            <div
+              className="
+                flex
+                items-center
+                h-[56px]
+                rounded-xl
+                border
+                border-gray-200
+                bg-gray-50
+                px-4
+                transition-all
+                focus-within:border-[#FFAA00]
+                focus-within:bg-white
+                focus-within:ring-4
+                focus-within:ring-[#FFAA00]/10
+              "
+            >
+
+              <span
+                className="
+                  text-lg
+                  font-bold
+                  text-gray-500
+                  mr-3
+                  select-none
+                "
+              >
                 {currency}
               </span>
+
               <input
                 type="number"
-                placeholder="Enter Amount"
-                className="flex-1 h-full bg-transparent text-md font-bold text-[#716A6A] 
-                 outline-none border-none
-                 [appearance:textfield] 
-                 [&::-webkit-outer-spin-button]:appearance-none 
-                 [&::-webkit-inner-spin-button]:appearance-none"
+                placeholder="Enter investment amount"
+                className="
+                  flex-1
+                  h-full
+                  bg-transparent
+                  outline-none
+                  border-none
+                  text-base
+                  font-semibold
+                  text-gray-800
+                  placeholder:text-gray-400
+                  [appearance:textfield]
+                  [&::-webkit-outer-spin-button]:appearance-none
+                  [&::-webkit-inner-spin-button]:appearance-none
+                "
                 value={amount}
                 onChange={(e) =>
-                  setAmount(e.target.value === "" ? "" : Number(e.target.value))
+                  setAmount(
+                    e.target.value === ""
+                      ? ""
+                      : Number(e.target.value),
+                  )
                 }
               />
+
             </div>
+
           </div>
 
-          {/* Category dropdown */}
-          <SearchInput
-            options={categories.map((cat) => ({
-              id: cat.id,
-              value: cat.investment_category,
-            }))}
-            value={category}
-            onChange={setCategory}
-            placeholder="Type investment category..."
-            className="w-full sm:w-80 text-gray-700"
-          />
+          {/* ===================================================
+              INVESTMENT CATEGORY
+          ==================================================== */}
+          <div>
 
-          {/* Submit button */}
+            <label
+              className="
+                block
+                mb-2
+                text-sm
+                font-semibold
+                text-[#374151]
+              "
+            >
+              Investment Category
+            </label>
+
+            <SearchInput
+              options={categories.map((cat) => ({
+                id: cat.id,
+                value: cat.investment_category,
+              }))}
+              value={category}
+              onChange={setCategory}
+              placeholder="Search investment category..."
+              className="
+                w-full
+                h-[56px]
+                text-gray-800
+              "
+            />
+
+          </div>
+
+          {/* ===================================================
+              DIVIDER
+          ==================================================== */}
+          <div className="border-t border-gray-100 pt-1" />
+
+          {/* ===================================================
+              ADD INVESTMENT
+          ==================================================== */}
           <button
             onClick={handleAddInvestment}
             disabled={loading}
-            className={`bg-[#FFAA00] hover:bg-[#FFAA00]/90 text-white font-bold text-md px-8 h-12 rounded transition-colors disabled:opacity-50
-            w-full sm:w-auto cursor-pointer ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`
+              w-full
+              h-[56px]
+              rounded-xl
+              bg-[#FFAA00]
+              hover:bg-[#E99A00]
+              active:scale-[0.98]
+              text-white
+              font-bold
+              text-base
+              shadow-sm
+              transition-all
+              flex
+              items-center
+              justify-center
+              gap-3
+              ${
+                loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
+              }
+            `}
           >
-            {loading ? "Saving..." : "Add"}
+
+            {loading ? (
+              "Saving..."
+            ) : (
+              <>
+                <span>Add Investment</span>
+                <span className="text-xl">
+                  →
+                </span>
+              </>
+            )}
+
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 };

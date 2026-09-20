@@ -4,8 +4,11 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import SearchInput from "@/app/components/SearchInput";
 
-import { addExpenseService } from "@/app/services/expenseService";
-import { getTotalExpenseService } from "@/app/services/expenseService";
+import {
+  addExpenseService,
+  getTotalExpenseService,
+} from "@/app/services/expenseService";
+
 import { getExpenseCategoriesService } from "@/app/services/catalogueServices/expenseCatalogueService";
 import { getBalancesService } from "@/app/services/balanceService";
 
@@ -23,17 +26,21 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   const [currency, setCurrency] = useState("");
   const [remarks, setRemarks] = useState("");
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<ExpenseCategoryResponse[]>([]);
+
+  const [categories, setCategories] = useState<
+    ExpenseCategoryResponse[]
+  >([]);
+
   const [totalExpense, setTotalExpense] = useState<number>(0);
 
-  // Optional file uploads
+  // Uploads
   const [uploadReceipt, setUploadReceipt] = useState<File | null>(null);
   const [uploadDocs, setUploadDocs] = useState<File[]>([]);
 
   const { isVisible } = useBalanceVisibility();
 
   // ============================================================
-  // 1️⃣ Fetch currency symbol from Balance API
+  // Fetch currency
   // ============================================================
   const loadCurrencySymbol = async () => {
     try {
@@ -44,7 +51,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
       }
     } catch (error) {
       console.error("Failed to load currency symbol:", error);
-      setCurrency("$");
+      setCurrency("₹");
     }
   };
 
@@ -53,7 +60,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   }, []);
 
   // ============================================================
-  // 2️⃣ Fetch expense categories
+  // Fetch categories
   // ============================================================
   useEffect(() => {
     const fetchCategories = async () => {
@@ -70,7 +77,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   }, []);
 
   // ============================================================
-  // 3️⃣ Fetch Total Expense
+  // Fetch total expense
   // ============================================================
   const loadTotalExpense = async () => {
     try {
@@ -87,9 +94,11 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   }, []);
 
   // ============================================================
-  // 4️⃣ Upload Receipt - Single Image
+  // Receipt - Image only
   // ============================================================
-  const handleReceiptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleReceiptChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0] || null;
 
     if (!file) {
@@ -97,7 +106,6 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
       return;
     }
 
-    // Receipt accepts image only
     if (!file.type.startsWith("image/")) {
       toast.error("Receipt must be an image file.");
       event.target.value = "";
@@ -109,7 +117,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   };
 
   // ============================================================
-  // 5️⃣ Upload Documents - Multiple Images/PDF
+  // Documents - Multiple Images/PDF
   // ============================================================
   const handleDocumentsChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -121,10 +129,10 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
       return;
     }
 
-    // Allow images and PDF
     const invalidFiles = files.filter(
       (file) =>
-        !file.type.startsWith("image/") && file.type !== "application/pdf",
+        !file.type.startsWith("image/") &&
+        file.type !== "application/pdf",
     );
 
     if (invalidFiles.length > 0) {
@@ -138,12 +146,14 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   };
 
   // ============================================================
-  // 6️⃣ Add Expense
+  // Add Expense
   // ============================================================
   const handleAddExpense = async () => {
     // Validate category
     const categoryExists = categories.some(
-      (cat) => cat.expense_category.toLowerCase() === remarks.toLowerCase(),
+      (cat) =>
+        cat.expense_category.toLowerCase() ===
+        remarks.toLowerCase(),
     );
 
     if (!categoryExists) {
@@ -160,37 +170,34 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
     try {
       setLoading(true);
 
-      // ========================================================
-      // FormData for multipart/form-data
-      // ========================================================
       const formData = new FormData();
 
       formData.append("add_expenses", String(amount));
       formData.append("expense_category", remarks);
 
-      // Optional single receipt
+      // Receipt
       if (uploadReceipt) {
         formData.append("upload_receipt", uploadReceipt);
       }
 
-      // Optional multiple documents
+      // Documents
       uploadDocs.forEach((file) => {
         formData.append("upload_doc[]", file);
       });
 
       await addExpenseService(formData);
 
-      toast.success(`Expense of ${currency}${amount} added successfully.`);
+      toast.success(
+        `Expense of ${currency}${amount} added successfully.`,
+      );
 
-      // Reset existing fields
+      // Reset
       setAmount("");
       setRemarks("");
-
-      // Reset upload fields
       setUploadReceipt(null);
       setUploadDocs([]);
 
-      // Reset file input elements
+      // Reset file inputs
       const receiptInput = document.getElementById(
         "upload_receipt",
       ) as HTMLInputElement | null;
@@ -218,56 +225,131 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   };
 
   return (
-    <div className="col-span-full lg:col-span-3 h-fit">
-      <div className="bg-white rounded-md p-4 w-full h-full flex flex-col gap-4">
-        {/* ======================================================
-            Total Expense Display
+    <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
+      <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
+
+        {/* =====================================================
+            TOTAL EXPENSE
         ====================================================== */}
-        <div className="mb-4 p-3 rounded-lg bg-[#ff4d4d] border border-[#E53E3E]/30 flex items-center justify-between">
-          <span className="text-md font-semibold text-white">
-            Total Expense
-          </span>
+        <div
+          className="
+            rounded-2xl
+            bg-gradient-to-r
+            from-[#ff4d4d]
+            to-[#ff6262]
+            p-5
+            mb-5
+            shadow-sm
+          "
+        >
+          <div className="flex items-center justify-between">
 
-          <span className="text-xl font-bold text-white">
-            {maskAmount(totalExpense, isVisible, currency)}
-          </span>
-        </div>
+            <div>
+              <p className="text-sm font-medium text-white/80">
+                Total Expense
+              </p>
 
-        {/* ======================================================
-            Input Section
-        ====================================================== */}
-        <div className="flex flex-col gap-4">
-          {/* Amount + Category + Submit */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-stretch sm:items-center">
-            {/* Amount */}
-            <div className="relative w-full">
-              <div
-                className="flex items-center h-12 border border-[#574A4A]/50 rounded
-                focus-within:border-[#FFA726] px-3 gap-2"
-              >
-                <span className="text-md font-bold text-[#716A6A] select-none">
-                  {currency}
-                </span>
-
-                <input
-                  type="number"
-                  placeholder="Enter Amount"
-                  className="flex-1 h-full bg-transparent text-md font-bold text-[#716A6A]
-                  outline-none border-none
-                  [appearance:textfield]
-                  [&::-webkit-outer-spin-button]:appearance-none
-                  [&::-webkit-inner-spin-button]:appearance-none"
-                  value={amount}
-                  onChange={(e) =>
-                    setAmount(
-                      e.target.value === "" ? "" : Number(e.target.value),
-                    )
-                  }
-                />
-              </div>
+              <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                {maskAmount(
+                  totalExpense,
+                  isVisible,
+                  currency,
+                )}
+              </p>
             </div>
 
-            {/* Category */}
+            <div
+              className="
+                w-12
+                h-12
+                rounded-xl
+                bg-white/20
+                flex
+                items-center
+                justify-center
+                text-white
+                text-xl
+              "
+            >
+              ₹
+            </div>
+
+          </div>
+        </div>
+
+
+        {/* =====================================================
+            FORM
+        ====================================================== */}
+        <div className="space-y-5">
+
+          {/* ===================================================
+              AMOUNT
+          ==================================================== */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-[#374151]">
+              Amount
+            </label>
+
+            <div
+              className="
+                flex
+                items-center
+                h-[56px]
+                rounded-xl
+                border
+                border-gray-200
+                bg-gray-50
+                px-4
+                transition-all
+                focus-within:border-[#FFAA00]
+                focus-within:bg-white
+                focus-within:ring-4
+                focus-within:ring-[#FFAA00]/10
+              "
+            >
+              <span className="text-lg font-bold text-gray-500 mr-3">
+                {currency}
+              </span>
+
+              <input
+                type="number"
+                placeholder="Enter expense amount"
+                className="
+                  flex-1
+                  h-full
+                  bg-transparent
+                  outline-none
+                  border-none
+                  text-base
+                  font-semibold
+                  text-gray-800
+                  placeholder:text-gray-400
+                  [appearance:textfield]
+                  [&::-webkit-outer-spin-button]:appearance-none
+                  [&::-webkit-inner-spin-button]:appearance-none
+                "
+                value={amount}
+                onChange={(e) =>
+                  setAmount(
+                    e.target.value === ""
+                      ? ""
+                      : Number(e.target.value),
+                  )
+                }
+              />
+            </div>
+          </div>
+
+
+          {/* ===================================================
+              CATEGORY
+          ==================================================== */}
+          <div>
+            <label className="block mb-2 text-sm font-semibold text-[#374151]">
+              Expense Category
+            </label>
+
             <SearchInput
               options={categories.map((cat) => ({
                 id: cat.id,
@@ -275,73 +357,184 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
               }))}
               value={remarks ?? ""}
               onChange={setRemarks}
-              placeholder="Type expense category..."
-              className="w-full sm:w-80 text-gray-700"
+              placeholder="Search expense category..."
+              className="
+                w-full
+                h-[56px]
+                text-gray-800
+              "
             />
-
-            {/* Submit */}
-            <button
-              onClick={handleAddExpense}
-              disabled={loading}
-              className={`bg-[#FFAA00] hover:bg-[#FFAA00]/90 text-white font-bold
-              text-md px-8 h-12 min-h-[48px] rounded transition-colors
-              w-full sm:w-auto cursor-pointer ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {loading ? "Saving..." : "Add"}
-            </button>
           </div>
 
-          {/* ====================================================
-              File Upload Section
+
+          {/* ===================================================
+              DIVIDER
           ==================================================== */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Upload Receipt */}
-            <div>
-              <label
-                htmlFor="upload_receipt"
-                className="block text-sm font-semibold text-[#574A4A] mb-2"
-              >
+          <div className="border-t border-gray-100 pt-1" />
+
+
+          {/* ===================================================
+              RECEIPT UPLOAD
+          ==================================================== */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+
+              <label className="text-sm font-semibold text-[#374151]">
                 Upload Receipt
-                <span className="text-xs font-normal text-gray-500 ml-2">
-                  (Optional - Image only)
-                </span>
               </label>
+
+              <span className="text-xs text-gray-400">
+                Image only
+              </span>
+
+            </div>
+
+            <label
+              htmlFor="upload_receipt"
+              className="
+                block
+                cursor-pointer
+                rounded-xl
+                border
+                border-dashed
+                border-gray-300
+                bg-gray-50
+                hover:bg-gray-100
+                transition
+                p-4
+              "
+            >
+              <div className="flex items-center gap-4">
+
+                {/* Icon */}
+                <div
+                  className="
+                    w-12
+                    h-12
+                    shrink-0
+                    rounded-xl
+                    bg-blue-50
+                    flex
+                    items-center
+                    justify-center
+                    text-xl
+                  "
+                >
+                  📷
+                </div>
+
+                {/* Text */}
+                <div className="min-w-0 flex-1">
+
+                  <p className="font-semibold text-gray-800 text-sm">
+                    {uploadReceipt
+                      ? "Receipt selected"
+                      : "Upload receipt"}
+                  </p>
+
+                  <p className="text-xs text-gray-500 mt-1 truncate">
+                    {uploadReceipt
+                      ? uploadReceipt.name
+                      : "Tap to choose an image"}
+                  </p>
+
+                </div>
+
+                <span className="text-gray-400 text-xl">
+                  ›
+                </span>
+
+              </div>
 
               <input
                 id="upload_receipt"
                 type="file"
                 accept="image/*"
                 onChange={handleReceiptChange}
-                className="block w-full text-sm text-gray-600
-                border border-gray-300 rounded-lg cursor-pointer
-                bg-white
-                file:mr-4 file:py-2.5 file:px-4
-                file:rounded-l-lg file:border-0
-                file:text-sm file:font-semibold
-                file:bg-gray-100 file:text-gray-700
-                hover:file:bg-gray-200"
+                className="hidden"
               />
+            </label>
+          </div>
 
-              {uploadReceipt && (
-                <p className="mt-1 text-xs text-gray-500 truncate">
-                  Selected: {uploadReceipt.name}
-                </p>
-              )}
+
+          {/* ===================================================
+              DOCUMENT UPLOAD
+          ==================================================== */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+
+              <label className="text-sm font-semibold text-[#374151]">
+                Upload Documents
+              </label>
+
+              <span className="text-xs text-gray-400">
+                Images / PDF
+              </span>
+
             </div>
 
-            {/* Upload Documents */}
-            <div>
-              <label
-                htmlFor="upload_doc"
-                className="block text-sm font-semibold text-[#574A4A] mb-2"
-              >
-                Upload Documents
-                <span className="text-xs font-normal text-gray-500 ml-2">
-                  (Optional - Multiple images/PDF)
+            <label
+              htmlFor="upload_doc"
+              className="
+                block
+                cursor-pointer
+                rounded-xl
+                border
+                border-dashed
+                border-gray-300
+                bg-gray-50
+                hover:bg-gray-100
+                transition
+                p-4
+              "
+            >
+              <div className="flex items-center gap-4">
+
+                {/* Icon */}
+                <div
+                  className="
+                    w-12
+                    h-12
+                    shrink-0
+                    rounded-xl
+                    bg-green-50
+                    flex
+                    items-center
+                    justify-center
+                    text-xl
+                  "
+                >
+                  📄
+                </div>
+
+                {/* Text */}
+                <div className="min-w-0 flex-1">
+
+                  <p className="font-semibold text-gray-800 text-sm">
+                    {uploadDocs.length > 0
+                      ? `${uploadDocs.length} file${
+                          uploadDocs.length > 1
+                            ? "s"
+                            : ""
+                        } selected`
+                      : "Upload files"}
+                  </p>
+
+                  <p className="text-xs text-gray-500 mt-1 truncate">
+                    {uploadDocs.length > 0
+                      ? uploadDocs
+                          .map((file) => file.name)
+                          .join(", ")
+                      : "Tap to choose multiple files"}
+                  </p>
+
+                </div>
+
+                <span className="text-gray-400 text-xl">
+                  ›
                 </span>
-              </label>
+
+              </div>
 
               <input
                 id="upload_doc"
@@ -349,24 +542,51 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
                 multiple
                 accept="image/*,.pdf,application/pdf"
                 onChange={handleDocumentsChange}
-                className="block w-full text-sm text-gray-600
-                border border-gray-300 rounded-lg cursor-pointer
-                bg-white
-                file:mr-4 file:py-2.5 file:px-4
-                file:rounded-l-lg file:border-0
-                file:text-sm file:font-semibold
-                file:bg-gray-100 file:text-gray-700
-                hover:file:bg-gray-200"
+                className="hidden"
               />
-
-              {uploadDocs.length > 0 && (
-                <p className="mt-1 text-xs text-gray-500">
-                  {uploadDocs.length} file
-                  {uploadDocs.length > 1 ? "s" : ""} selected
-                </p>
-              )}
-            </div>
+            </label>
           </div>
+
+
+          {/* ===================================================
+              ADD EXPENSE BUTTON
+          ==================================================== */}
+          <button
+            onClick={handleAddExpense}
+            disabled={loading}
+            className={`
+              w-full
+              h-[56px]
+              rounded-xl
+              bg-[#ff4d4d]
+              hover:bg-[#ff6262]
+              active:scale-[0.98]
+              text-white
+              font-bold
+              text-base
+              shadow-sm
+              transition-all
+              flex
+              items-center
+              justify-center
+              gap-3
+              ${
+                loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
+              }
+            `}
+          >
+            {loading ? (
+              "Saving..."
+            ) : (
+              <>
+                <span>Add Expense</span>
+                <span className="text-xl">→</span>
+              </>
+            )}
+          </button>
+
         </div>
       </div>
     </div>

@@ -5,8 +5,11 @@ import { toast } from "react-toastify";
 import SearchInput from "@/app/components/SearchInput";
 
 import { AddIncomePayload } from "@/app/types/incomeType";
-import { addIncomeService } from "@/app/services/incomeService";
-import { getTotalIncomeService } from "@/app/services/incomeService";
+import {
+  addIncomeService,
+  getTotalIncomeService,
+} from "@/app/services/incomeService";
+
 import { getIncomeCategoriesService } from "@/app/services/catalogueServices/incomeCatalogueService";
 import { getBalancesService } from "@/app/services/balanceService";
 
@@ -20,28 +23,32 @@ interface IncomeFormProps {
 }
 
 const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
-  const [amount, setAmount] = useState<number | "">();
-  const [currency, setCurrency] = useState(""); // SYMBOL FROM BALANCE API
+  const [amount, setAmount] = useState<number | "">("");
+  const [currency, setCurrency] = useState("");
   const [remarks, setRemarks] = useState("");
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<IncomeCategoryResponse[]>([]);
+
+  const [categories, setCategories] = useState<
+    IncomeCategoryResponse[]
+  >([]);
+
   const [totalIncome, setTotalIncome] = useState<number>(0);
+
   const { isVisible } = useBalanceVisibility();
 
   // ============================================================
-  // 1️⃣ Fetch currency SYMBOL from BALANCE API
+  // 1. Fetch currency symbol
   // ============================================================
   const loadCurrencySymbol = async () => {
     try {
       const balance: BalanceResponse = await getBalancesService();
 
-      // IMPORTANT — Correct symbol path
       if (balance?.currency?.symbol) {
         setCurrency(balance.currency.symbol);
       }
     } catch (error) {
       console.error("Failed to load currency symbol:", error);
-      setCurrency("$"); // fallback
+      setCurrency("$");
     }
   };
 
@@ -50,16 +57,15 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
   }, []);
 
   // ============================================================
-  // 2️⃣ Fetch income categories
+  // 2. Fetch income categories
   // ============================================================
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getIncomeCategoriesService();
         setCategories(data);
-
-        // Keep field empty for search input
       } catch (err) {
+        console.error("Failed to fetch income categories:", err);
         toast.error("Failed to fetch income categories");
       }
     };
@@ -68,7 +74,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
   }, []);
 
   // ============================================================
-  // 3️⃣ Fetch Total Income
+  // 3. Fetch total income
   // ============================================================
   const loadTotalIncome = async () => {
     try {
@@ -85,12 +91,20 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
   }, []);
 
   // ============================================================
-  // 4️⃣ Add Income
+  // 4. Add income
   // ============================================================
   const handleAddIncome = async () => {
+    // Validate amount
+    if (amount === "" || Number(amount) <= 0) {
+      toast.error("Please enter a valid income amount");
+      return;
+    }
+
     // Validate category
     const categoryExists = categories.some(
-      (cat) => cat.income_category.toLowerCase() === remarks.toLowerCase(),
+      (cat) =>
+        cat.income_category.toLowerCase() ===
+        remarks.toLowerCase(),
     );
 
     if (!categoryExists) {
@@ -108,10 +122,16 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
 
       await addIncomeService(payload);
 
-      toast.success(`Income of ${currency}${amount} added successfully.`);
+      toast.success(
+        `Income of ${currency}${amount} added successfully.`,
+      );
 
-      setAmount(0);
+      // Reset
+      setAmount("");
+      setRemarks("");
+
       onSuccess && onSuccess();
+
       loadTotalIncome();
     } catch (error: any) {
       toast.error(error.message || "Failed to add income");
@@ -121,69 +141,234 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
   };
 
   return (
-    <div className="col-span-full lg:col-span-3 h-fit">
-      <div className="bg-white rounded-md p-4 w-full h-full flex flex-col gap-4">
-        {/* TOTAL INCOME */}
-        <div className="mb-4 p-3 rounded-lg bg-[#208120] border border-[#38A169]/30 flex items-center justify-between">
-          <span className="text-md font-semibold text-[#FFFFFF]">
-            Total Income
-          </span>
-          <span className="text-xl font-bold text-[#FFFFFF]">
-            {maskAmount(totalIncome, isVisible, currency)}
-          </span>
+    <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
+
+      <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
+
+        {/* =====================================================
+            TOTAL INCOME
+        ====================================================== */}
+        <div
+          className="
+            rounded-2xl
+            bg-gradient-to-r
+            from-[#208120]
+            to-[#319331]
+            p-5
+            mb-5
+            shadow-sm
+          "
+        >
+          <div className="flex items-center justify-between">
+
+            <div>
+              <p className="text-sm font-medium text-white/80">
+                Total Income
+              </p>
+
+              <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                {maskAmount(
+                  totalIncome,
+                  isVisible,
+                  currency,
+                )}
+              </p>
+            </div>
+
+            {/* Income Icon */}
+            <div
+              className="
+                w-12
+                h-12
+                rounded-xl
+                bg-white/20
+                flex
+                items-center
+                justify-center
+                text-white
+                text-xl
+                font-bold
+              "
+            >
+              {currency}
+            </div>
+
+          </div>
         </div>
 
-        {/* INPUT ROW */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-stretch sm:items-center">
-          {/* AUTO SYMBOL (from balance API) */}
-          <div className="relative w-full">
-            <div
-              className="flex items-center h-12 border border-[#574A4A]/50 rounded 
-                  focus-within:border-[#FFA726] px-3 gap-2"
+
+        {/* =====================================================
+            FORM
+        ====================================================== */}
+        <div className="space-y-5">
+
+          {/* ===================================================
+              AMOUNT
+          ==================================================== */}
+          <div>
+
+            <label
+              className="
+                block
+                mb-2
+                text-sm
+                font-semibold
+                text-[#374151]
+              "
             >
-              <span className="text-md font-bold text-[#716A6A] select-none">
+              Amount
+            </label>
+
+            <div
+              className="
+                flex
+                items-center
+                h-[56px]
+                rounded-xl
+                border
+                border-gray-200
+                bg-gray-50
+                px-4
+                transition-all
+                focus-within:border-[#64a11f]
+                focus-within:bg-white
+                focus-within:ring-4
+                focus-within:ring-[#64a11f]/10
+              "
+            >
+
+              <span
+                className="
+                  text-lg
+                  font-bold
+                  text-gray-500
+                  mr-3
+                  select-none
+                "
+              >
                 {currency}
               </span>
+
               <input
                 type="number"
-                placeholder="Enter Amount"
-                className="flex-1 h-full bg-transparent text-md font-bold text-[#716A6A] 
-                 outline-none border-none
-                 [appearance:textfield] 
-                 [&::-webkit-outer-spin-button]:appearance-none 
-                 [&::-webkit-inner-spin-button]:appearance-none"
+                placeholder="Enter income amount"
+                className="
+                  flex-1
+                  h-full
+                  bg-transparent
+                  outline-none
+                  border-none
+                  text-base
+                  font-semibold
+                  text-gray-800
+                  placeholder:text-gray-400
+                  [appearance:textfield]
+                  [&::-webkit-outer-spin-button]:appearance-none
+                  [&::-webkit-inner-spin-button]:appearance-none
+                "
                 value={amount}
                 onChange={(e) =>
-                  setAmount(e.target.value === "" ? "" : Number(e.target.value))
+                  setAmount(
+                    e.target.value === ""
+                      ? ""
+                      : Number(e.target.value),
+                  )
                 }
               />
+
             </div>
+
           </div>
 
-          {/* Remarks Selector */}
-          <SearchInput
-            options={categories.map((cat) => ({
-              id: cat.id,
-              value: cat.income_category,
-            }))}
-            value={remarks}
-            onChange={setRemarks}
-            placeholder="Type income category..."
-            className="w-full sm:w-80 text-gray-700"
-          />
 
-          {/* Submit Button */}
+          {/* ===================================================
+              INCOME CATEGORY
+          ==================================================== */}
+          <div>
+
+            <label
+              className="
+                block
+                mb-2
+                text-sm
+                font-semibold
+                text-[#374151]
+              "
+            >
+              Income Category
+            </label>
+
+            <SearchInput
+              options={categories.map((cat) => ({
+                id: cat.id,
+                value: cat.income_category,
+              }))}
+              value={remarks}
+              onChange={setRemarks}
+              placeholder="Search income category..."
+              className="
+                w-full
+                h-[56px]
+                text-gray-800
+              "
+            />
+
+          </div>
+
+
+          {/* ===================================================
+              DIVIDER
+          ==================================================== */}
+          <div className="border-t border-gray-100 pt-1" />
+
+
+          {/* ===================================================
+              ADD INCOME
+          ==================================================== */}
           <button
             onClick={handleAddIncome}
             disabled={loading}
-            className={`bg-[#64a11f] hover:bg-[#64a11f]/90 text-white font-bold text-md px-8 h-12 rounded transition-colors disabled:opacity-50 w-full sm:w-auto cursor-pointer ${
-              loading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`
+              w-full
+              h-[56px]
+              rounded-xl
+              bg-[#64a11f]
+              hover:bg-[#579119]
+              active:scale-[0.98]
+              text-white
+              font-bold
+              text-base
+              shadow-sm
+              transition-all
+              flex
+              items-center
+              justify-center
+              gap-3
+              ${
+                loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
+              }
+            `}
           >
-            {loading ? "Saving..." : "Add"}
+
+            {loading ? (
+              "Saving..."
+            ) : (
+              <>
+                <span>Add Income</span>
+                <span className="text-xl">
+                  →
+                </span>
+              </>
+            )}
+
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 };

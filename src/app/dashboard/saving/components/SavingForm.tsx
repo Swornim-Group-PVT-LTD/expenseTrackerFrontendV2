@@ -5,13 +5,17 @@ import { toast } from "react-toastify";
 import SearchInput from "@/app/components/SearchInput";
 
 import { AddSavingPayload } from "@/app/types/savingType";
-import { addSavingService } from "@/app/services/savingService";
-import { getTotalSavingService } from "@/app/services/savingService";
+import {
+  addSavingService,
+  getTotalSavingService,
+} from "@/app/services/savingService";
+
 import { getSavingCategoriesService } from "@/app/services/catalogueServices/savingCatalogueService";
 import { SavingCategoryResponse } from "@/app/types/catalolgueType/savingCatalogueType";
 
 import { getBalancesService } from "@/app/services/balanceService";
 import { BalanceResponse } from "@/app/types/balanceType";
+
 import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 import { maskAmount } from "@/app/utils/maskAmount";
 
@@ -20,18 +24,19 @@ interface SavingFormProps {
 }
 
 const SavingForm = ({ onSuccess }: SavingFormProps) => {
-  const [amount, setAmount] = useState<number | "">();
-  const [currency, setCurrency] = useState(""); // Auto from Balance API
+  const [amount, setAmount] = useState<number | "">("");
+  const [currency, setCurrency] = useState("");
   const [remarks, setRemarks] = useState("");
   const [loading, setLoading] = useState(false);
   const [deductBalance, setDeductBalance] = useState(false);
+
   const [categories, setCategories] = useState<SavingCategoryResponse[]>([]);
   const [totalSaving, setTotalSaving] = useState<number>(0);
 
   const { isVisible } = useBalanceVisibility();
 
   // ============================================================
-  // 1️⃣ Fetch currency symbol from Balance API
+  // 1. Fetch currency symbol
   // ============================================================
   const loadCurrencySymbol = async () => {
     try {
@@ -42,7 +47,7 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
       }
     } catch (error) {
       console.error("Failed to load currency symbol:", error);
-      setCurrency("$"); // fallback
+      setCurrency("$");
     }
   };
 
@@ -51,15 +56,13 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
   }, []);
 
   // ============================================================
-  // 2️⃣ Fetch saving categories
+  // 2. Fetch saving categories
   // ============================================================
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getSavingCategoriesService();
         setCategories(data);
-
-        // Keep field empty for search input
       } catch (err) {
         console.error("Failed to fetch saving categories:", err);
         toast.error("Failed to fetch saving categories");
@@ -70,14 +73,14 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
   }, []);
 
   // ============================================================
-  // 3️⃣ Fetch total saving
+  // 3. Fetch total saving
   // ============================================================
   const loadTotalSaving = async () => {
     try {
       const total = await getTotalSavingService();
       setTotalSaving(total);
-    } catch (err) {
-      console.error("Failed to fetch total saving:", err);
+    } catch (error) {
+      console.error("Failed to fetch total saving:", error);
       setTotalSaving(0);
     }
   };
@@ -87,12 +90,20 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
   }, []);
 
   // ============================================================
-  // 4️⃣ Add Saving
+  // 4. Add Saving
   // ============================================================
   const handleAddSaving = async () => {
+    // Validate amount
+    if (amount === "" || Number(amount) <= 0) {
+      toast.error("Please enter a valid saving amount");
+      return;
+    }
+
     // Validate category
     const categoryExists = categories.some(
-      (cat) => cat.saving_category.toLowerCase() === remarks.toLowerCase(),
+      (cat) =>
+        cat.saving_category.toLowerCase() ===
+        remarks.toLowerCase(),
     );
 
     if (!categoryExists) {
@@ -116,9 +127,13 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
           (deductBalance ? " (deducted from balance)" : ""),
       );
 
-      setAmount(0);
+      // Reset
+      setAmount("");
+      setRemarks("");
       setDeductBalance(false);
+
       onSuccess && onSuccess();
+
       loadTotalSaving();
     } catch (error: any) {
       toast.error(error.message || "Failed to add saving");
@@ -128,82 +143,287 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
   };
 
   return (
-    <div className="col-span-full lg:col-span-3 h-fit">
-      <div className="bg-white rounded-md p-4 w-full flex flex-col gap-4">
-        {/* ⭐ Total Saving Display */}
-        <div className="mb-4 p-3 rounded-lg bg-[#44eeaa] border border-[#38A169]/30 flex items-center justify-between">
-          <span className="text-md font-semibold text-white">Total Saving</span>
-          <span className="text-xl font-bold text-white">
-            {maskAmount(totalSaving, isVisible, currency)}
-          </span>
+    <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
+
+      <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
+
+        {/* =====================================================
+            TOTAL SAVING
+        ====================================================== */}
+        <div
+          className="
+            rounded-2xl
+            bg-gradient-to-r
+            from-[#22C55E]
+            to-[#44EEAA]
+            p-5
+            mb-5
+            shadow-sm
+          "
+        >
+          <div className="flex items-center justify-between">
+
+            <div>
+              <p className="text-sm font-medium text-white/80">
+                Total Saving
+              </p>
+
+              <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                {maskAmount(
+                  totalSaving,
+                  isVisible,
+                  currency,
+                )}
+              </p>
+            </div>
+
+            {/* Saving Icon */}
+            <div
+              className="
+                w-12
+                h-12
+                rounded-xl
+                bg-white/20
+                flex
+                items-center
+                justify-center
+                text-white
+                text-xl
+                font-bold
+              "
+            >
+              {currency}
+            </div>
+
+          </div>
         </div>
 
-        {/* ⭐ Input Row */}
-        <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-stretch sm:items-center">
-          {/* AUTO SYMBOL (from Balance API) */}
-          <div className="relative w-full">
-            <div
-              className="flex items-center h-12 border border-[#574A4A]/50 rounded 
-                  focus-within:border-[#FFA726] px-3 gap-2"
+        {/* =====================================================
+            FORM
+        ====================================================== */}
+        <div className="space-y-5">
+
+          {/* ===================================================
+              AMOUNT
+          ==================================================== */}
+          <div>
+
+            <label
+              className="
+                block
+                mb-2
+                text-sm
+                font-semibold
+                text-[#374151]
+              "
             >
-              <span className="text-md font-bold text-[#716A6A] select-none">
+              Amount
+            </label>
+
+            <div
+              className="
+                flex
+                items-center
+                h-[56px]
+                rounded-xl
+                border
+                border-gray-200
+                bg-gray-50
+                px-4
+                transition-all
+                focus-within:border-[#44EEAA]
+                focus-within:bg-white
+                focus-within:ring-4
+                focus-within:ring-[#44EEAA]/10
+              "
+            >
+
+              <span
+                className="
+                  text-lg
+                  font-bold
+                  text-gray-500
+                  mr-3
+                  select-none
+                "
+              >
                 {currency}
               </span>
+
               <input
                 type="number"
-                placeholder="Enter Amount"
-                className="flex-1 h-full bg-transparent text-md font-bold text-[#716A6A] 
-                 outline-none border-none
-                 [appearance:textfield] 
-                 [&::-webkit-outer-spin-button]:appearance-none 
-                 [&::-webkit-inner-spin-button]:appearance-none"
+                placeholder="Enter saving amount"
+                className="
+                  flex-1
+                  h-full
+                  bg-transparent
+                  outline-none
+                  border-none
+                  text-base
+                  font-semibold
+                  text-gray-800
+                  placeholder:text-gray-400
+                  [appearance:textfield]
+                  [&::-webkit-outer-spin-button]:appearance-none
+                  [&::-webkit-inner-spin-button]:appearance-none
+                "
                 value={amount}
                 onChange={(e) =>
-                  setAmount(e.target.value === "" ? "" : Number(e.target.value))
+                  setAmount(
+                    e.target.value === ""
+                      ? ""
+                      : Number(e.target.value),
+                  )
                 }
               />
+
             </div>
+
           </div>
 
-          {/* Remarks Selector */}
-          <SearchInput
-            options={categories.map((cat) => ({
-              id: cat.id,
-              value: cat.saving_category,
-            }))}
-            value={remarks}
-            onChange={setRemarks}
-            placeholder="Type saving category..."
-            className="w-full sm:w-80 text-gray-700"
-          />
+          {/* ===================================================
+              SAVING CATEGORY
+          ==================================================== */}
+          <div>
 
-          {/* Submit Button */}
+            <label
+              className="
+                block
+                mb-2
+                text-sm
+                font-semibold
+                text-[#374151]
+              "
+            >
+              Saving Category
+            </label>
+
+            <SearchInput
+              options={categories.map((cat) => ({
+                id: cat.id,
+                value: cat.saving_category,
+              }))}
+              value={remarks}
+              onChange={setRemarks}
+              placeholder="Search saving category..."
+              className="
+                w-full
+                h-[56px]
+                text-gray-800
+              "
+            />
+
+          </div>
+
+          {/* ===================================================
+              DEDUCT FROM BALANCE
+          ==================================================== */}
+          <div
+            className="
+              flex
+              items-center
+              justify-between
+              rounded-xl
+              border
+              border-gray-100
+              bg-gray-50
+              px-4
+              py-3
+            "
+          >
+            <div>
+              <p className="text-sm font-semibold text-[#374151]">
+                Deduct From Balance
+              </p>
+
+              <p className="text-xs text-gray-500 mt-0.5">
+                Deduct this saving amount from your current balance
+              </p>
+            </div>
+
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={deductBalance}
+                onChange={(e) => setDeductBalance(e.target.checked)}
+                className="sr-only peer"
+              />
+
+              <div
+                className="
+                  w-11
+                  h-6
+                  bg-gray-300
+                  rounded-full
+                  peer
+                  peer-checked:bg-[#44EEAA]
+                  after:content-['']
+                  after:absolute
+                  after:top-[2px]
+                  after:left-[2px]
+                  after:bg-white
+                  after:rounded-full
+                  after:h-5
+                  after:w-5
+                  after:transition-all
+                  peer-checked:after:translate-x-full
+                "
+              />
+            </label>
+          </div>
+
+          {/* ===================================================
+              DIVIDER
+          ==================================================== */}
+          <div className="border-t border-gray-100 pt-1" />
+
+          {/* ===================================================
+              ADD SAVING
+          ==================================================== */}
           <button
             onClick={handleAddSaving}
             disabled={loading}
-            className={`bg-[#FFAA00] hover:bg-[#FFAA00]/90 text-white font-bold text-md px-8 h-12 rounded transition-colors 
-              disabled:opacity-50 w-full sm:w-auto cursor-pointer ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+            className={`
+              w-full
+              h-[56px]
+              rounded-xl
+              bg-[#22C55E]
+              hover:bg-[#44EEAA]
+              active:scale-[0.98]
+              text-white
+              font-bold
+              text-base
+              shadow-sm
+              transition-all
+              flex
+              items-center
+              justify-center
+              gap-3
+              ${
+                loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer"
+              }
+            `}
           >
-            {loading ? "Saving..." : "Add"}
+
+            {loading ? (
+              "Saving..."
+            ) : (
+              <>
+                <span>Add Saving</span>
+                <span className="text-xl">
+                  →
+                </span>
+              </>
+            )}
+
           </button>
+
         </div>
 
-        {/* Deduct from balance checkbox */}
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id="deductBalance"
-            checked={deductBalance}
-            onChange={(e) => setDeductBalance(e.target.checked)}
-            className="h-4 w-4 accent-[#FFAA00]"
-          />
-          <label htmlFor="deductBalance" className="text-sm font-medium">
-            Deduct From Balance
-          </label>
-        </div>
       </div>
+
     </div>
   );
 };
