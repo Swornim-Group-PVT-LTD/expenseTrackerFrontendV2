@@ -101,9 +101,7 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
 
     // Validate category
     const categoryExists = categories.some(
-      (cat) =>
-        cat.saving_category.toLowerCase() ===
-        remarks.toLowerCase(),
+      (cat) => cat.saving_category.toLowerCase() === remarks.toLowerCase(),
     );
 
     if (!categoryExists) {
@@ -144,9 +142,7 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
 
   return (
     <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
-
       <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
-
         {/* =====================================================
             TOTAL SAVING
         ====================================================== */}
@@ -162,18 +158,11 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
           "
         >
           <div className="flex items-center justify-between">
-
             <div>
-              <p className="text-sm font-medium text-white/80">
-                Total Saving
-              </p>
+              <p className="text-sm font-medium text-white/80">Total Saving</p>
 
               <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
-                {maskAmount(
-                  totalSaving,
-                  isVisible,
-                  currency,
-                )}
+                {maskAmount(totalSaving, isVisible, currency)}
               </p>
             </div>
 
@@ -194,7 +183,6 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
             >
               {currency}
             </div>
-
           </div>
         </div>
 
@@ -202,174 +190,102 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
             FORM
         ====================================================== */}
         <div className="space-y-5">
-
           {/* ===================================================
-              AMOUNT
+              AMOUNT + CATEGORY + DEDUCT (single row)
           ==================================================== */}
-          <div>
-
-            <label
-              className="
-                block
-                mb-2
-                text-sm
-                font-semibold
-                text-[#374151]
-              "
-            >
-              Amount
-            </label>
-
-            <div
-              className="
-                flex
-                items-center
-                h-[56px]
-                rounded-xl
-                border
-                border-gray-200
-                bg-gray-50
-                px-4
-                transition-all
-                focus-within:border-[#44EEAA]
-                focus-within:bg-white
-                focus-within:ring-4
-                focus-within:ring-[#44EEAA]/10
-              "
-            >
-
-              <span
-                className="
-                  text-lg
-                  font-bold
-                  text-gray-500
-                  mr-3
-                  select-none
-                "
-              >
-                {currency}
-              </span>
-
-              <input
-                type="number"
-                placeholder="Enter saving amount"
-                className="
-                  flex-1
-                  h-full
-                  bg-transparent
-                  outline-none
-                  border-none
-                  text-base
-                  font-semibold
-                  text-gray-800
-                  placeholder:text-gray-400
-                  [appearance:textfield]
-                  [&::-webkit-outer-spin-button]:appearance-none
-                  [&::-webkit-inner-spin-button]:appearance-none
-                "
-                value={amount}
-                onChange={(e) =>
-                  setAmount(
-                    e.target.value === ""
-                      ? ""
-                      : Number(e.target.value),
-                  )
-                }
-              />
-
-            </div>
-
-          </div>
-
-          {/* ===================================================
-              SAVING CATEGORY
-          ==================================================== */}
-          <div>
-
-            <label
-              className="
-                block
-                mb-2
-                text-sm
-                font-semibold
-                text-[#374151]
-              "
-            >
-              Saving Category
-            </label>
-
-            <SearchInput
-              options={categories.map((cat) => ({
-                id: cat.id,
-                value: cat.saving_category,
-              }))}
-              value={remarks}
-              onChange={setRemarks}
-              placeholder="Search saving category..."
-              className="
-                w-full
-                h-[56px]
-                text-gray-800
-              "
-            />
-
-          </div>
-
-          {/* ===================================================
-              DEDUCT FROM BALANCE
-          ==================================================== */}
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              rounded-xl
-              border
-              border-gray-100
-              bg-gray-50
-              px-4
-              py-3
-            "
-          >
-            <div>
-              <p className="text-sm font-semibold text-[#374151]">
-                Deduct From Balance
-              </p>
-
-              <p className="text-xs text-gray-500 mt-0.5">
-                Deduct this saving amount from your current balance
-              </p>
-            </div>
-
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={deductBalance}
-                onChange={(e) => setDeductBalance(e.target.checked)}
-                className="sr-only peer"
-              />
+          <div className="flex flex-col md:flex-row md:items-end gap-4">
+            {/* AMOUNT */}
+            <div className="flex-1 min-w-0">
+              <label className="block mb-2 text-sm font-semibold text-[#374151]">
+                Amount
+              </label>
 
               <div
                 className="
-                  w-11
-                  h-6
-                  bg-gray-300
-                  rounded-full
-                  peer
-                  peer-checked:bg-[#44EEAA]
-                  after:content-['']
-                  after:absolute
-                  after:top-[2px]
-                  after:left-[2px]
-                  after:bg-white
-                  after:rounded-full
-                  after:h-5
-                  after:w-5
-                  after:transition-all
-                  peer-checked:after:translate-x-full
+                  flex items-center h-[56px] rounded-xl
+                  border border-gray-200 bg-gray-50 px-4
+                  transition-all
+                  focus-within:border-[#44EEAA]
+                  focus-within:bg-white
+                  focus-within:ring-4
+                  focus-within:ring-[#44EEAA]/10
                 "
+              >
+                <span className="text-lg font-bold text-gray-500 mr-3 select-none">
+                  {currency}
+                </span>
+
+                <input
+                  type="number"
+                  placeholder="Enter saving amount"
+                  className="
+                    flex-1 min-w-0 h-full bg-transparent outline-none border-none
+                    text-base font-semibold text-gray-800 placeholder:text-gray-400
+                    [appearance:textfield]
+                    [&::-webkit-outer-spin-button]:appearance-none
+                    [&::-webkit-inner-spin-button]:appearance-none
+                  "
+                  value={amount}
+                  onChange={(e) =>
+                    setAmount(
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
+                />
+              </div>
+            </div>
+
+            {/* SAVING CATEGORY */}
+            <div className="flex-1 min-w-0">
+              <label className="block mb-2 text-sm font-semibold text-[#374151]">
+                Saving Category
+              </label>
+
+              <SearchInput
+                options={categories.map((cat) => ({
+                  id: cat.id,
+                  value: cat.saving_category,
+                }))}
+                value={remarks}
+                onChange={setRemarks}
+                placeholder="Search saving category..."
+                className="w-full h-[56px] text-gray-800"
               />
-            </label>
+            </div>
+
+            {/* DEDUCT FROM BALANCE */}
+            <div className="shrink-0">
+              <label
+                className="
+                  flex items-center justify-between gap-4
+                  h-[56px] rounded-xl border border-gray-100 bg-gray-50 px-4
+                  cursor-pointer
+                "
+              >
+                <span className="text-sm font-semibold text-[#374151] whitespace-nowrap">
+                  Deduct From Balance
+                </span>
+
+                <div className="relative inline-flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={deductBalance}
+                    onChange={(e) => setDeductBalance(e.target.checked)}
+                    className="sr-only peer"
+                  />
+
+                  <div
+                    className="
+                      w-11 h-6 bg-gray-300 rounded-full peer
+                      peer-checked:bg-[#44EEAA]
+                      after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+                      after:bg-white after:rounded-full after:h-5 after:w-5
+                      after:transition-all peer-checked:after:translate-x-full
+                    "
+                  />
+                </div>
+              </label>
+            </div>
           </div>
 
           {/* ===================================================
@@ -399,31 +315,20 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
               items-center
               justify-center
               gap-3
-              ${
-                loading
-                  ? "opacity-50 cursor-not-allowed"
-                  : "cursor-pointer"
-              }
+              ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
             `}
           >
-
             {loading ? (
               "Saving..."
             ) : (
               <>
                 <span>Add Saving</span>
-                <span className="text-xl">
-                  →
-                </span>
+                <span className="text-xl">→</span>
               </>
             )}
-
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 };

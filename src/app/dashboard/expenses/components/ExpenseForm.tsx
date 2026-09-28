@@ -10,12 +10,11 @@ import {
 } from "@/app/services/expenseService";
 
 import { getExpenseCategoriesService } from "@/app/services/catalogueServices/expenseCatalogueService";
-import { getBalancesService } from "@/app/services/balanceService";
 
 import { ExpenseCategoryResponse } from "@/app/types/catalolgueType/expenseCatalogueType";
-import { BalanceResponse } from "@/app/types/balanceType";
 import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 import { maskAmount } from "@/app/utils/maskAmount";
+import { useCurrency } from "@/app/context/CurrencyContext";
 
 interface ExpenseFormProps {
   onSuccess?: () => void;
@@ -23,13 +22,11 @@ interface ExpenseFormProps {
 
 const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   const [amount, setAmount] = useState<number | "">("");
-  const [currency, setCurrency] = useState("");
+
   const [remarks, setRemarks] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [categories, setCategories] = useState<
-    ExpenseCategoryResponse[]
-  >([]);
+  const [categories, setCategories] = useState<ExpenseCategoryResponse[]>([]);
 
   const [totalExpense, setTotalExpense] = useState<number>(0);
 
@@ -39,25 +36,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
 
   const { isVisible } = useBalanceVisibility();
 
-  // ============================================================
-  // Fetch currency
-  // ============================================================
-  const loadCurrencySymbol = async () => {
-    try {
-      const balance: BalanceResponse = await getBalancesService();
-
-      if (balance?.currency?.symbol) {
-        setCurrency(balance.currency.symbol);
-      }
-    } catch (error) {
-      console.error("Failed to load currency symbol:", error);
-      setCurrency("₹");
-    }
-  };
-
-  useEffect(() => {
-    loadCurrencySymbol();
-  }, []);
+  const { currency } = useCurrency();
 
   // ============================================================
   // Fetch categories
@@ -96,9 +75,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   // ============================================================
   // Receipt - Image only
   // ============================================================
-  const handleReceiptChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleReceiptChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
 
     if (!file) {
@@ -131,8 +108,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
 
     const invalidFiles = files.filter(
       (file) =>
-        !file.type.startsWith("image/") &&
-        file.type !== "application/pdf",
+        !file.type.startsWith("image/") && file.type !== "application/pdf",
     );
 
     if (invalidFiles.length > 0) {
@@ -151,9 +127,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
   const handleAddExpense = async () => {
     // Validate category
     const categoryExists = categories.some(
-      (cat) =>
-        cat.expense_category.toLowerCase() ===
-        remarks.toLowerCase(),
+      (cat) => cat.expense_category.toLowerCase() === remarks.toLowerCase(),
     );
 
     if (!categoryExists) {
@@ -187,9 +161,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
 
       await addExpenseService(formData);
 
-      toast.success(
-        `Expense of ${currency}${amount} added successfully.`,
-      );
+      toast.success(`Expense of ${currency}${amount} added successfully.`);
 
       // Reset
       setAmount("");
@@ -224,10 +196,16 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
     }
   };
 
+  // Shared classes for the two upload tiles (h-14 to match the inputs)
+  const uploadTileClass =
+    "flex items-center gap-3 h-14 cursor-pointer rounded-xl border border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 transition px-3";
+
+  // Shared classes for the label row above each field
+  const labelRowClass = "flex items-center justify-between h-5 mb-2";
+
   return (
     <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
       <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
-
         {/* =====================================================
             TOTAL EXPENSE
         ====================================================== */}
@@ -243,24 +221,17 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
           "
         >
           <div className="flex items-center justify-between">
-
             <div>
-              <p className="text-sm font-medium text-white/80">
-                Total Expense
-              </p>
+              <p className="text-sm font-medium text-white/80">Total Expense</p>
 
               <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
-                {maskAmount(
-                  totalExpense,
-                  isVisible,
-                  currency,
-                )}
+                {maskAmount(totalExpense, isVisible, currency)}
               </p>
             </div>
 
             <div
               className="
-                w-12
+               w-12
                 h-12
                 rounded-xl
                 bg-white/20
@@ -269,284 +240,186 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
                 justify-center
                 text-white
                 text-xl
+                font-bold
               "
             >
-              ₹
+              {currency ? currency : "₹"}
             </div>
-
           </div>
         </div>
-
 
         {/* =====================================================
             FORM
         ====================================================== */}
-        <div className="space-y-5">
-
+        <div className="space-y-5 ">
           {/* ===================================================
-              AMOUNT
+              FIELDS - single row (stacks on small screens)
           ==================================================== */}
-          <div>
-            <label className="block mb-2 text-sm font-semibold text-[#374151]">
-              Amount
-            </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* AMOUNT */}
+            <div className="min-w-0">
+              <div className={labelRowClass}>
+                <label className="text-sm font-semibold text-[#374151]">
+                  Amount
+                </label>
+              </div>
 
-            <div
-              className="
-                flex
-                items-center
-                h-[56px]
-                rounded-xl
-                border
-                border-gray-200
-                bg-gray-50
-                px-4
-                transition-all
-                focus-within:border-[#FFAA00]
-                focus-within:bg-white
-                focus-within:ring-4
-                focus-within:ring-[#FFAA00]/10
-              "
-            >
-              <span className="text-lg font-bold text-gray-500 mr-3">
-                {currency}
-              </span>
-
-              <input
-                type="number"
-                placeholder="Enter expense amount"
+              <div
                 className="
-                  flex-1
-                  h-full
-                  bg-transparent
-                  outline-none
-                  border-none
-                  text-base
-                  font-semibold
-                  text-gray-800
-                  placeholder:text-gray-400
-                  [appearance:textfield]
-                  [&::-webkit-outer-spin-button]:appearance-none
-                  [&::-webkit-inner-spin-button]:appearance-none
+                  flex
+                  items-center
+                  h-14
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-4
+                  transition-all
+                  focus-within:border-[#FFAA00]
+                  focus-within:bg-white
+                  focus-within:ring-4
+                  focus-within:ring-[#FFAA00]/10
                 "
-                value={amount}
-                onChange={(e) =>
-                  setAmount(
-                    e.target.value === ""
-                      ? ""
-                      : Number(e.target.value),
-                  )
-                }
+              >
+                <span className="text-lg font-bold text-gray-500 mr-3">
+                  {currency}
+                </span>
+
+                <input
+                  type="number"
+                  placeholder="Enter expense amount"
+                  className="
+                    flex-1
+                    min-w-0
+                    h-full
+                    bg-transparent
+                    outline-none
+                    border-none
+                    text-base
+                    font-semibold
+                    text-gray-800
+                    placeholder:text-gray-400
+                    [appearance:textfield]
+                    [&::-webkit-outer-spin-button]:appearance-none
+                    [&::-webkit-inner-spin-button]:appearance-none
+                  "
+                  value={amount}
+                  onChange={(e) =>
+                    setAmount(
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
+                />
+              </div>
+            </div>
+
+            {/* CATEGORY */}
+            <div className="min-w-0">
+              <div className={labelRowClass}>
+                <label className="text-sm font-semibold text-[#374151]">
+                  Expense Category
+                </label>
+              </div>
+
+              <SearchInput
+                options={categories.map((cat) => ({
+                  id: cat.id,
+                  value: cat.expense_category,
+                }))}
+                value={remarks ?? ""}
+                onChange={setRemarks}
+                placeholder="Search expense category..."
+                className="
+                  w-full
+                  h-14
+                  text-gray-800
+                "
               />
             </div>
-          </div>
 
+            {/* RECEIPT UPLOAD */}
+            <div className="min-w-0">
+              <div className={labelRowClass}>
+                <label className="text-sm font-semibold text-[#374151]">
+                  Upload Receipt
+                </label>
 
-          {/* ===================================================
-              CATEGORY
-          ==================================================== */}
-          <div>
-            <label className="block mb-2 text-sm font-semibold text-[#374151]">
-              Expense Category
-            </label>
+                <span className="text-xs text-gray-400">Image only</span>
+              </div>
 
-            <SearchInput
-              options={categories.map((cat) => ({
-                id: cat.id,
-                value: cat.expense_category,
-              }))}
-              value={remarks ?? ""}
-              onChange={setRemarks}
-              placeholder="Search expense category..."
-              className="
-                w-full
-                h-[56px]
-                text-gray-800
-              "
-            />
-          </div>
-
-
-          {/* ===================================================
-              DIVIDER
-          ==================================================== */}
-          <div className="border-t border-gray-100 pt-1" />
-
-
-          {/* ===================================================
-              RECEIPT UPLOAD
-          ==================================================== */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-
-              <label className="text-sm font-semibold text-[#374151]">
-                Upload Receipt
-              </label>
-
-              <span className="text-xs text-gray-400">
-                Image only
-              </span>
-
-            </div>
-
-            <label
-              htmlFor="upload_receipt"
-              className="
-                block
-                cursor-pointer
-                rounded-xl
-                border
-                border-dashed
-                border-gray-300
-                bg-gray-50
-                hover:bg-gray-100
-                transition
-                p-4
-              "
-            >
-              <div className="flex items-center gap-4">
-
-                {/* Icon */}
-                <div
-                  className="
-                    w-12
-                    h-12
-                    shrink-0
-                    rounded-xl
-                    bg-blue-50
-                    flex
-                    items-center
-                    justify-center
-                    text-xl
-                  "
-                >
+              <label htmlFor="upload_receipt" className={uploadTileClass}>
+                <div className="w-9 h-9 shrink-0 rounded-lg bg-blue-50 flex items-center justify-center text-lg">
                   📷
                 </div>
 
-                {/* Text */}
                 <div className="min-w-0 flex-1">
-
-                  <p className="font-semibold text-gray-800 text-sm">
-                    {uploadReceipt
-                      ? "Receipt selected"
-                      : "Upload receipt"}
+                  <p className="font-semibold text-gray-800 text-sm truncate">
+                    {uploadReceipt ? "Receipt selected" : "Upload receipt"}
                   </p>
 
-                  <p className="text-xs text-gray-500 mt-1 truncate">
+                  <p className="text-xs text-gray-500 truncate">
                     {uploadReceipt
                       ? uploadReceipt.name
                       : "Tap to choose an image"}
                   </p>
-
                 </div>
 
-                <span className="text-gray-400 text-xl">
-                  ›
-                </span>
+                <span className="text-gray-400 text-xl">›</span>
 
-              </div>
-
-              <input
-                id="upload_receipt"
-                type="file"
-                accept="image/*"
-                onChange={handleReceiptChange}
-                className="hidden"
-              />
-            </label>
-          </div>
-
-
-          {/* ===================================================
-              DOCUMENT UPLOAD
-          ==================================================== */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-
-              <label className="text-sm font-semibold text-[#374151]">
-                Upload Documents
+                <input
+                  id="upload_receipt"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleReceiptChange}
+                  className="hidden"
+                />
               </label>
-
-              <span className="text-xs text-gray-400">
-                Images / PDF
-              </span>
-
             </div>
 
-            <label
-              htmlFor="upload_doc"
-              className="
-                block
-                cursor-pointer
-                rounded-xl
-                border
-                border-dashed
-                border-gray-300
-                bg-gray-50
-                hover:bg-gray-100
-                transition
-                p-4
-              "
-            >
-              <div className="flex items-center gap-4">
+            {/* DOCUMENT UPLOAD */}
+            <div className="min-w-0">
+              <div className={labelRowClass}>
+                <label className="text-sm font-semibold text-[#374151]">
+                  Upload Documents
+                </label>
 
-                {/* Icon */}
-                <div
-                  className="
-                    w-12
-                    h-12
-                    shrink-0
-                    rounded-xl
-                    bg-green-50
-                    flex
-                    items-center
-                    justify-center
-                    text-xl
-                  "
-                >
+                <span className="text-xs text-gray-400">Images / PDF</span>
+              </div>
+
+              <label htmlFor="upload_doc" className={uploadTileClass}>
+                <div className="w-9 h-9 shrink-0 rounded-lg bg-green-50 flex items-center justify-center text-lg">
                   📄
                 </div>
 
-                {/* Text */}
                 <div className="min-w-0 flex-1">
-
-                  <p className="font-semibold text-gray-800 text-sm">
+                  <p className="font-semibold text-gray-800 text-sm truncate">
                     {uploadDocs.length > 0
                       ? `${uploadDocs.length} file${
-                          uploadDocs.length > 1
-                            ? "s"
-                            : ""
+                          uploadDocs.length > 1 ? "s" : ""
                         } selected`
                       : "Upload files"}
                   </p>
 
-                  <p className="text-xs text-gray-500 mt-1 truncate">
+                  <p className="text-xs text-gray-500 truncate">
                     {uploadDocs.length > 0
-                      ? uploadDocs
-                          .map((file) => file.name)
-                          .join(", ")
+                      ? uploadDocs.map((file) => file.name).join(", ")
                       : "Tap to choose multiple files"}
                   </p>
-
                 </div>
 
-                <span className="text-gray-400 text-xl">
-                  ›
-                </span>
+                <span className="text-gray-400 text-xl">›</span>
 
-              </div>
-
-              <input
-                id="upload_doc"
-                type="file"
-                multiple
-                accept="image/*,.pdf,application/pdf"
-                onChange={handleDocumentsChange}
-                className="hidden"
-              />
-            </label>
+                <input
+                  id="upload_doc"
+                  type="file"
+                  multiple
+                  accept="image/*,.pdf,application/pdf"
+                  onChange={handleDocumentsChange}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
-
 
           {/* ===================================================
               ADD EXPENSE BUTTON
@@ -570,11 +443,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
               items-center
               justify-center
               gap-3
-              ${
-                loading
-                  ? "opacity-50 cursor-not-allowed"
-                  : "cursor-pointer"
-              }
+              ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
             `}
           >
             {loading ? (
@@ -586,7 +455,6 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
               </>
             )}
           </button>
-
         </div>
       </div>
     </div>

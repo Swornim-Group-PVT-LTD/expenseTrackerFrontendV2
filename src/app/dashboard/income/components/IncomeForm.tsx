@@ -28,9 +28,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
   const [remarks, setRemarks] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [categories, setCategories] = useState<
-    IncomeCategoryResponse[]
-  >([]);
+  const [categories, setCategories] = useState<IncomeCategoryResponse[]>([]);
 
   const [totalIncome, setTotalIncome] = useState<number>(0);
 
@@ -102,9 +100,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
 
     // Validate category
     const categoryExists = categories.some(
-      (cat) =>
-        cat.income_category.toLowerCase() ===
-        remarks.toLowerCase(),
+      (cat) => cat.income_category.toLowerCase() === remarks.toLowerCase(),
     );
 
     if (!categoryExists) {
@@ -122,9 +118,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
 
       await addIncomeService(payload);
 
-      toast.success(
-        `Income of ${currency}${amount} added successfully.`,
-      );
+      toast.success(`Income of ${currency}${amount} added successfully.`);
 
       // Reset
       setAmount("");
@@ -142,9 +136,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
 
   return (
     <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
-
       <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
-
         {/* =====================================================
             TOTAL INCOME
         ====================================================== */}
@@ -160,18 +152,11 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
           "
         >
           <div className="flex items-center justify-between">
-
             <div>
-              <p className="text-sm font-medium text-white/80">
-                Total Income
-              </p>
+              <p className="text-sm font-medium text-white/80">Total Income</p>
 
               <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
-                {maskAmount(
-                  totalIncome,
-                  isVisible,
-                  currency,
-                )}
+                {maskAmount(totalIncome, isVisible, currency)}
               </p>
             </div>
 
@@ -192,60 +177,31 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
             >
               {currency}
             </div>
-
           </div>
         </div>
-
 
         {/* =====================================================
             FORM
         ====================================================== */}
-        <div className="space-y-5">
-
-          {/* ===================================================
-              AMOUNT
-          ==================================================== */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* AMOUNT */}
           <div>
-
-            <label
-              className="
-                block
-                mb-2
-                text-sm
-                font-semibold
-                text-[#374151]
-              "
-            >
+            <label className="block mb-2 text-sm font-semibold text-[#374151]">
               Amount
             </label>
 
             <div
               className="
-                flex
-                items-center
-                h-[56px]
-                rounded-xl
-                border
-                border-gray-200
-                bg-gray-50
-                px-4
-                transition-all
-                focus-within:border-[#64a11f]
-                focus-within:bg-white
-                focus-within:ring-4
-                focus-within:ring-[#64a11f]/10
-              "
+        flex items-center h-[56px] rounded-xl
+        border border-gray-200 bg-gray-50 px-4
+        transition-all
+        focus-within:border-[#64a11f]
+        focus-within:bg-white
+        focus-within:ring-4
+        focus-within:ring-[#64a11f]/10
+      "
             >
-
-              <span
-                className="
-                  text-lg
-                  font-bold
-                  text-gray-500
-                  mr-3
-                  select-none
-                "
-              >
+              <span className="text-lg font-bold text-gray-500 mr-3 select-none">
                 {currency}
               </span>
 
@@ -253,48 +209,23 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
                 type="number"
                 placeholder="Enter income amount"
                 className="
-                  flex-1
-                  h-full
-                  bg-transparent
-                  outline-none
-                  border-none
-                  text-base
-                  font-semibold
-                  text-gray-800
-                  placeholder:text-gray-400
-                  [appearance:textfield]
-                  [&::-webkit-outer-spin-button]:appearance-none
-                  [&::-webkit-inner-spin-button]:appearance-none
-                "
+          flex-1 min-w-0 h-full bg-transparent outline-none border-none
+          text-base font-semibold text-gray-800 placeholder:text-gray-400
+          [appearance:textfield]
+          [&::-webkit-outer-spin-button]:appearance-none
+          [&::-webkit-inner-spin-button]:appearance-none
+        "
                 value={amount}
                 onChange={(e) =>
-                  setAmount(
-                    e.target.value === ""
-                      ? ""
-                      : Number(e.target.value),
-                  )
+                  setAmount(e.target.value === "" ? "" : Number(e.target.value))
                 }
               />
-
             </div>
-
           </div>
 
-
-          {/* ===================================================
-              INCOME CATEGORY
-          ==================================================== */}
+          {/* INCOME CATEGORY */}
           <div>
-
-            <label
-              className="
-                block
-                mb-2
-                text-sm
-                font-semibold
-                text-[#374151]
-              "
-            >
+            <label className="block mb-2 text-sm font-semibold text-[#374151]">
               Income Category
             </label>
 
@@ -306,25 +237,12 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
               value={remarks}
               onChange={setRemarks}
               placeholder="Search income category..."
-              className="
-                w-full
-                h-[56px]
-                text-gray-800
-              "
+              className="w-full h-[56px] text-gray-800"
             />
-
           </div>
+        </div>
 
-
-          {/* ===================================================
-              DIVIDER
-          ==================================================== */}
-          <div className="border-t border-gray-100 pt-1" />
-
-
-          {/* ===================================================
-              ADD INCOME
-          ==================================================== */}
+        <div className="mt-5">
           <button
             onClick={handleAddIncome}
             disabled={loading}
@@ -344,31 +262,20 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
               items-center
               justify-center
               gap-3
-              ${
-                loading
-                  ? "opacity-50 cursor-not-allowed"
-                  : "cursor-pointer"
-              }
+              ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
             `}
           >
-
             {loading ? (
               "Saving..."
             ) : (
               <>
                 <span>Add Income</span>
-                <span className="text-xl">
-                  →
-                </span>
+                <span className="text-xl">→</span>
               </>
             )}
-
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 };
