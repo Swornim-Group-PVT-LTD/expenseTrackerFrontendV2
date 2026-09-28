@@ -313,9 +313,9 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toa
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/components/SearchInput.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$expenseService$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/expenseService.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$catalogueServices$2f$expenseCatalogueService$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/catalogueServices/expenseCatalogueService.ts [app-ssr] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$balanceService$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/services/balanceService.ts [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$BalanceHideShowContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/BalanceHideShowContext.tsx [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$utils$2f$maskAmount$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/utils/maskAmount.tsx [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$CurrencyContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/context/CurrencyContext.tsx [app-ssr] (ecmascript)");
 "use client";
 ;
 ;
@@ -328,7 +328,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$utils$2f$maskA
 ;
 const ExpenseForm = ({ onSuccess })=>{
     const [amount, setAmount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
-    const [currency, setCurrency] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [remarks, setRemarks] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     const [categories, setCategories] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
@@ -337,23 +336,7 @@ const ExpenseForm = ({ onSuccess })=>{
     const [uploadReceipt, setUploadReceipt] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [uploadDocs, setUploadDocs] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
     const { isVisible } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$BalanceHideShowContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useBalanceVisibility"])();
-    // ============================================================
-    // Fetch currency
-    // ============================================================
-    const loadCurrencySymbol = async ()=>{
-        try {
-            const balance = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$balanceService$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getBalancesService"])();
-            if (balance?.currency?.symbol) {
-                setCurrency(balance.currency.symbol);
-            }
-        } catch (error) {
-            console.error("Failed to load currency symbol:", error);
-            setCurrency("₹");
-        }
-    };
-    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
-        loadCurrencySymbol();
-    }, []);
+    const { currency } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$CurrencyContext$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCurrency"])();
     // ============================================================
     // Fetch categories
     // ============================================================
@@ -471,6 +454,10 @@ const ExpenseForm = ({ onSuccess })=>{
             setLoading(false);
         }
     };
+    // Shared classes for the two upload tiles (h-14 to match the inputs)
+    const uploadTileClass = "flex items-center gap-3 h-14 cursor-pointer rounded-xl border border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 transition px-3";
+    // Shared classes for the label row above each field
+    const labelRowClass = "flex items-center justify-between h-5 mb-2";
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "col-span-full lg:col-span-3 h-fit lg:pb-0",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -488,7 +475,7 @@ const ExpenseForm = ({ onSuccess })=>{
                                         children: "Total Expense"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                        lineNumber: 248,
+                                        lineNumber: 225,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -496,137 +483,315 @@ const ExpenseForm = ({ onSuccess })=>{
                                         children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$utils$2f$maskAmount$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["maskAmount"])(totalExpense, isVisible, currency)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                        lineNumber: 252,
+                                        lineNumber: 227,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                lineNumber: 247,
+                                lineNumber: 224,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "   w-12   h-12   rounded-xl   bg-white/20   flex   items-center   justify-center   text-white   text-xl   ",
-                                children: "₹"
+                                className: "   w-12   h-12   rounded-xl   bg-white/20   flex   items-center   justify-center   text-white   text-xl   font-bold   ",
+                                children: currency ? currency : "₹"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                lineNumber: 261,
+                                lineNumber: 232,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                        lineNumber: 245,
+                        lineNumber: 223,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                    lineNumber: 234,
+                    lineNumber: 212,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "space-y-5",
+                    className: "space-y-5 ",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4",
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                    className: "block mb-2 text-sm font-semibold text-[#374151]",
-                                    children: "Amount"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                    lineNumber: 290,
-                                    columnNumber: 13
-                                }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "   flex   items-center   h-[56px]   rounded-xl   border   border-gray-200   bg-gray-50   px-4   transition-all   focus-within:border-[#FFAA00]   focus-within:bg-white   focus-within:ring-4   focus-within:ring-[#FFAA00]/10   ",
+                                    className: "min-w-0",
                                     children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                            className: "text-lg font-bold text-gray-500 mr-3",
-                                            children: currency
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: labelRowClass,
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "text-sm font-semibold text-[#374151]",
+                                                children: "Amount"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                lineNumber: 262,
+                                                columnNumber: 17
+                                            }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 311,
+                                            lineNumber: 261,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0)),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                            type: "number",
-                                            placeholder: "Enter expense amount",
-                                            className: "   flex-1   h-full   bg-transparent   outline-none   border-none   text-base   font-semibold   text-gray-800   placeholder:text-gray-400   [appearance:textfield]   [&::-webkit-outer-spin-button]:appearance-none   [&::-webkit-inner-spin-button]:appearance-none   ",
-                                            value: amount,
-                                            onChange: (e)=>setAmount(e.target.value === "" ? "" : Number(e.target.value))
-                                        }, void 0, false, {
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "   flex   items-center   h-14   rounded-xl   border   border-gray-200   bg-gray-50   px-4   transition-all   focus-within:border-[#FFAA00]   focus-within:bg-white   focus-within:ring-4   focus-within:ring-[#FFAA00]/10   ",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-lg font-bold text-gray-500 mr-3",
+                                                    children: currency
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 284,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "number",
+                                                    placeholder: "Enter expense amount",
+                                                    className: "   flex-1   min-w-0   h-full   bg-transparent   outline-none   border-none   text-base   font-semibold   text-gray-800   placeholder:text-gray-400   [appearance:textfield]   [&::-webkit-outer-spin-button]:appearance-none   [&::-webkit-inner-spin-button]:appearance-none   ",
+                                                    value: amount,
+                                                    onChange: (e)=>setAmount(e.target.value === "" ? "" : Number(e.target.value))
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 288,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0))
+                                            ]
+                                        }, void 0, true, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 315,
+                                            lineNumber: 267,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                    lineNumber: 294,
-                                    columnNumber: 13
-                                }, ("TURBOPACK compile-time value", void 0))
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                            lineNumber: 289,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                    className: "block mb-2 text-sm font-semibold text-[#374151]",
-                                    children: "Expense Category"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                    lineNumber: 349,
+                                    lineNumber: 260,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                                    options: categories.map((cat)=>({
-                                            id: cat.id,
-                                            value: cat.expense_category
-                                        })),
-                                    value: remarks ?? "",
-                                    onChange: setRemarks,
-                                    placeholder: "Search expense category...",
-                                    className: "   w-full   h-[56px]   text-gray-800   "
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                    lineNumber: 353,
-                                    columnNumber: 13
-                                }, ("TURBOPACK compile-time value", void 0))
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                            lineNumber: 348,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "border-t border-gray-100 pt-1"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                            lineNumber: 373,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "flex items-center justify-between mb-2",
+                                    className: "min-w-0",
                                     children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                            className: "text-sm font-semibold text-[#374151]",
-                                            children: "Upload Receipt"
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: labelRowClass,
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                className: "text-sm font-semibold text-[#374151]",
+                                                children: "Expense Category"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                lineNumber: 319,
+                                                columnNumber: 17
+                                            }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 382,
+                                            lineNumber: 318,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0)),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                            className: "text-xs text-gray-400",
-                                            children: "Image only"
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                                            options: categories.map((cat)=>({
+                                                    id: cat.id,
+                                                    value: cat.expense_category
+                                                })),
+                                            value: remarks ?? "",
+                                            onChange: setRemarks,
+                                            placeholder: "Search expense category...",
+                                            className: "   w-full   h-14   text-gray-800   "
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 386,
+                                            lineNumber: 324,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0))
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                    lineNumber: 317,
+                                    columnNumber: 13
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "min-w-0",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: labelRowClass,
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                    className: "text-sm font-semibold text-[#374151]",
+                                                    children: "Upload Receipt"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 343,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-xs text-gray-400",
+                                                    children: "Image only"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 347,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0))
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                            lineNumber: 342,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0)),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            htmlFor: "upload_receipt",
+                                            className: uploadTileClass,
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "w-9 h-9 shrink-0 rounded-lg bg-blue-50 flex items-center justify-center text-lg",
+                                                    children: "📷"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 351,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "min-w-0 flex-1",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                            className: "font-semibold text-gray-800 text-sm truncate",
+                                                            children: uploadReceipt ? "Receipt selected" : "Upload receipt"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                            lineNumber: 356,
+                                                            columnNumber: 19
+                                                        }, ("TURBOPACK compile-time value", void 0)),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                            className: "text-xs text-gray-500 truncate",
+                                                            children: uploadReceipt ? uploadReceipt.name : "Tap to choose an image"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                            lineNumber: 360,
+                                                            columnNumber: 19
+                                                        }, ("TURBOPACK compile-time value", void 0))
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 355,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-gray-400 text-xl",
+                                                    children: "›"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 367,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    id: "upload_receipt",
+                                                    type: "file",
+                                                    accept: "image/*",
+                                                    onChange: handleReceiptChange,
+                                                    className: "hidden"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 369,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0))
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                            lineNumber: 350,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0))
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                    lineNumber: 341,
+                                    columnNumber: 13
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "min-w-0",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: labelRowClass,
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                                    className: "text-sm font-semibold text-[#374151]",
+                                                    children: "Upload Documents"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 382,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-xs text-gray-400",
+                                                    children: "Images / PDF"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 386,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0))
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                            lineNumber: 381,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0)),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            htmlFor: "upload_doc",
+                                            className: uploadTileClass,
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "w-9 h-9 shrink-0 rounded-lg bg-green-50 flex items-center justify-center text-lg",
+                                                    children: "📄"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 390,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                    className: "min-w-0 flex-1",
+                                                    children: [
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                            className: "font-semibold text-gray-800 text-sm truncate",
+                                                            children: uploadDocs.length > 0 ? `${uploadDocs.length} file${uploadDocs.length > 1 ? "s" : ""} selected` : "Upload files"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                            lineNumber: 395,
+                                                            columnNumber: 19
+                                                        }, ("TURBOPACK compile-time value", void 0)),
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                            className: "text-xs text-gray-500 truncate",
+                                                            children: uploadDocs.length > 0 ? uploadDocs.map((file)=>file.name).join(", ") : "Tap to choose multiple files"
+                                                        }, void 0, false, {
+                                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                            lineNumber: 403,
+                                                            columnNumber: 19
+                                                        }, ("TURBOPACK compile-time value", void 0))
+                                                    ]
+                                                }, void 0, true, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 394,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-gray-400 text-xl",
+                                                    children: "›"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 410,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    id: "upload_doc",
+                                                    type: "file",
+                                                    multiple: true,
+                                                    accept: "image/*,.pdf,application/pdf",
+                                                    onChange: handleDocumentsChange,
+                                                    className: "hidden"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                                    lineNumber: 412,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0))
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
+                                            lineNumber: 389,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
@@ -634,187 +799,11 @@ const ExpenseForm = ({ onSuccess })=>{
                                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
                                     lineNumber: 380,
                                     columnNumber: 13
-                                }, ("TURBOPACK compile-time value", void 0)),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                    htmlFor: "upload_receipt",
-                                    className: "   block   cursor-pointer   rounded-xl   border   border-dashed   border-gray-300   bg-gray-50   hover:bg-gray-100   transition   p-4   ",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "flex items-center gap-4",
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "   w-12   h-12   shrink-0   rounded-xl   bg-blue-50   flex   items-center   justify-center   text-xl   ",
-                                                    children: "📷"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                    lineNumber: 410,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0)),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "min-w-0 flex-1",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                            className: "font-semibold text-gray-800 text-sm",
-                                                            children: uploadReceipt ? "Receipt selected" : "Upload receipt"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                            lineNumber: 429,
-                                                            columnNumber: 19
-                                                        }, ("TURBOPACK compile-time value", void 0)),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                            className: "text-xs text-gray-500 mt-1 truncate",
-                                                            children: uploadReceipt ? uploadReceipt.name : "Tap to choose an image"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                            lineNumber: 435,
-                                                            columnNumber: 19
-                                                        }, ("TURBOPACK compile-time value", void 0))
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                    lineNumber: 427,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0)),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                    className: "text-gray-400 text-xl",
-                                                    children: "›"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                    lineNumber: 443,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0))
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 407,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0)),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                            id: "upload_receipt",
-                                            type: "file",
-                                            accept: "image/*",
-                                            onChange: handleReceiptChange,
-                                            className: "hidden"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 449,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0))
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                    lineNumber: 392,
-                                    columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                            lineNumber: 379,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "flex items-center justify-between mb-2",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                            className: "text-sm font-semibold text-[#374151]",
-                                            children: "Upload Documents"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 466,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0)),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                            className: "text-xs text-gray-400",
-                                            children: "Images / PDF"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 470,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0))
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                    lineNumber: 464,
-                                    columnNumber: 13
-                                }, ("TURBOPACK compile-time value", void 0)),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                    htmlFor: "upload_doc",
-                                    className: "   block   cursor-pointer   rounded-xl   border   border-dashed   border-gray-300   bg-gray-50   hover:bg-gray-100   transition   p-4   ",
-                                    children: [
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "flex items-center gap-4",
-                                            children: [
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "   w-12   h-12   shrink-0   rounded-xl   bg-green-50   flex   items-center   justify-center   text-xl   ",
-                                                    children: "📄"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                    lineNumber: 494,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0)),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                    className: "min-w-0 flex-1",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                            className: "font-semibold text-gray-800 text-sm",
-                                                            children: uploadDocs.length > 0 ? `${uploadDocs.length} file${uploadDocs.length > 1 ? "s" : ""} selected` : "Upload files"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                            lineNumber: 513,
-                                                            columnNumber: 19
-                                                        }, ("TURBOPACK compile-time value", void 0)),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                                            className: "text-xs text-gray-500 mt-1 truncate",
-                                                            children: uploadDocs.length > 0 ? uploadDocs.map((file)=>file.name).join(", ") : "Tap to choose multiple files"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                            lineNumber: 523,
-                                                            columnNumber: 19
-                                                        }, ("TURBOPACK compile-time value", void 0))
-                                                    ]
-                                                }, void 0, true, {
-                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                    lineNumber: 511,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0)),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                    className: "text-gray-400 text-xl",
-                                                    children: "›"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                                    lineNumber: 533,
-                                                    columnNumber: 17
-                                                }, ("TURBOPACK compile-time value", void 0))
-                                            ]
-                                        }, void 0, true, {
-                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 491,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0)),
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                            id: "upload_doc",
-                                            type: "file",
-                                            multiple: true,
-                                            accept: "image/*,.pdf,application/pdf",
-                                            onChange: handleDocumentsChange,
-                                            className: "hidden"
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                            lineNumber: 539,
-                                            columnNumber: 15
-                                        }, ("TURBOPACK compile-time value", void 0))
-                                    ]
-                                }, void 0, true, {
-                                    fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                    lineNumber: 476,
-                                    columnNumber: 13
-                                }, ("TURBOPACK compile-time value", void 0))
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                            lineNumber: 463,
+                            lineNumber: 258,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -844,7 +833,7 @@ const ExpenseForm = ({ onSuccess })=>{
                                         children: "Add Expense"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                        lineNumber: 584,
+                                        lineNumber: 453,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -852,31 +841,31 @@ const ExpenseForm = ({ onSuccess })=>{
                                         children: "→"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                                        lineNumber: 585,
+                                        lineNumber: 454,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                            lineNumber: 554,
+                            lineNumber: 427,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-                    lineNumber: 284,
+                    lineNumber: 254,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-            lineNumber: 229,
+            lineNumber: 208,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/app/dashboard/expenses/components/ExpenseForm.tsx",
-        lineNumber: 228,
+        lineNumber: 207,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

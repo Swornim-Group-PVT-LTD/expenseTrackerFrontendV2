@@ -29,9 +29,9 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [categories, setCategories] = useState<
-    InvestmentCategoryResponse[]
-  >([]);
+  const [categories, setCategories] = useState<InvestmentCategoryResponse[]>(
+    [],
+  );
 
   const [totalInvestment, setTotalInvestment] = useState<number>(0);
 
@@ -103,9 +103,7 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
 
     // Validate category
     const categoryExists = categories.some(
-      (cat) =>
-        cat.investment_category.toLowerCase() ===
-        category.toLowerCase(),
+      (cat) => cat.investment_category.toLowerCase() === category.toLowerCase(),
     );
 
     if (!categoryExists) {
@@ -123,9 +121,7 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
 
       await addInvestmentService(payload);
 
-      toast.success(
-        `Investment of ${currency}${amount} added successfully.`,
-      );
+      toast.success(`Investment of ${currency}${amount} added successfully.`);
 
       // Reset
       setAmount("");
@@ -143,9 +139,7 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
 
   return (
     <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
-
       <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
-
         {/* =====================================================
             TOTAL INVESTMENT
         ====================================================== */}
@@ -161,18 +155,13 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
           "
         >
           <div className="flex items-center justify-between">
-
             <div>
               <p className="text-sm font-medium text-white/80">
                 Total Investment
               </p>
 
               <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
-                {maskAmount(
-                  totalInvestment,
-                  isVisible,
-                  currency,
-                )}
+                {maskAmount(totalInvestment, isVisible, currency)}
               </p>
             </div>
 
@@ -193,7 +182,6 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
             >
               {currency}
             </div>
-
           </div>
         </div>
 
@@ -201,117 +189,68 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
             FORM
         ====================================================== */}
         <div className="space-y-5">
-
           {/* ===================================================
-              AMOUNT
+              AMOUNT + CATEGORY (single row)
           ==================================================== */}
-          <div>
+          <div className="flex flex-col md:flex-row md:items-end gap-4">
+            {/* AMOUNT */}
+            <div className="flex-1 min-w-0">
+              <label className="block mb-2 text-sm font-semibold text-[#374151]">
+                Amount
+              </label>
 
-            <label
-              className="
-                block
-                mb-2
-                text-sm
-                font-semibold
-                text-[#374151]
-              "
-            >
-              Amount
-            </label>
-
-            <div
-              className="
-                flex
-                items-center
-                h-[56px]
-                rounded-xl
-                border
-                border-gray-200
-                bg-gray-50
-                px-4
-                transition-all
-                focus-within:border-[#FFAA00]
-                focus-within:bg-white
-                focus-within:ring-4
-                focus-within:ring-[#FFAA00]/10
-              "
-            >
-
-              <span
+              <div
                 className="
-                  text-lg
-                  font-bold
-                  text-gray-500
-                  mr-3
-                  select-none
+                  flex items-center h-[56px] rounded-xl
+                  border border-gray-200 bg-gray-50 px-4
+                  transition-all
+                  focus-within:border-[#FFAA00]
+                  focus-within:bg-white
+                  focus-within:ring-4
+                  focus-within:ring-[#FFAA00]/10
                 "
               >
-                {currency}
-              </span>
+                <span className="text-lg font-bold text-gray-500 mr-3 select-none">
+                  {currency}
+                </span>
 
-              <input
-                type="number"
-                placeholder="Enter investment amount"
-                className="
-                  flex-1
-                  h-full
-                  bg-transparent
-                  outline-none
-                  border-none
-                  text-base
-                  font-semibold
-                  text-gray-800
-                  placeholder:text-gray-400
-                  [appearance:textfield]
-                  [&::-webkit-outer-spin-button]:appearance-none
-                  [&::-webkit-inner-spin-button]:appearance-none
-                "
-                value={amount}
-                onChange={(e) =>
-                  setAmount(
-                    e.target.value === ""
-                      ? ""
-                      : Number(e.target.value),
-                  )
-                }
-              />
-
+                <input
+                  type="number"
+                  placeholder="Enter investment amount"
+                  className="
+                    flex-1 min-w-0 h-full bg-transparent outline-none border-none
+                    text-base font-semibold text-gray-800 placeholder:text-gray-400
+                    [appearance:textfield]
+                    [&::-webkit-outer-spin-button]:appearance-none
+                    [&::-webkit-inner-spin-button]:appearance-none
+                  "
+                  value={amount}
+                  onChange={(e) =>
+                    setAmount(
+                      e.target.value === "" ? "" : Number(e.target.value),
+                    )
+                  }
+                />
+              </div>
             </div>
 
-          </div>
+            {/* INVESTMENT CATEGORY */}
+            <div className="flex-1 min-w-0">
+              <label className="block mb-2 text-sm font-semibold text-[#374151]">
+                Investment Category
+              </label>
 
-          {/* ===================================================
-              INVESTMENT CATEGORY
-          ==================================================== */}
-          <div>
-
-            <label
-              className="
-                block
-                mb-2
-                text-sm
-                font-semibold
-                text-[#374151]
-              "
-            >
-              Investment Category
-            </label>
-
-            <SearchInput
-              options={categories.map((cat) => ({
-                id: cat.id,
-                value: cat.investment_category,
-              }))}
-              value={category}
-              onChange={setCategory}
-              placeholder="Search investment category..."
-              className="
-                w-full
-                h-[56px]
-                text-gray-800
-              "
-            />
-
+              <SearchInput
+                options={categories.map((cat) => ({
+                  id: cat.id,
+                  value: cat.investment_category,
+                }))}
+                value={category}
+                onChange={setCategory}
+                placeholder="Search investment category..."
+                className="w-full h-[56px] text-gray-800"
+              />
+            </div>
           </div>
 
           {/* ===================================================
@@ -341,31 +280,20 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
               items-center
               justify-center
               gap-3
-              ${
-                loading
-                  ? "opacity-50 cursor-not-allowed"
-                  : "cursor-pointer"
-              }
+              ${loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
             `}
           >
-
             {loading ? (
               "Saving..."
             ) : (
               <>
                 <span>Add Investment</span>
-                <span className="text-xl">
-                  →
-                </span>
+                <span className="text-xl">→</span>
               </>
             )}
-
           </button>
-
         </div>
-
       </div>
-
     </div>
   );
 };

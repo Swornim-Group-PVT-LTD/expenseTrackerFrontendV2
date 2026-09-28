@@ -366,7 +366,7 @@ var _s = __turbopack_context__.k.signature();
 const InvestmentForm = (param)=>{
     let { onSuccess } = param;
     _s();
-    const [amount, setAmount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])();
+    const [amount, setAmount] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [currency, setCurrency] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [category, setCategory] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
@@ -374,7 +374,7 @@ const InvestmentForm = (param)=>{
     const [totalInvestment, setTotalInvestment] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(0);
     const { isVisible } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$BalanceHideShowContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useBalanceVisibility"])();
     // ============================================================
-    // 1️⃣ Fetch currency symbol from Balance API
+    // 1. Fetch currency symbol
     // ============================================================
     const loadCurrencySymbol = async ()=>{
         try {
@@ -394,7 +394,7 @@ const InvestmentForm = (param)=>{
         }
     }["InvestmentForm.useEffect"], []);
     // ============================================================
-    // 2️⃣ Fetch investment categories
+    // 2. Fetch investment categories
     // ============================================================
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "InvestmentForm.useEffect": ()=>{
@@ -403,7 +403,6 @@ const InvestmentForm = (param)=>{
                     try {
                         const data = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$catalogueServices$2f$investmentCatalogueService$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getInvestmentCategoriesService"])();
                         setCategories(data);
-                    // Keep field empty for search input
                     } catch (err) {
                         console.error("Failed to fetch investment categories:", err);
                         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Failed to fetch investment categories");
@@ -414,14 +413,14 @@ const InvestmentForm = (param)=>{
         }
     }["InvestmentForm.useEffect"], []);
     // ============================================================
-    // 3️⃣ Fetch Total Investment
+    // 3. Fetch total investment
     // ============================================================
     const loadTotalInvestment = async ()=>{
         try {
             const total = await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$investmentService$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["getTotalInvestmentService"])();
             setTotalInvestment(total);
-        } catch (err) {
-            console.error("Failed to fetch total investment:", err);
+        } catch (error) {
+            console.error("Failed to fetch total investment:", error);
             setTotalInvestment(0);
         }
     };
@@ -431,11 +430,12 @@ const InvestmentForm = (param)=>{
         }
     }["InvestmentForm.useEffect"], []);
     // ============================================================
-    // 4️⃣ Add Investment
+    // 4. Add investment
     // ============================================================
     const handleAddInvestment = async ()=>{
+        // Validate amount
         if (amount === "" || Number(amount) <= 0) {
-            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Enter a valid amount");
+            __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Please enter a valid investment amount");
             return;
         }
         // Validate category
@@ -452,7 +452,9 @@ const InvestmentForm = (param)=>{
             };
             await (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$services$2f$investmentService$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["addInvestmentService"])(payload);
             __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].success("Investment of ".concat(currency).concat(amount, " added successfully."));
-            setAmount(0);
+            // Reset
+            setAmount("");
+            setCategory("");
             onSuccess && onSuccess();
             loadTotalInvestment();
         } catch (error) {
@@ -462,116 +464,200 @@ const InvestmentForm = (param)=>{
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "col-span-full lg:col-span-3 h-fit",
+        className: "col-span-full lg:col-span-3 h-fit lg:pb-0",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "bg-white rounded-md p-4 w-full h-full flex flex-col gap-4",
+            className: "bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "mb-4 p-3 rounded-lg bg-[#ffa726] border border-[#3182CE]/30 flex items-center justify-between",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                            className: "text-md font-semibold text-white",
-                            children: "Total Investment"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                            lineNumber: 139,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                            className: "text-xl font-bold text-white",
-                            children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$utils$2f$maskAmount$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["maskAmount"])(totalInvestment, isVisible, currency)
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                            lineNumber: 142,
-                            columnNumber: 11
-                        }, ("TURBOPACK compile-time value", void 0))
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                    lineNumber: 138,
-                    columnNumber: 9
-                }, ("TURBOPACK compile-time value", void 0)),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex flex-col sm:flex-row gap-3 sm:gap-6 items-stretch sm:items-center",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "relative w-full",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex items-center h-12 border border-[#574A4A]/50 rounded    focus-within:border-[#FFA726] px-3 gap-2",
+                    className: "   rounded-2xl   bg-gradient-to-r   from-[#FF9F00]   to-[#FFB52E]   p-5   mb-5   shadow-sm   ",
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "flex items-center justify-between",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        className: "text-md font-bold text-[#716A6A] select-none",
-                                        children: currency
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-sm font-medium text-white/80",
+                                        children: "Total Investment"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                                        lineNumber: 155,
+                                        lineNumber: 159,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "number",
-                                        placeholder: "Enter Amount",
-                                        className: "flex-1 h-full bg-transparent text-md font-bold text-[#716A6A]    outline-none border-none   [appearance:textfield]    [&::-webkit-outer-spin-button]:appearance-none    [&::-webkit-inner-spin-button]:appearance-none",
-                                        value: amount,
-                                        onChange: (e)=>setAmount(e.target.value === "" ? "" : Number(e.target.value))
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-2xl sm:text-3xl font-bold text-white mt-1",
+                                        children: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$utils$2f$maskAmount$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["maskAmount"])(totalInvestment, isVisible, currency)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                                        lineNumber: 158,
+                                        lineNumber: 163,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                                lineNumber: 151,
+                                lineNumber: 158,
+                                columnNumber: 13
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "   w-12   h-12   rounded-xl   bg-white/20   flex   items-center   justify-center   text-white   text-xl   font-bold   ",
+                                children: currency
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                lineNumber: 169,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
-                        }, void 0, false, {
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                        lineNumber: 157,
+                        columnNumber: 11
+                    }, ("TURBOPACK compile-time value", void 0))
+                }, void 0, false, {
+                    fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                    lineNumber: 146,
+                    columnNumber: 9
+                }, ("TURBOPACK compile-time value", void 0)),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "space-y-5",
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "flex flex-col md:flex-row md:items-end gap-4",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "flex-1 min-w-0",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "block mb-2 text-sm font-semibold text-[#374151]",
+                                            children: "Amount"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                            lineNumber: 198,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0)),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                            className: "   flex items-center h-[56px] rounded-xl   border border-gray-200 bg-gray-50 px-4   transition-all   focus-within:border-[#FFAA00]   focus-within:bg-white   focus-within:ring-4   focus-within:ring-[#FFAA00]/10   ",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                                    className: "text-lg font-bold text-gray-500 mr-3 select-none",
+                                                    children: currency
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                                    lineNumber: 213,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "number",
+                                                    placeholder: "Enter investment amount",
+                                                    className: "   flex-1 min-w-0 h-full bg-transparent outline-none border-none   text-base font-semibold text-gray-800 placeholder:text-gray-400   [appearance:textfield]   [&::-webkit-outer-spin-button]:appearance-none   [&::-webkit-inner-spin-button]:appearance-none   ",
+                                                    value: amount,
+                                                    onChange: (e)=>setAmount(e.target.value === "" ? "" : Number(e.target.value))
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                                    lineNumber: 217,
+                                                    columnNumber: 17
+                                                }, ("TURBOPACK compile-time value", void 0))
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                            lineNumber: 202,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0))
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                    lineNumber: 197,
+                                    columnNumber: 13
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "flex-1 min-w-0",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "block mb-2 text-sm font-semibold text-[#374151]",
+                                            children: "Investment Category"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                            lineNumber: 239,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0)),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                            options: categories.map((cat)=>({
+                                                    id: cat.id,
+                                                    value: cat.investment_category
+                                                })),
+                                            value: category,
+                                            onChange: setCategory,
+                                            placeholder: "Search investment category...",
+                                            className: "w-full h-[56px] text-gray-800"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                            lineNumber: 243,
+                                            columnNumber: 15
+                                        }, ("TURBOPACK compile-time value", void 0))
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                    lineNumber: 238,
+                                    columnNumber: 13
+                                }, ("TURBOPACK compile-time value", void 0))
+                            ]
+                        }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                            lineNumber: 150,
+                            lineNumber: 195,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                            options: categories.map((cat)=>({
-                                    id: cat.id,
-                                    value: cat.investment_category
-                                })),
-                            value: category,
-                            onChange: setCategory,
-                            placeholder: "Type investment category...",
-                            className: "w-full sm:w-80 text-gray-700"
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "border-t border-gray-100 pt-1"
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                            lineNumber: 175,
+                            lineNumber: 259,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                             onClick: handleAddInvestment,
                             disabled: loading,
-                            className: "bg-[#FFAA00] hover:bg-[#FFAA00]/90 text-white font-bold text-md px-8 h-12 rounded transition-colors disabled:opacity-50\n            w-full sm:w-auto cursor-pointer ".concat(loading ? "opacity-50 cursor-not-allowed" : ""),
-                            children: loading ? "Saving..." : "Add"
+                            className: "\n              w-full\n              h-[56px]\n              rounded-xl\n              bg-[#FFAA00]\n              hover:bg-[#E99A00]\n              active:scale-[0.98]\n              text-white\n              font-bold\n              text-base\n              shadow-sm\n              transition-all\n              flex\n              items-center\n              justify-center\n              gap-3\n              ".concat(loading ? "opacity-50 cursor-not-allowed" : "cursor-pointer", "\n            "),
+                            children: loading ? "Saving..." : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        children: "Add Investment"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                        lineNumber: 290,
+                                        columnNumber: 17
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "text-xl",
+                                        children: "→"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
+                                        lineNumber: 291,
+                                        columnNumber: 17
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true)
                         }, void 0, false, {
                             fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                            lineNumber: 187,
+                            lineNumber: 264,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-                    lineNumber: 148,
+                    lineNumber: 191,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-            lineNumber: 136,
+            lineNumber: 142,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/app/dashboard/investment/components/InvestmentForm.tsx",
-        lineNumber: 135,
+        lineNumber: 141,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
-_s(InvestmentForm, "029gTJBLJhTKsIPePdAYdamLeAo=", false, function() {
+_s(InvestmentForm, "1xG6bHHdpkQotoNATKYbHyI12kU=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$context$2f$BalanceHideShowContext$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useBalanceVisibility"]
     ];
@@ -1031,12 +1117,19 @@ __turbopack_context__.s({
     "default": ()=>DateFilter
 });
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/jsx-dev-runtime.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2d$days$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarDays$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/calendar-days.js [app-client] (ecmascript) <export default as CalendarDays>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$spreadsheet$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileSpreadsheet$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/file-spreadsheet.js [app-client] (ecmascript) <export default as FileSpreadsheet>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/file-text.js [app-client] (ecmascript) <export default as FileText>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Search$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/search.js [app-client] (ecmascript) <export default as Search>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sliders$2d$horizontal$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SlidersHorizontal$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/sliders-horizontal.js [app-client] (ecmascript) <export default as SlidersHorizontal>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$flowbite$2d$react$2f$dist$2f$components$2f$Datepicker$2f$Datepicker$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/flowbite-react/dist/components/Datepicker/Datepicker.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-toastify/dist/index.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/app/components/SearchInput.tsx [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
+"use client";
+;
 ;
 ;
 ;
@@ -1048,18 +1141,21 @@ function DateFilter(param) {
     const [to, setTo] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(initialTo || new Date());
     const [selectedCategory, setSelectedCategory] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [useDateRange, setUseDateRange] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false); // disabled by default
+    const [useDateRange, setUseDateRange] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const formatLocalDate = (d)=>d ? new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().split("T")[0] : "";
     const handleSearch = async ()=>{
         setError("");
-        // Validate date range if both dates are provided
+        // Validate date range
         if (useDateRange && from && to && from > to) {
             setError("'From' date cannot be later than 'To' date.");
             return;
         }
-        // Validate category if provided
+        // Validate category
         if (selectedCategory && selectedCategory.trim() !== "") {
-            const categoryExists = categories.some((cat)=>cat[categoryKey].toLowerCase() === selectedCategory.toLowerCase());
+            const categoryExists = categories.some((cat)=>{
+                var _cat_categoryKey;
+                return ((_cat_categoryKey = cat[categoryKey]) === null || _cat_categoryKey === void 0 ? void 0 : _cat_categoryKey.toLowerCase()) === selectedCategory.toLowerCase();
+            });
             if (!categoryExists) {
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$toastify$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["toast"].error("Please select a valid category from the list");
                 return;
@@ -1067,7 +1163,6 @@ function DateFilter(param) {
         }
         const start_date = useDateRange && from ? formatLocalDate(from) : undefined;
         const end_date = useDateRange && to ? formatLocalDate(to) : undefined;
-        console.log("Fetching data from", start_date, "to", end_date, "for category", selectedCategory);
         try {
             const response = await fetchService(start_date, end_date, selectedCategory || undefined);
             onFilter(response, start_date, end_date, selectedCategory);
@@ -1083,204 +1178,375 @@ function DateFilter(param) {
         }
     }["DateFilter.useEffect"], []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6",
-        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex flex-col gap-4",
-            children: [
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex justify-end gap-3 -mb-2",
-                    children: [
-                        onDownloadExcel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                            src: "/excel-logo.svg",
-                            alt: "excel_logo",
-                            className: "w-8 h-8 cursor-pointer hover:opacity-80 transition-opacity",
-                            onClick: onDownloadExcel
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/components/DateFilter.tsx",
-                            lineNumber: 101,
-                            columnNumber: 13
-                        }, this),
-                        onDownloadPDF && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                            src: "/pdf-logo.svg",
-                            alt: "pdf_logo",
-                            className: "w-8 h-8 cursor-pointer hover:opacity-80 transition-opacity",
-                            onClick: onDownloadPDF
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/components/DateFilter.tsx",
-                            lineNumber: 109,
-                            columnNumber: 13
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/src/app/components/DateFilter.tsx",
-                    lineNumber: 99,
-                    columnNumber: 9
-                }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex items-center gap-2 -mb-1",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                            id: "useDateRange",
-                            type: "checkbox",
-                            checked: useDateRange,
-                            onChange: (e)=>setUseDateRange(e.target.checked),
-                            className: "w-4 h-4 accent-[#FFAA00] cursor-pointer"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/components/DateFilter.tsx",
-                            lineNumber: 120,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                            htmlFor: "useDateRange",
-                            className: "text-sm font-semibold text-[#716A6A] cursor-pointer select-none",
-                            children: "Filter by date range"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/components/DateFilter.tsx",
-                            lineNumber: 127,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/src/app/components/DateFilter.tsx",
-                    lineNumber: 119,
-                    columnNumber: 9
-                }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex flex-col lg:flex-row items-stretch lg:items-end gap-4",
+        className: "mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm",
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white px-4 py-4 sm:px-5",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex flex-col gap-1.5 flex-1",
+                            className: "flex items-center gap-3",
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                    className: "text-sm font-semibold text-[#716A6A]",
-                                    children: "From"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 139,
-                                    columnNumber: 13
-                                }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "relative ".concat(!useDateRange ? "opacity-50 pointer-events-none" : ""),
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$flowbite$2d$react$2f$dist$2f$components$2f$Datepicker$2f$Datepicker$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Datepicker"], {
-                                        value: from,
-                                        disabled: !useDateRange,
-                                        onChange: (date)=>{
-                                            setFrom(date || undefined);
-                                        }
+                                    className: "flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFAA00]/10",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sliders$2d$horizontal$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__SlidersHorizontal$3e$__["SlidersHorizontal"], {
+                                        size: 20,
+                                        className: "text-[#FFAA00]"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 143,
+                                        lineNumber: 135,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 140,
+                                    lineNumber: 134,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                                            className: "text-base font-bold text-[#2D2D2D]",
+                                            children: "Filter Records"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/components/DateFilter.tsx",
+                                            lineNumber: 142,
+                                            columnNumber: 15
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                            className: "text-xs text-gray-500 sm:text-sm",
+                                            children: "Refine your data using date and category"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/components/DateFilter.tsx",
+                                            lineNumber: 146,
+                                            columnNumber: 15
+                                        }, this)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/components/DateFilter.tsx",
+                                    lineNumber: 141,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/components/DateFilter.tsx",
-                            lineNumber: 138,
+                            lineNumber: 133,
                             columnNumber: 11
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex flex-col gap-1.5 flex-1",
+                        (onDownloadExcel || onDownloadPDF) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "flex items-center gap-2",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                    className: "text-sm font-semibold text-[#716A6A]",
-                                    children: "To"
+                                    className: "mr-1 hidden text-xs font-medium text-gray-400 sm:block",
+                                    children: "Export"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
                                     lineNumber: 155,
-                                    columnNumber: 13
+                                    columnNumber: 15
                                 }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "relative ".concat(!useDateRange ? "opacity-50 pointer-events-none" : ""),
-                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$flowbite$2d$react$2f$dist$2f$components$2f$Datepicker$2f$Datepicker$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Datepicker"], {
-                                        value: to,
-                                        disabled: !useDateRange,
-                                        onChange: (date)=>{
-                                            setTo(date || undefined);
-                                        }
+                                onDownloadExcel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    type: "button",
+                                    onClick: onDownloadExcel,
+                                    title: "Download Excel",
+                                    className: "group flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-300 hover:bg-green-50 hover:shadow-sm",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$spreadsheet$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileSpreadsheet$3e$__["FileSpreadsheet"], {
+                                        size: 19,
+                                        className: "text-gray-500 transition-colors group-hover:text-green-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 159,
-                                        columnNumber: 15
+                                        lineNumber: 166,
+                                        columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 156,
-                                    columnNumber: 13
+                                    lineNumber: 160,
+                                    columnNumber: 17
+                                }, this),
+                                onDownloadPDF && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    type: "button",
+                                    onClick: onDownloadPDF,
+                                    title: "Download PDF",
+                                    className: "group flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-red-300 hover:bg-red-50 hover:shadow-sm",
+                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"], {
+                                        size: 19,
+                                        className: "text-gray-500 transition-colors group-hover:text-red-600"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                                        lineNumber: 180,
+                                        columnNumber: 19
+                                    }, this)
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/components/DateFilter.tsx",
+                                    lineNumber: 174,
+                                    columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/components/DateFilter.tsx",
                             lineNumber: 154,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "flex flex-col gap-1.5 flex-1 lg:max-w-xs",
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                    className: "text-sm font-semibold text-[#716A6A]",
-                                    children: "Category"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 171,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                    options: (categories === null || categories === void 0 ? void 0 : categories.map((cat)=>({
-                                            id: cat.id,
-                                            value: cat[categoryKey]
-                                        }))) || [],
-                                    value: selectedCategory,
-                                    onChange: setSelectedCategory,
-                                    placeholder: "All Categories",
-                                    className: "w-full"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 174,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/components/DateFilter.tsx",
-                            lineNumber: 170,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                            className: "bg-[#FFAA00] hover:bg-[#FF9900] text-white font-bold text-lg h-[46px] rounded-lg transition-colors cursor-pointer w-full lg:px-10 lg:w-auto mt-2 lg:mt-0",
-                            onClick: handleSearch,
-                            children: "Search"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/components/DateFilter.tsx",
-                            lineNumber: 189,
-                            columnNumber: 11
+                            columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                    lineNumber: 136,
+                    lineNumber: 132,
                     columnNumber: 9
-                }, this),
-                error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                    className: "text-red-500 text-sm mt-1",
-                    children: error
-                }, void 0, false, {
-                    fileName: "[project]/src/app/components/DateFilter.tsx",
-                    lineNumber: 198,
-                    columnNumber: 19
                 }, this)
-            ]
-        }, void 0, true, {
-            fileName: "[project]/src/app/components/DateFilter.tsx",
-            lineNumber: 97,
-            columnNumber: 7
-        }, this)
-    }, void 0, false, {
+            }, void 0, false, {
+                fileName: "[project]/src/app/components/DateFilter.tsx",
+                lineNumber: 131,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "p-4 sm:p-5",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "mb-5 flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-4 py-3",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex items-center gap-3",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "flex h-9 w-9 items-center justify-center rounded-lg transition-colors ".concat(useDateRange ? "bg-[#FFAA00]/15 text-[#FFAA00]" : "bg-white text-gray-400"),
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2d$days$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarDays$3e$__["CalendarDays"], {
+                                            size: 18
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/components/DateFilter.tsx",
+                                            lineNumber: 203,
+                                            columnNumber: 15
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                                        lineNumber: 196,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-sm font-semibold text-gray-700",
+                                                children: "Filter by date range"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                                lineNumber: 207,
+                                                columnNumber: 15
+                                            }, this),
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-xs text-gray-400",
+                                                children: useDateRange ? "Date filtering is enabled" : "Search without date restrictions"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                                lineNumber: 211,
+                                                columnNumber: 15
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                                        lineNumber: 206,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                lineNumber: 195,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                type: "button",
+                                role: "switch",
+                                "aria-checked": useDateRange,
+                                onClick: ()=>setUseDateRange(!useDateRange),
+                                className: "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ".concat(useDateRange ? "bg-[#FFAA00]" : "bg-gray-300"),
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    className: "pointer-events-none inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow-sm transition-transform duration-200 ".concat(useDateRange ? "translate-x-5" : "translate-x-0.5")
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/components/DateFilter.tsx",
+                                    lineNumber: 233,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                lineNumber: 220,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                        lineNumber: 194,
+                        columnNumber: 9
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "min-w-0",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-[#716A6A]",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2d$days$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarDays$3e$__["CalendarDays"], {
+                                                size: 15
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                                lineNumber: 248,
+                                                columnNumber: 15
+                                            }, this),
+                                            "From"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                                        lineNumber: 247,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "rounded-lg transition-all ".concat(!useDateRange ? "pointer-events-none opacity-45" : ""),
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$flowbite$2d$react$2f$dist$2f$components$2f$Datepicker$2f$Datepicker$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Datepicker"], {
+                                            value: from,
+                                            disabled: !useDateRange,
+                                            onChange: (date)=>{
+                                                setFrom(date || undefined);
+                                            }
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/components/DateFilter.tsx",
+                                            lineNumber: 259,
+                                            columnNumber: 15
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                                        lineNumber: 252,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                lineNumber: 246,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "min-w-0",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-[#716A6A]",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2d$days$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CalendarDays$3e$__["CalendarDays"], {
+                                                size: 15
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                                lineNumber: 272,
+                                                columnNumber: 15
+                                            }, this),
+                                            "To"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                                        lineNumber: 271,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        className: "rounded-lg transition-all ".concat(!useDateRange ? "pointer-events-none opacity-45" : ""),
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$flowbite$2d$react$2f$dist$2f$components$2f$Datepicker$2f$Datepicker$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Datepicker"], {
+                                            value: to,
+                                            disabled: !useDateRange,
+                                            onChange: (date)=>{
+                                                setTo(date || undefined);
+                                            }
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/components/DateFilter.tsx",
+                                            lineNumber: 283,
+                                            columnNumber: 15
+                                        }, this)
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                                        lineNumber: 276,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                lineNumber: 270,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "min-w-0",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "mb-1.5 block text-sm font-semibold text-[#716A6A]",
+                                        children: "Category"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                                        lineNumber: 295,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
+                                        options: (categories === null || categories === void 0 ? void 0 : categories.map((cat)=>({
+                                                id: cat.id,
+                                                value: cat[categoryKey]
+                                            }))) || [],
+                                        value: selectedCategory,
+                                        onChange: setSelectedCategory,
+                                        placeholder: "All Categories",
+                                        className: "w-full"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                                        lineNumber: 299,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                lineNumber: 294,
+                                columnNumber: 11
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex items-end",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                    type: "button",
+                                    onClick: handleSearch,
+                                    className: "flex h-[46px] w-full items-center justify-center gap-2 rounded-lg bg-[#FFAA00] px-6 text-base font-bold text-white shadow-sm transition-all hover:bg-[#FF9900] hover:shadow-md active:scale-[0.98] xl:px-8",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Search$3e$__["Search"], {
+                                            size: 19,
+                                            strokeWidth: 2.5
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/components/DateFilter.tsx",
+                                            lineNumber: 320,
+                                            columnNumber: 15
+                                        }, this),
+                                        "Search"
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/components/DateFilter.tsx",
+                                    lineNumber: 315,
+                                    columnNumber: 13
+                                }, this)
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/components/DateFilter.tsx",
+                                lineNumber: 314,
+                                columnNumber: 11
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                        lineNumber: 244,
+                        columnNumber: 9
+                    }, this),
+                    error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "mt-4 rounded-lg border border-red-100 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600",
+                        children: error
+                    }, void 0, false, {
+                        fileName: "[project]/src/app/components/DateFilter.tsx",
+                        lineNumber: 328,
+                        columnNumber: 11
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/components/DateFilter.tsx",
+                lineNumber: 192,
+                columnNumber: 7
+            }, this)
+        ]
+    }, void 0, true, {
         fileName: "[project]/src/app/components/DateFilter.tsx",
-        lineNumber: 96,
+        lineNumber: 129,
         columnNumber: 5
     }, this);
 }

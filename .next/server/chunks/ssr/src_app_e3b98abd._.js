@@ -172,7 +172,7 @@ function BalanceForm({ onSuccess }) {
                                 children: "Select Currency"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 151,
+                                lineNumber: 149,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -193,31 +193,31 @@ function BalanceForm({ onSuccess }) {
                                                 children: item.symbol
                                             }, item.id, false, {
                                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                                lineNumber: 200,
+                                                lineNumber: 198,
                                                 columnNumber: 19
                                             }, this))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                        lineNumber: 165,
+                                        lineNumber: 163,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$down$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronDown$3e$__["ChevronDown"], {
                                         className: "   absolute   right-4   top-1/2   -translate-y-1/2   w-5   h-5   text-gray-500   pointer-events-none   "
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                        lineNumber: 206,
+                                        lineNumber: 204,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 163,
+                                lineNumber: 161,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 149,
+                        lineNumber: 147,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -227,7 +227,7 @@ function BalanceForm({ onSuccess }) {
                                 children: "Amount"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 228,
+                                lineNumber: 226,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -238,7 +238,7 @@ function BalanceForm({ onSuccess }) {
                                         children: currencySymbol
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                        lineNumber: 258,
+                                        lineNumber: 256,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -249,19 +249,19 @@ function BalanceForm({ onSuccess }) {
                                         onChange: (e)=>setAmount(e.target.value === "" ? "" : Number(e.target.value))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                        lineNumber: 270,
+                                        lineNumber: 268,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 240,
+                                lineNumber: 238,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 226,
+                        lineNumber: 224,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -274,12 +274,12 @@ function BalanceForm({ onSuccess }) {
                                     strokeWidth: 2.5
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                    lineNumber: 329,
+                                    lineNumber: 327,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 317,
+                                lineNumber: 315,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -289,7 +289,7 @@ function BalanceForm({ onSuccess }) {
                                         children: "Opening Balance"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                        lineNumber: 336,
+                                        lineNumber: 334,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -297,26 +297,26 @@ function BalanceForm({ onSuccess }) {
                                         children: "This amount will be added to your total balance."
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                        lineNumber: 340,
+                                        lineNumber: 338,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                lineNumber: 335,
+                                lineNumber: 333,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 304,
+                        lineNumber: 302,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "border-t border-gray-100 pt-1"
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 349,
+                        lineNumber: 347,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -346,7 +346,7 @@ function BalanceForm({ onSuccess }) {
                                     children: "Add Opening Balance"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                    lineNumber: 387,
+                                    lineNumber: 385,
                                     columnNumber: 17
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -354,20 +354,20 @@ function BalanceForm({ onSuccess }) {
                                     children: "→"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                                    lineNumber: 388,
+                                    lineNumber: 386,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true)
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                        lineNumber: 354,
+                        lineNumber: 352,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/dashboard/balance/components/BalanceForm.tsx",
-                lineNumber: 144,
+                lineNumber: 142,
                 columnNumber: 9
             }, this)
         }, void 0, false, {

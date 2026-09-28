@@ -1692,10 +1692,6 @@
     background-color: #082c28;
   }
 
-  .bg-\[\#133840\] {
-    background-color: #133840;
-  }
-
   .bg-\[\#EFF0F3\] {
     background-color: #eff0f3;
   }
@@ -3050,14 +3046,6 @@
   }
 
   @media (hover: hover) {
-    .hover\:bg-\[\#133840\]\/90:hover {
-      background-color: rgba(19, 56, 64, .9);
-      background-color: color(display-p3 .114242 .216409 .246931 / .9);
-      background-color: lab(21.1724% -11.4446 -9.1628 / .9);
-    }
-  }
-
-  @media (hover: hover) {
     .hover\:bg-\[\#579119\]:hover {
       background-color: #579119;
     }
@@ -3458,6 +3446,12 @@
   }
 
   @media (min-width: 40rem) {
+    .sm\:col-span-2 {
+      grid-column: span 2 / span 2;
+    }
+  }
+
+  @media (min-width: 40rem) {
     .sm\:mx-0 {
       margin-inline: calc(var(--spacing) * 0);
     }
@@ -3749,6 +3743,18 @@
   @media (min-width: 48rem) {
     .md\:grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .md\:flex-row {
+      flex-direction: row;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .md\:items-end {
+      align-items: flex-end;
     }
   }
 
