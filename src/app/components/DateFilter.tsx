@@ -35,27 +35,19 @@ export default function DateFilter({
   initialFrom,
   initialTo,
 }: DateFilterProps) {
-  const [from, setFrom] = useState<Date | undefined>(
-    initialFrom || new Date(),
-  );
+  const [from, setFrom] = useState<Date | undefined>(initialFrom || new Date());
 
-  const [to, setTo] = useState<Date | undefined>(
-    initialTo || new Date(),
-  );
+  const [to, setTo] = useState<Date | undefined>(initialTo || new Date());
 
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const [error, setError] = useState<string>("");
 
-  const [useDateRange, setUseDateRange] =
-    useState<boolean>(false);
+  const [useDateRange, setUseDateRange] = useState<boolean>(false);
 
   const formatLocalDate = (d: Date) =>
     d
-      ? new Date(
-          d.getTime() - d.getTimezoneOffset() * 60000,
-        )
+      ? new Date(d.getTime() - d.getTimezoneOffset() * 60000)
           .toISOString()
           .split("T")[0]
       : "";
@@ -70,33 +62,21 @@ export default function DateFilter({
     }
 
     // Validate category
-    if (
-      selectedCategory &&
-      selectedCategory.trim() !== ""
-    ) {
+    if (selectedCategory && selectedCategory.trim() !== "") {
       const categoryExists = categories.some(
         (cat) =>
-          cat[categoryKey]?.toLowerCase() ===
-          selectedCategory.toLowerCase(),
+          cat[categoryKey]?.toLowerCase() === selectedCategory.toLowerCase(),
       );
 
       if (!categoryExists) {
-        toast.error(
-          "Please select a valid category from the list",
-        );
+        toast.error("Please select a valid category from the list");
         return;
       }
     }
 
-    const start_date =
-      useDateRange && from
-        ? formatLocalDate(from)
-        : undefined;
+    const start_date = useDateRange && from ? formatLocalDate(from) : undefined;
 
-    const end_date =
-      useDateRange && to
-        ? formatLocalDate(to)
-        : undefined;
+    const end_date = useDateRange && to ? formatLocalDate(to) : undefined;
 
     try {
       const response = await fetchService(
@@ -105,16 +85,10 @@ export default function DateFilter({
         selectedCategory || undefined,
       );
 
-      onFilter(
-        response,
-        start_date,
-        end_date,
-        selectedCategory,
-      );
+      onFilter(response, start_date, end_date, selectedCategory);
     } catch (err: any) {
       setError(
-        err.message ||
-          "Failed to fetch data for the selected date range.",
+        err.message || "Failed to fetch data for the selected date range.",
       );
     }
   };
@@ -126,16 +100,13 @@ export default function DateFilter({
   }, []);
 
   return (
-    <div className="mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div className="mb-6  rounded-2xl border border-gray-200 bg-white shadow-sm">
       {/* ================= HEADER ================= */}
       <div className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white px-4 py-4 sm:px-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFAA00]/10">
-              <SlidersHorizontal
-                size={20}
-                className="text-[#FFAA00]"
-              />
+              <SlidersHorizontal size={20} className="text-[#FFAA00]" />
             </div>
 
             <div>
@@ -221,20 +192,14 @@ export default function DateFilter({
             type="button"
             role="switch"
             aria-checked={useDateRange}
-            onClick={() =>
-              setUseDateRange(!useDateRange)
-            }
+            onClick={() => setUseDateRange(!useDateRange)}
             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ${
-              useDateRange
-                ? "bg-[#FFAA00]"
-                : "bg-gray-300"
+              useDateRange ? "bg-[#FFAA00]" : "bg-gray-300"
             }`}
           >
             <span
               className={`pointer-events-none inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                useDateRange
-                  ? "translate-x-5"
-                  : "translate-x-0.5"
+                useDateRange ? "translate-x-5" : "translate-x-0.5"
               }`}
             />
           </button>
@@ -251,9 +216,7 @@ export default function DateFilter({
 
             <div
               className={`rounded-lg transition-all ${
-                !useDateRange
-                  ? "pointer-events-none opacity-45"
-                  : ""
+                !useDateRange ? "pointer-events-none opacity-45" : ""
               }`}
             >
               <Datepicker
@@ -275,9 +238,7 @@ export default function DateFilter({
 
             <div
               className={`rounded-lg transition-all ${
-                !useDateRange
-                  ? "pointer-events-none opacity-45"
-                  : ""
+                !useDateRange ? "pointer-events-none opacity-45" : ""
               }`}
             >
               <Datepicker

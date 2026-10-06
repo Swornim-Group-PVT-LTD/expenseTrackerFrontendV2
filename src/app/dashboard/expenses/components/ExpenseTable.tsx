@@ -34,6 +34,7 @@ import SearchInput from "@/app/components/SearchInput";
 import { ExpenseResponse } from "@/app/types/expenseType";
 
 import { ExpenseCategoryResponse } from "@/app/types/catalolgueType/expenseCatalogueType";
+import { maskAmount } from "@/app/utils/maskAmount";
 
 interface ExpensesTableProps {
   filteredData?: ExpenseResponse[];
@@ -53,6 +54,22 @@ interface PreviewFile {
 }
 
 const DESKTOP_TOTAL_COLOR = "#FF7043";
+
+// Mobile (< lg): bottom sheet pinned to the bottom of the screen.
+// Desktop (>= lg): anchored dropdown under the button.
+const POPUP_BASE =
+  "fixed inset-x-0 bottom-0 z-[200] max-h-[75vh] overflow-y-auto bg-white rounded-t-2xl border-t border-gray-200 shadow-2xl p-3 pb-[max(1rem,env(safe-area-inset-bottom))] " +
+  "lg:absolute lg:inset-x-auto lg:bottom-auto lg:right-0 lg:top-full lg:mt-2 lg:z-[80] lg:max-h-none lg:overflow-visible lg:rounded-lg lg:border lg:shadow-xl lg:p-2 lg:pb-2";
+
+// Dim background behind the bottom sheet (mobile only)
+const POPUP_BACKDROP_CLASS = "fixed inset-0 z-[199] bg-black/40 lg:hidden";
+
+// Small drag-handle style bar at the top of the sheet (mobile only)
+const POPUP_HANDLE_CLASS =
+  "mx-auto mb-2 h-1 w-10 rounded-full bg-gray-300 lg:hidden";
+
+const RECEIPT_POPUP_CLASS = `${POPUP_BASE} lg:w-60`;
+const DOCUMENTS_POPUP_CLASS = `${POPUP_BASE} lg:w-80`;
 
 const ExpensesTable = ({
   filteredData,
@@ -401,51 +418,58 @@ const ExpensesTable = ({
         </button>
 
         {openAttachment === key && (
-          <div className="absolute z-[80] right-0 top-full mt-2 w-[calc(100vw-32px)] max-w-[260px] sm:w-60 bg-white rounded-lg border border-gray-200 shadow-xl p-2">
-            <div className="flex items-center justify-between px-2 py-1.5">
-              <div className="flex items-center gap-2 min-w-0">
-                <ReceiptText className="w-4 h-4 text-orange-500 shrink-0" />
-                <span className="text-xs font-semibold text-gray-700">
-                  Receipt
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setOpenAttachment(null)}
-                className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="border-t border-gray-100 pt-2">
-              <div className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-gray-50">
-                <ImageIcon className="w-4 h-4 text-blue-500 shrink-0" />
-
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-700 truncate">
-                    {receiptFileName}
-                  </p>
-                  <p className="text-[10px] text-gray-400">IMAGE</p>
+          <>
+            <div
+              className={POPUP_BACKDROP_CLASS}
+              onClick={() => setOpenAttachment(null)}
+            />
+            <div className={RECEIPT_POPUP_CLASS}>
+              <div className={POPUP_HANDLE_CLASS} />
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <div className="flex items-center gap-2 min-w-0">
+                  <ReceiptText className="w-4 h-4 text-orange-500 shrink-0" />
+                  <span className="text-xs font-semibold text-gray-700">
+                    Receipt
+                  </span>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() =>
-                    openPreview(
-                      expense.upload_receipt_url!,
-                      receiptFileName,
-                      "image/*",
-                    )
-                  }
-                  className="shrink-0 px-2.5 py-1 rounded-md bg-orange-50 hover:bg-orange-100 text-orange-600 text-xs font-semibold cursor-pointer"
+                  onClick={() => setOpenAttachment(null)}
+                  className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 cursor-pointer"
                 >
-                  View
+                  <X className="w-4 h-4" />
                 </button>
               </div>
+
+              <div className="border-t border-gray-100 pt-2">
+                <div className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-gray-50">
+                  <ImageIcon className="w-4 h-4 text-blue-500 shrink-0" />
+
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-gray-700 truncate">
+                      {receiptFileName}
+                    </p>
+                    <p className="text-[10px] text-gray-400">IMAGE</p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      openPreview(
+                        expense.upload_receipt_url!,
+                        receiptFileName,
+                        "image/*",
+                      )
+                    }
+                    className="shrink-0 px-2.5 py-1 rounded-md bg-orange-50 hover:bg-orange-100 text-orange-600 text-xs font-semibold cursor-pointer"
+                  >
+                    View
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     );
@@ -482,71 +506,78 @@ const ExpensesTable = ({
         </button>
 
         {openAttachment === key && (
-          <div className="absolute z-[80] right-0 top-full mt-2 w-[calc(100vw-32px)] max-w-[320px] sm:w-80 bg-white rounded-lg border border-gray-200 shadow-xl p-2">
-            <div className="flex items-center justify-between px-2 py-1.5">
-              <div className="flex items-center gap-2 min-w-0">
-                <Paperclip className="w-4 h-4 text-purple-500 shrink-0" />
-                <span className="text-xs font-semibold text-gray-700">
-                  Documents ({documents.length})
-                </span>
+          <>
+            <div
+              className={POPUP_BACKDROP_CLASS}
+              onClick={() => setOpenAttachment(null)}
+            />
+            <div className={DOCUMENTS_POPUP_CLASS}>
+              <div className={POPUP_HANDLE_CLASS} />
+              <div className="flex items-center justify-between px-2 py-1.5">
+                <div className="flex items-center gap-2 min-w-0">
+                  <Paperclip className="w-4 h-4 text-purple-500 shrink-0" />
+                  <span className="text-xs font-semibold text-gray-700">
+                    Documents ({documents.length})
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setOpenAttachment(null)}
+                  className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setOpenAttachment(null)}
-                className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-700 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+              <div className="border-t border-gray-100 pt-2 space-y-1 max-h-[280px] overflow-y-auto">
+                {documents.map((document) => {
+                  const isPdf =
+                    document.file_type === "application/pdf" ||
+                    document.file_name.toLowerCase().endsWith(".pdf");
 
-            <div className="border-t border-gray-100 pt-2 space-y-1 max-h-[280px] overflow-y-auto">
-              {documents.map((document) => {
-                const isPdf =
-                  document.file_type === "application/pdf" ||
-                  document.file_name.toLowerCase().endsWith(".pdf");
-
-                return (
-                  <div
-                    key={document.id}
-                    className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-gray-50"
-                  >
-                    {isPdf ? (
-                      <FileText className="w-4 h-4 text-red-500 shrink-0" />
-                    ) : (
-                      <ImageIcon className="w-4 h-4 text-blue-500 shrink-0" />
-                    )}
-
-                    <div className="flex-1 min-w-0">
-                      <p
-                        className="truncate text-xs font-medium text-gray-700"
-                        title={document.file_name}
-                      >
-                        {document.file_name}
-                      </p>
-                      <p className="text-[10px] text-gray-400 uppercase">
-                        {isPdf ? "PDF" : "IMAGE"}
-                      </p>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        openPreview(
-                          document.file_url,
-                          document.file_name,
-                          document.file_type,
-                        )
-                      }
-                      className="shrink-0 px-2.5 py-1 rounded-md bg-purple-50 hover:bg-purple-100 text-purple-600 text-xs font-semibold cursor-pointer"
+                  return (
+                    <div
+                      key={document.id}
+                      className="flex items-center gap-2 px-2 py-2 rounded-md hover:bg-gray-50"
                     >
-                      View
-                    </button>
-                  </div>
-                );
-              })}
+                      {isPdf ? (
+                        <FileText className="w-4 h-4 text-red-500 shrink-0" />
+                      ) : (
+                        <ImageIcon className="w-4 h-4 text-blue-500 shrink-0" />
+                      )}
+
+                      <div className="flex-1 min-w-0">
+                        <p
+                          className="truncate text-xs font-medium text-gray-700"
+                          title={document.file_name}
+                        >
+                          {document.file_name}
+                        </p>
+                        <p className="text-[10px] text-gray-400 uppercase">
+                          {isPdf ? "PDF" : "IMAGE"}
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openPreview(
+                            document.file_url,
+                            document.file_name,
+                            document.file_type,
+                          )
+                        }
+                        className="shrink-0 px-2.5 py-1 rounded-md bg-purple-50 hover:bg-purple-100 text-purple-600 text-xs font-semibold cursor-pointer"
+                      >
+                        View
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     );

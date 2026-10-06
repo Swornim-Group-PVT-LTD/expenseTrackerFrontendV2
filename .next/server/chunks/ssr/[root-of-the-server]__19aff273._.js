@@ -1066,7 +1066,7 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
         }
     }, []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm",
+        className: "mb-6  rounded-2xl border border-gray-200 bg-white shadow-sm",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white px-4 py-4 sm:px-5",
@@ -1083,12 +1083,12 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                         className: "text-[#FFAA00]"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 135,
+                                        lineNumber: 109,
                                         columnNumber: 15
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 134,
+                                    lineNumber: 108,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1098,7 +1098,7 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                             children: "Filter Records"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/components/DateFilter.tsx",
-                                            lineNumber: 142,
+                                            lineNumber: 113,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1106,19 +1106,19 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                             children: "Refine your data using date and category"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/components/DateFilter.tsx",
-                                            lineNumber: 146,
+                                            lineNumber: 117,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 141,
+                                    lineNumber: 112,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/components/DateFilter.tsx",
-                            lineNumber: 133,
+                            lineNumber: 107,
                             columnNumber: 11
                         }, this),
                         (onDownloadExcel || onDownloadPDF) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1129,7 +1129,7 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                     children: "Export"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 155,
+                                    lineNumber: 126,
                                     columnNumber: 15
                                 }, this),
                                 onDownloadExcel && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1142,12 +1142,12 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                         className: "text-gray-500 transition-colors group-hover:text-green-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 166,
+                                        lineNumber: 137,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 160,
+                                    lineNumber: 131,
                                     columnNumber: 17
                                 }, this),
                                 onDownloadPDF && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1160,29 +1160,29 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                         className: "text-gray-500 transition-colors group-hover:text-red-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 180,
+                                        lineNumber: 151,
                                         columnNumber: 19
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 174,
+                                    lineNumber: 145,
                                     columnNumber: 17
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/components/DateFilter.tsx",
-                            lineNumber: 154,
+                            lineNumber: 125,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                    lineNumber: 132,
+                    lineNumber: 106,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                lineNumber: 131,
+                lineNumber: 105,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1200,12 +1200,12 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                             size: 18
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/components/DateFilter.tsx",
-                                            lineNumber: 203,
+                                            lineNumber: 174,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 196,
+                                        lineNumber: 167,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1215,7 +1215,7 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                                 children: "Filter by date range"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                                lineNumber: 207,
+                                                lineNumber: 178,
                                                 columnNumber: 15
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1223,19 +1223,19 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                                 children: useDateRange ? "Date filtering is enabled" : "Search without date restrictions"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                                lineNumber: 211,
+                                                lineNumber: 182,
                                                 columnNumber: 15
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 206,
+                                        lineNumber: 177,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                lineNumber: 195,
+                                lineNumber: 166,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1248,18 +1248,18 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                     className: `pointer-events-none inline-block h-5 w-5 translate-y-0.5 rounded-full bg-white shadow-sm transition-transform duration-200 ${useDateRange ? "translate-x-5" : "translate-x-0.5"}`
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 233,
+                                    lineNumber: 200,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                lineNumber: 220,
+                                lineNumber: 191,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                        lineNumber: 194,
+                        lineNumber: 165,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1275,14 +1275,14 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                                 size: 15
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                                lineNumber: 248,
+                                                lineNumber: 213,
                                                 columnNumber: 15
                                             }, this),
                                             "From"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 247,
+                                        lineNumber: 212,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1295,18 +1295,18 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/components/DateFilter.tsx",
-                                            lineNumber: 259,
+                                            lineNumber: 222,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 252,
+                                        lineNumber: 217,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                lineNumber: 246,
+                                lineNumber: 211,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1319,14 +1319,14 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                                 size: 15
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                                lineNumber: 272,
+                                                lineNumber: 235,
                                                 columnNumber: 15
                                             }, this),
                                             "To"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 271,
+                                        lineNumber: 234,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1339,18 +1339,18 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/components/DateFilter.tsx",
-                                            lineNumber: 283,
+                                            lineNumber: 244,
                                             columnNumber: 15
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 276,
+                                        lineNumber: 239,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                lineNumber: 270,
+                                lineNumber: 233,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1361,7 +1361,7 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                         children: "Category"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 295,
+                                        lineNumber: 256,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$app$2f$components$2f$SearchInput$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -1375,13 +1375,13 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                         className: "w-full"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                                        lineNumber: 299,
+                                        lineNumber: 260,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                lineNumber: 294,
+                                lineNumber: 255,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1396,25 +1396,25 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                                             strokeWidth: 2.5
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/components/DateFilter.tsx",
-                                            lineNumber: 320,
+                                            lineNumber: 281,
                                             columnNumber: 15
                                         }, this),
                                         "Search"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/components/DateFilter.tsx",
-                                    lineNumber: 315,
+                                    lineNumber: 276,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                                lineNumber: 314,
+                                lineNumber: 275,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                        lineNumber: 244,
+                        lineNumber: 209,
                         columnNumber: 9
                     }, this),
                     error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1422,19 +1422,19 @@ function DateFilter({ fetchService, onFilter, categories, categoryKey, onDownloa
                         children: error
                     }, void 0, false, {
                         fileName: "[project]/src/app/components/DateFilter.tsx",
-                        lineNumber: 328,
+                        lineNumber: 289,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/components/DateFilter.tsx",
-                lineNumber: 192,
+                lineNumber: 163,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/components/DateFilter.tsx",
-        lineNumber: 129,
+        lineNumber: 103,
         columnNumber: 5
     }, this);
 }
