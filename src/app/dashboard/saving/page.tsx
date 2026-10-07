@@ -91,6 +91,7 @@ function Saving() {
         <SavingForm onSuccess={handleRefresh} />
       </div>
 
+      {/* tables on same row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4">
         <div className="h-80">
           <SavingLineChart refreshTrigger={refreshTrigger} />

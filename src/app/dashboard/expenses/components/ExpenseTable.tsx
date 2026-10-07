@@ -55,16 +55,12 @@ interface PreviewFile {
 
 const DESKTOP_TOTAL_COLOR = "#FF7043";
 
-// Mobile (< lg): bottom sheet pinned to the bottom of the screen.
-// Desktop (>= lg): anchored dropdown under the button.
 const POPUP_BASE =
   "fixed inset-x-0 bottom-0 z-[200] max-h-[75vh] overflow-y-auto bg-white rounded-t-2xl border-t border-gray-200 shadow-2xl p-3 pb-[max(1rem,env(safe-area-inset-bottom))] " +
-  "lg:absolute lg:inset-x-auto lg:bottom-auto lg:right-0 lg:top-full lg:mt-2 lg:z-[80] lg:max-h-none lg:overflow-visible lg:rounded-lg lg:border lg:shadow-xl lg:p-2 lg:pb-2";
+  "lg:absolute lg:inset-x-auto lg:bottom-auto lg:right-0 lg:top-full lg:mt-2 lg:z-[80] lg:max-h-none lg:overflow-visible lg:rounded-lg lg:border lg:shadow-xl lg:p-2 lg:pb-2 mx-5";
 
-// Dim background behind the bottom sheet (mobile only)
-const POPUP_BACKDROP_CLASS = "fixed inset-0 z-[199] bg-black/40 lg:hidden";
+const POPUP_BACKDROP_CLASS = "fixed inset-0 z-[199] bg-black/40 lg:hidden ";
 
-// Small drag-handle style bar at the top of the sheet (mobile only)
 const POPUP_HANDLE_CLASS =
   "mx-auto mb-2 h-1 w-10 rounded-full bg-gray-300 lg:hidden";
 

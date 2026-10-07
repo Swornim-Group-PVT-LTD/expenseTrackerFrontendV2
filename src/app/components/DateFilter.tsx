@@ -187,7 +187,7 @@ export default function DateFilter({
             </div>
           </div>
 
-          {/* Toggle */}
+          {/* Toggle for date */}
           <button
             type="button"
             role="switch"

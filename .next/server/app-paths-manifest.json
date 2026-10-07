@@ -1,6 +1,5 @@
 {
   "/dashboard/expenses/page": "app/dashboard/expenses/page.js",
-  "/dashboard/income/page": "app/dashboard/income/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/saving/page": "app/dashboard/saving/page.js",
   "/page": "app/page.js"
