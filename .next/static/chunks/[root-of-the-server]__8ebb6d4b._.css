@@ -877,6 +877,10 @@
     margin-inline: calc(var(--spacing) * -4);
   }
 
+  .mx-5 {
+    margin-inline: calc(var(--spacing) * 5);
+  }
+
   .mx-auto {
     margin-left: auto;
     margin-right: auto;
