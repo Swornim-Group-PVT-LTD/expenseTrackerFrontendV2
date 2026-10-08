@@ -13,6 +13,7 @@ import {
   Folder,
   Plus,
   FileText,
+  ReceiptText
 } from "lucide-react";
 import { useState } from "react";
 
@@ -66,6 +67,12 @@ const dashboardData = [
     href: "/dashboard/statement",
     icon: <FileText className="h-6 w-6" />,
     color: "bg-purple-500",
+  },
+  {
+    title: "invoice",
+    href: "/dashboard/invoice",
+    icon: <ReceiptText className="h-6 w-6" />,
+    color: "bg-green-500",
   },
 ];
 

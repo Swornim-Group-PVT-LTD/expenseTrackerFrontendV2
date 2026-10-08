@@ -1,6 +1,12 @@
 {
-  "/dashboard/expenses/page": "app/dashboard/expenses/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/dashboard/Invoice/page": "app/dashboard/Invoice/page.js",
+  "/dashboard/balance/page": "app/dashboard/balance/page.js",
+  "/dashboard/income/page": "app/dashboard/income/page.js",
+  "/dashboard/invoice/page": "app/dashboard/invoice/page.js",
   "/dashboard/page": "app/dashboard/page.js",
   "/dashboard/saving/page": "app/dashboard/saving/page.js",
+  "/dashboard/statement/page": "app/dashboard/statement/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/page": "app/page.js"
 }
