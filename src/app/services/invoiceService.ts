@@ -141,3 +141,20 @@ export const updateInvoiceService = async (
     );
   }
 };
+// services/InvoiceService.ts
+// Add this method to your existing service if it is not already present.
+
+export const getInvoiceBySn = async (sn: string | number) => {
+    const response = await axios.get(
+        `${BASE_URL}/api/invoices/${encodeURIComponent(String(sn))}`,
+        {
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${getToken()}`,
+            },
+            withCredentials: true,
+        }
+    );
+
+    return response.data;
+};

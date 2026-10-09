@@ -15,6 +15,7 @@ export interface AddInvoicePayload {
   notes_payment_terms: string;
   bank_account_details: string;
   tax_percentage: number;
+  discount_type: "percent" | "flat";
   discount_amount: number;
   shipping_fee: number;
   items: InvoiceItem[];
