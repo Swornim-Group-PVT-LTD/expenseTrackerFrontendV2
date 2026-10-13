@@ -1,22 +1,8 @@
 {
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/authentication/register/page": "app/authentication/register/page.js",
   "/authentication/login/page": "app/authentication/login/page.js",
-  "/settings/page": "app/settings/page.js",
-  "/page": "app/page.js",
-  "/dashboard/balance/page": "app/dashboard/balance/page.js",
-  "/dashboard/catalogue/currencyCatalogue/page": "app/dashboard/catalogue/currencyCatalogue/page.js",
-  "/dashboard/catalogue/investmentCatalogue/page": "app/dashboard/catalogue/investmentCatalogue/page.js",
-  "/dashboard/catalogue/incomeCatalogue/page": "app/dashboard/catalogue/incomeCatalogue/page.js",
-  "/dashboard/catalogue/expenseCatalogue/page": "app/dashboard/catalogue/expenseCatalogue/page.js",
-  "/dashboard/investment/page": "app/dashboard/investment/page.js",
-  "/dashboard/expenses/page": "app/dashboard/expenses/page.js",
+  "/dashboard/invoice/page": "app/dashboard/invoice/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/catalogue/page": "app/dashboard/catalogue/page.js",
-  "/dashboard/saving/page": "app/dashboard/saving/page.js",
-  "/dashboard/income/page": "app/dashboard/income/page.js",
-  "/dashboard/statement/page": "app/dashboard/statement/page.js",
-  "/dashboard/catalogue/savingCatalogue/page": "app/dashboard/catalogue/savingCatalogue/page.js",
-  "/dashboard/invoice/page": "app/dashboard/invoice/page.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js"
 }

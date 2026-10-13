@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -11,9 +12,11 @@ import Swal from "sweetalert2";
 
 // Services
 import { getCurrencyService } from "@/app/services/catalogueServices/currencyCatalogueService";
+import { addInvoiceService } from "@/app/services/invoiceService";
 
 // Types
-import { CurrencyResponse } from "@/app/types/currencyType";
+import type { CurrencyResponse } from "@/app/types/currencyType";
+import type { AddInvoicePayload } from "@/app/types/invoiceType";
 
 interface InvoiceItem {
     item_description: string;
@@ -25,18 +28,13 @@ interface InvoiceFormProps {
     onSuccess?: () => void;
 }
 
-export default function InvoiceForm({
-    onSuccess,
-}: InvoiceFormProps) {
+export default function InvoiceForm({ onSuccess }: InvoiceFormProps) {
     // ============================================================
     // BASIC INVOICE DETAILS
     // ============================================================
 
-    const [invoiceNumber, setInvoiceNumber] =
-        useState("SWOGRP-INV-1");
-
-    const [purchaseOrder, setPurchaseOrder] =
-        useState("SWOGRP-PUR-1");
+    const [invoiceNumber, setInvoiceNumber] = useState("SWOGRP-INV-1");
+    const [purchaseOrder, setPurchaseOrder] = useState("SWOGRP-PUR-1");
 
     const [companyDetails, setCompanyDetails] = useState("");
     const [billTo, setBillTo] = useState("");
@@ -51,10 +49,7 @@ export default function InvoiceForm({
     // CURRENCY
     // ============================================================
 
-    const [currencyList, setCurrencyList] = useState<CurrencyResponse[]>(
-        []
-    );
-
+    const [currencyList, setCurrencyList] = useState<CurrencyResponse[]>([]);
     const [currencyId, setCurrencyId] = useState<number | null>(null);
     const [currencySymbol, setCurrencySymbol] = useState("$");
 
@@ -67,11 +62,8 @@ export default function InvoiceForm({
     const [discountType, setDiscountType] =
         useState<"percent" | "flat">("percent");
 
-    const [discountAmount, setDiscountAmount] =
-        useState<number | "">(0);
-
-    const [shippingFee, setShippingFee] =
-        useState<number | "">(0);
+    const [discountAmount, setDiscountAmount] = useState<number | "">(0);
+    const [shippingFee, setShippingFee] = useState<number | "">(0);
 
     // ============================================================
     // ITEMS
@@ -96,14 +88,14 @@ export default function InvoiceForm({
             try {
                 const currencies = await getCurrencyService();
 
-                // Add AUD if it is not already available
                 const hasAUD = currencies.some(
-                    (item) =>
-                        item.currency?.toUpperCase() === "AUD"
+                    (item) => item.currency?.toUpperCase() === "AUD"
                 );
 
                 let updatedCurrencies = currencies;
 
+                // Keep the existing AUD fallback in the UI.
+                // Note: a fallback ID of -1 is not a valid database ID.
                 if (!hasAUD) {
                     const audCurrency = {
                         id: -1,
@@ -112,29 +104,27 @@ export default function InvoiceForm({
                         symbol: "$",
                     } as CurrencyResponse;
 
-                    updatedCurrencies = [
-                        ...currencies,
-                        audCurrency,
-                    ];
+                    updatedCurrencies = [...currencies, audCurrency];
                 }
 
                 setCurrencyList(updatedCurrencies);
 
                 if (updatedCurrencies.length > 0) {
-                    setCurrencyId(updatedCurrencies[0].id);
-                    setCurrencySymbol(
-                        updatedCurrencies[0].symbol
-                    );
+                    setCurrencyId(Number(updatedCurrencies[0].id));
+                    setCurrencySymbol(updatedCurrencies[0].symbol || "$");
                 }
             } catch (error) {
-                console.error(
-                    "Error loading currencies:",
-                    error
-                );
+                console.error("Error loading currencies:", error);
+
+                Swal.fire({
+                    icon: "error",
+                    title: "Currency Loading Failed",
+                    text: "Unable to load currencies. Please refresh the page and try again.",
+                });
             }
         };
 
-        init();
+        void init();
     }, []);
 
     // ============================================================
@@ -142,51 +132,51 @@ export default function InvoiceForm({
     // ============================================================
 
     const inputClass = `
-    w-full
-    h-[52px]
-    px-4
-    rounded-xl
-    border
-    border-gray-200
-    bg-gray-50
-    text-base
-    font-medium
-    text-gray-800
-    outline-none
-    transition-all
-    focus:border-[#64a11f]
-    focus:bg-white
-    focus:ring-4
-    focus:ring-[#64a11f]/10
-  `;
+        w-full
+        h-[52px]
+        px-4
+        rounded-xl
+        border
+        border-gray-200
+        bg-gray-50
+        text-base
+        font-medium
+        text-gray-800
+        outline-none
+        transition-all
+        focus:border-[#64a11f]
+        focus:bg-white
+        focus:ring-4
+        focus:ring-[#64a11f]/10
+    `;
 
     const textareaClass = `
-    w-full
-    px-4
-    py-3
-    rounded-xl
-    border
-    border-gray-200
-    bg-gray-50
-    text-base
-    font-medium
-    text-gray-800
-    outline-none
-    resize-none
-    transition-all
-    focus:border-[#64a11f]
-    focus:bg-white
-    focus:ring-4
-    focus:ring-[#64a11f]/10
-  `;
+        w-full
+        px-4
+        py-3
+        rounded-xl
+        border
+        border-gray-200
+        bg-gray-50
+        text-base
+        font-medium
+        text-gray-800
+        outline-none
+        resize-none
+        transition-all
+        focus:border-[#64a11f]
+        focus:bg-white
+        focus:ring-4
+        focus:ring-[#64a11f]/10
+    `;
 
     // ============================================================
     // ITEM FUNCTIONS
     // ============================================================
 
     const handleAddItem = () => {
-        setItems([
-            ...items,
+        setItems((previousItems) => [
+            ...previousItems,
             {
                 item_description: "",
                 unit_cost: "",
@@ -196,15 +186,15 @@ export default function InvoiceForm({
     };
 
     const handleRemoveItem = (index: number) => {
-        if (items.length === 1) {
-            return;
-        }
+        setItems((previousItems) => {
+            if (previousItems.length === 1) {
+                return previousItems;
+            }
 
-        setItems(
-            items.filter(
+            return previousItems.filter(
                 (_, itemIndex) => itemIndex !== index
-            )
-        );
+            );
+        });
     };
 
     const handleItemChange = (
@@ -212,23 +202,36 @@ export default function InvoiceForm({
         field: keyof InvoiceItem,
         value: string
     ) => {
-        const updatedItems = [...items];
+        setItems((previousItems) =>
+            previousItems.map((item, itemIndex) => {
+                if (itemIndex !== index) {
+                    return item;
+                }
 
-        if (field === "item_description") {
-            updatedItems[index].item_description = value;
-        }
+                if (field === "item_description") {
+                    return {
+                        ...item,
+                        item_description: value,
+                    };
+                }
 
-        if (field === "unit_cost") {
-            updatedItems[index].unit_cost =
-                value === "" ? "" : Number(value);
-        }
+                if (field === "unit_cost") {
+                    return {
+                        ...item,
+                        unit_cost: value === "" ? "" : Number(value),
+                    };
+                }
 
-        if (field === "quantity") {
-            updatedItems[index].quantity =
-                value === "" ? "" : Number(value);
-        }
+                if (field === "quantity") {
+                    return {
+                        ...item,
+                        quantity: value === "" ? "" : Number(value),
+                    };
+                }
 
-        setItems(updatedItems);
+                return item;
+            })
+        );
     };
 
     // ============================================================
@@ -243,33 +246,24 @@ export default function InvoiceForm({
     };
 
     const subtotal = items.reduce(
-        (total, item) =>
-            total + getItemTotal(item),
+        (total, item) => total + getItemTotal(item),
         0
     );
 
-    const discountValue =
-        Number(discountAmount) || 0;
+    const discountValue = Number(discountAmount) || 0;
 
     const discount =
         discountType === "percent"
             ? subtotal * (discountValue / 100)
             : discountValue;
 
-    const taxBase = Math.max(
-        subtotal - discount,
-        0
-    );
+    const taxBase = Math.max(subtotal - discount, 0);
 
-    const tax =
-        taxBase *
-        ((Number(taxPercentage) || 0) / 100);
+    const tax = taxBase * ((Number(taxPercentage) || 0) / 100);
 
-    const shipping =
-        Number(shippingFee) || 0;
+    const shipping = Number(shippingFee) || 0;
 
-    const grandTotal =
-        taxBase + tax + shipping;
+    const grandTotal = taxBase + tax + shipping;
 
     // ============================================================
     // VALIDATION
@@ -281,6 +275,16 @@ export default function InvoiceForm({
                 icon: "warning",
                 title: "Invoice Number Required",
                 text: "Please enter invoice number.",
+            });
+
+            return false;
+        }
+
+        if (!purchaseOrder.trim()) {
+            Swal.fire({
+                icon: "warning",
+                title: "Purchase Order Required",
+                text: "Please enter purchase order.",
             });
 
             return false;
@@ -306,11 +310,11 @@ export default function InvoiceForm({
             return false;
         }
 
-        if (!currencyId) {
+        if (currencyId === null || currencyId <= 0) {
             Swal.fire({
                 icon: "warning",
                 title: "Select Currency",
-                text: "Please select a currency.",
+                text: "Please select a valid currency from the database.",
             });
 
             return false;
@@ -336,6 +340,44 @@ export default function InvoiceForm({
             return false;
         }
 
+        if (dueDate < invoiceDate) {
+            Swal.fire({
+                icon: "warning",
+                title: "Invalid Due Date",
+                text: "Due date cannot be earlier than invoice date.",
+            });
+
+            return false;
+        }
+
+        if (
+            taxPercentage === "" ||
+            Number(taxPercentage) < 0 ||
+            !Number.isFinite(Number(taxPercentage))
+        ) {
+            Swal.fire({
+                icon: "warning",
+                title: "Invalid Tax",
+                text: "Please enter a valid, non-negative tax percentage.",
+            });
+
+            return false;
+        }
+
+        if (
+            discountAmount === "" ||
+            !Number.isFinite(Number(discountAmount)) ||
+            Number(discountAmount) < 0
+        ) {
+            Swal.fire({
+                icon: "warning",
+                title: "Invalid Discount",
+                text: "Please enter a valid, non-negative discount.",
+            });
+
+            return false;
+        }
+
         if (
             discountType === "percent" &&
             Number(discountAmount) > 100
@@ -349,11 +391,25 @@ export default function InvoiceForm({
             return false;
         }
 
-        if (Number(discountAmount) < 0) {
+        if (
+            shippingFee === "" ||
+            !Number.isFinite(Number(shippingFee)) ||
+            Number(shippingFee) < 0
+        ) {
+            Swal.fire({
+                icon: "warning",
+                title: "Invalid Shipping Fee",
+                text: "Please enter a valid, non-negative shipping fee.",
+            });
+
+            return false;
+        }
+
+        if (discountType === "flat" && Number(discountAmount) > subtotal) {
             Swal.fire({
                 icon: "warning",
                 title: "Invalid Discount",
-                text: "Discount cannot be negative.",
+                text: "Flat discount cannot exceed the subtotal.",
             });
 
             return false;
@@ -372,12 +428,13 @@ export default function InvoiceForm({
 
             if (
                 item.unit_cost === "" ||
+                !Number.isFinite(Number(item.unit_cost)) ||
                 Number(item.unit_cost) <= 0
             ) {
                 Swal.fire({
                     icon: "warning",
                     title: "Invalid Unit Cost",
-                    text: "Please enter a valid unit cost.",
+                    text: "Please enter a valid unit cost greater than zero.",
                 });
 
                 return false;
@@ -385,12 +442,13 @@ export default function InvoiceForm({
 
             if (
                 item.quantity === "" ||
+                !Number.isFinite(Number(item.quantity)) ||
                 Number(item.quantity) <= 0
             ) {
                 Swal.fire({
                     icon: "warning",
                     title: "Invalid Quantity",
-                    text: "Please enter a valid quantity.",
+                    text: "Please enter a valid quantity greater than zero.",
                 });
 
                 return false;
@@ -401,112 +459,58 @@ export default function InvoiceForm({
     };
 
     // ============================================================
-    // SUBMIT
+    // SUBMIT INVOICE TO API
     // ============================================================
 
     const handleSubmit = async () => {
+        if (loading) {
+            return;
+        }
+
         if (!validateForm()) {
             return;
         }
 
+        setLoading(true);
+
         try {
-            setLoading(true);
-
-            // ========================================================
-            // API REQUEST PAYLOAD
-            // ========================================================
-
-            const payload = {
-                invoice_number: invoiceNumber,
-                purchase_order: purchaseOrder,
-                company_details: companyDetails,
-                bill_to: billTo,
-                currency_id: currencyId,
+            const payload: AddInvoicePayload = {
+                invoice_number: invoiceNumber.trim(),
+                purchase_order: purchaseOrder.trim(),
+                company_details: companyDetails.trim(),
+                bill_to: billTo.trim(),
+                currency_id: currencyId as number,
                 invoice_date: invoiceDate,
                 due_date: dueDate,
-                notes_payment_terms: notesPaymentTerms,
-                bank_account_details: bankAccountDetails,
-                tax_percentage:
-                    Number(taxPercentage) || 0,
-                discount_amount:
-                    Number(discountAmount) || 0,
+                notes_payment_terms: notesPaymentTerms.trim(),
+                bank_account_details: bankAccountDetails.trim(),
+                tax_percentage: Number(taxPercentage) || 0,
+                discount_amount: Number(discountAmount) || 0,
                 discount_type: discountType,
-                shipping_fee:
-                    Number(shippingFee) || 0,
-
+                shipping_fee: Number(shippingFee) || 0,
                 items: items.map((item) => ({
-                    item_description:
-                        item.item_description,
-                    unit_cost:
-                        Number(item.unit_cost),
-                    quantity:
-                        Number(item.quantity),
+                    item_description: item.item_description.trim(),
+                    unit_cost: Number(item.unit_cost),
+                    quantity: Number(item.quantity),
                 })),
             };
 
-            // ========================================================
-            // CONNECT YOUR API SERVICE HERE
-            // ========================================================
+            console.log("Submitting invoice payload:", payload);
 
-            console.log(
-                "Invoice Payload:",
-                payload
-            );
-
-            /*
-            Example:
-
+            // Actual API call. Do not show success before this completes.
             await addInvoiceService(payload);
-            */
 
-            // ========================================================
-            // AUTO GENERATE NEXT INVOICE / PURCHASE NUMBER
-            // ========================================================
-
+            // Generate the next numbers only after a successful save.
             const currentInvoiceNumber =
-                Number(
-                    invoiceNumber.replace(
-                        "SWOGRP-INV-",
-                        ""
-                    )
-                ) || 0;
+                Number(invoiceNumber.replace("SWOGRP-INV-", "")) || 0;
 
             const currentPurchaseOrder =
-                Number(
-                    purchaseOrder.replace(
-                        "SWOGRP-PUR-",
-                        ""
-                    )
-                ) || 0;
+                Number(purchaseOrder.replace("SWOGRP-PUR-", "")) || 0;
 
-            const nextInvoiceNumber =
-                currentInvoiceNumber + 1;
+            setInvoiceNumber(`SWOGRP-INV-${currentInvoiceNumber + 1}`);
+            setPurchaseOrder(`SWOGRP-PUR-${currentPurchaseOrder + 1}`);
 
-            const nextPurchaseOrder =
-                currentPurchaseOrder + 1;
-
-            Swal.fire({
-                icon: "success",
-                title: "Invoice Added!",
-                text: "Invoice has been added successfully.",
-                timer: 2000,
-                showConfirmButton: false,
-            });
-
-            onSuccess?.();
-
-            // ========================================================
-            // RESET FORM
-            // ========================================================
-
-            setInvoiceNumber(
-                `SWOGRP-INV-${nextInvoiceNumber}`
-            );
-
-            setPurchaseOrder(
-                `SWOGRP-PUR-${nextPurchaseOrder}`
-            );
-
+            // Reset the remaining fields after successful submission.
             setCompanyDetails("");
             setBillTo("");
             setInvoiceDate("");
@@ -515,10 +519,8 @@ export default function InvoiceForm({
             setBankAccountDetails("");
 
             setTaxPercentage(13);
-
             setDiscountType("percent");
             setDiscountAmount(0);
-
             setShippingFee(0);
 
             setItems([
@@ -528,13 +530,73 @@ export default function InvoiceForm({
                     quantity: 1,
                 },
             ]);
-        } catch (error: any) {
-            Swal.fire({
+
+            // Notify the parent so the invoice table can refresh.
+            onSuccess?.();
+
+            await Swal.fire({
+                icon: "success",
+                title: "Invoice Added!",
+                text: "Invoice has been saved successfully.",
+                timer: 2000,
+                showConfirmButton: false,
+            });
+        } catch (error: unknown) {
+            console.error("Failed to add invoice:", error);
+
+            let message = "Failed to add invoice. Please try again.";
+
+            if (error instanceof Error) {
+                message = error.message;
+            }
+
+            // Extract Laravel/Axios validation messages when available.
+            if (
+                typeof error === "object" &&
+                error !== null &&
+                "response" in error
+            ) {
+                const apiError = error as {
+                    response?: {
+                        status?: number;
+                        data?: {
+                            message?: string;
+                            errors?: Record<string, string[] | string>;
+                        };
+                    };
+                };
+
+                const responseData = apiError.response?.data;
+                const validationErrors = responseData?.errors;
+
+                if (validationErrors) {
+                    const firstError = Object.values(validationErrors)
+                        .flatMap((value) =>
+                            Array.isArray(value) ? value : [value]
+                        )
+                        .find(
+                            (value): value is string =>
+                                typeof value === "string" && value.length > 0
+                        );
+
+                    if (firstError) {
+                        message = firstError;
+                    } else if (responseData?.message) {
+                        message = responseData.message;
+                    }
+                } else if (responseData?.message) {
+                    message = responseData.message;
+                }
+
+                if (apiError.response?.status === 401) {
+                    message = "Your session may have expired. Please log in again.";
+                }
+            }
+
+            await Swal.fire({
                 icon: "error",
-                title: "Failed",
-                text:
-                    error?.message ||
-                    "Failed to add invoice.",
+                title: "Invoice Not Saved",
+                text: message,
             });
         } finally {
             setLoading(false);
@@ -550,9 +612,7 @@ export default function InvoiceForm({
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm">
                 <div className="space-y-6">
 
-                    {/* ==================================================
-              INVOICE INFORMATION
-          =================================================== */}
+                    {/* INVOICE INFORMATION */}
 
                     <div>
                         <h2 className="text-lg font-bold text-gray-800">
@@ -567,6 +627,7 @@ export default function InvoiceForm({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                         {/* Invoice Number */}
+
                         <div>
                             <label className="block mb-2 text-sm font-semibold text-[#374151]">
                                 Invoice Number
@@ -582,6 +643,7 @@ export default function InvoiceForm({
                         </div>
 
                         {/* Purchase Order */}
+
                         <div>
                             <label className="block mb-2 text-sm font-semibold text-[#374151]">
                                 Purchase Order
@@ -597,6 +659,7 @@ export default function InvoiceForm({
                         </div>
 
                         {/* Currency */}
+
                         <div>
                             <label className="block mb-2 text-sm font-semibold text-[#374151]">
                                 Currency
@@ -607,46 +670,38 @@ export default function InvoiceForm({
                                     className={`${inputClass} appearance-none pr-12 cursor-pointer`}
                                     value={currencyId ?? ""}
                                     onChange={(e) => {
-                                        const selected =
-                                            currencyList.find(
-                                                (item) =>
-                                                    item.id ===
-                                                    Number(
-                                                        e.target.value
-                                                    )
-                                            );
+                                        const selected = currencyList.find(
+                                            (item) =>
+                                                Number(item.id) ===
+                                                Number(e.target.value)
+                                        );
 
                                         if (selected) {
-                                            setCurrencyId(
-                                                selected.id
-                                            );
-
-                                            setCurrencySymbol(
-                                                selected.symbol
-                                            );
+                                            setCurrencyId(Number(selected.id));
+                                            setCurrencySymbol(selected.symbol || "$");
                                         }
                                     }}
                                 >
-                                    {currencyList.map(
-                                        (item) => (
-                                            <option
-                                                key={item.id}
-                                                value={item.id}
-                                            >
-                                                {item.symbol} -{" "}
-                                                {item.currency}
-                                            </option>
-                                        )
-                                    )}
+                                    <option value="" disabled>
+                                        Select currency
+                                    </option>
+
+                                    {currencyList.map((item) => (
+                                        <option
+                                            key={item.id}
+                                            value={item.id}
+                                        >
+                                            {item.symbol} - {item.currency}
+                                        </option>
+                                    ))}
                                 </select>
 
-                                <ChevronDown
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none"
-                                />
+                                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
                             </div>
                         </div>
 
                         {/* Invoice Date */}
+
                         <div>
                             <label className="block mb-2 text-sm font-semibold text-[#374151]">
                                 Invoice Date
@@ -656,15 +711,12 @@ export default function InvoiceForm({
                                 type="date"
                                 className={inputClass}
                                 value={invoiceDate}
-                                onChange={(e) =>
-                                    setInvoiceDate(
-                                        e.target.value
-                                    )
-                                }
+                                onChange={(e) => setInvoiceDate(e.target.value)}
                             />
                         </div>
 
                         {/* Due Date */}
+
                         <div>
                             <label className="block mb-2 text-sm font-semibold text-[#374151]">
                                 Due Date
@@ -674,19 +726,13 @@ export default function InvoiceForm({
                                 type="date"
                                 className={inputClass}
                                 value={dueDate}
-                                onChange={(e) =>
-                                    setDueDate(
-                                        e.target.value
-                                    )
-                                }
+                                onChange={(e) => setDueDate(e.target.value)}
                             />
                         </div>
 
                     </div>
 
-                    {/* ==================================================
-              COMPANY DETAILS
-          =================================================== */}
+                    {/* COMPANY DETAILS */}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -702,11 +748,7 @@ Kathmandu, Nepal
 Phone: 9800000000`}
                                 className={textareaClass}
                                 value={companyDetails}
-                                onChange={(e) =>
-                                    setCompanyDetails(
-                                        e.target.value
-                                    )
-                                }
+                                onChange={(e) => setCompanyDetails(e.target.value)}
                             />
                         </div>
 
@@ -721,19 +763,13 @@ Phone: 9800000000`}
 Kathmandu, Nepal`}
                                 className={textareaClass}
                                 value={billTo}
-                                onChange={(e) =>
-                                    setBillTo(
-                                        e.target.value
-                                    )
-                                }
+                                onChange={(e) => setBillTo(e.target.value)}
                             />
                         </div>
 
                     </div>
 
-                    {/* ==================================================
-              ITEMS
-          =================================================== */}
+                    {/* ITEMS */}
 
                     <div className="border-t border-gray-100 pt-6">
 
@@ -752,20 +788,7 @@ Kathmandu, Nepal`}
                             <button
                                 type="button"
                                 onClick={handleAddItem}
-                                className="
-                  flex
-                  items-center
-                  gap-2
-                  px-4
-                  h-[42px]
-                  rounded-xl
-                  bg-[#64a11f]
-                  hover:bg-[#579119]
-                  text-white
-                  font-semibold
-                  text-sm
-                  transition-all
-                "
+                                className="flex items-center gap-2 px-4 h-[42px] rounded-xl bg-[#64a11f] hover:bg-[#579119] text-white font-semibold text-sm transition-all"
                             >
                                 <Plus className="w-4 h-4" />
                                 Add Item
@@ -775,186 +798,126 @@ Kathmandu, Nepal`}
 
                         <div className="space-y-4">
 
-                            {items.map(
-                                (item, index) => (
+                            {items.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="rounded-xl border border-gray-200 bg-gray-50 p-4"
+                                >
+                                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
 
-                                    <div
-                                        key={index}
-                                        className="
-                    rounded-xl
-                    border
-                    border-gray-200
-                    bg-gray-50
-                    p-4
-                  "
-                                    >
+                                        {/* Description */}
 
-                                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
+                                        <div className="lg:col-span-6">
+                                            <label className="block mb-2 text-sm font-semibold text-[#374151]">
+                                                Item Description
+                                            </label>
 
-                                            {/* Description */}
-                                            <div className="lg:col-span-6">
-                                                <label className="block mb-2 text-sm font-semibold text-[#374151]">
-                                                    Item Description
-                                                </label>
+                                            <input
+                                                type="text"
+                                                placeholder="Website Development"
+                                                className={inputClass}
+                                                value={item.item_description}
+                                                onChange={(e) =>
+                                                    handleItemChange(
+                                                        index,
+                                                        "item_description",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
 
-                                                <input
-                                                    type="text"
-                                                    placeholder="Website Development"
-                                                    className={inputClass}
-                                                    value={
-                                                        item.item_description
-                                                    }
-                                                    onChange={(
-                                                        e
-                                                    ) =>
-                                                        handleItemChange(
-                                                            index,
-                                                            "item_description",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-                                            </div>
+                                        {/* Unit Cost */}
 
-                                            {/* Unit Cost */}
-                                            <div className="lg:col-span-2">
-                                                <label className="block mb-2 text-sm font-semibold text-[#374151]">
-                                                    Unit Cost
-                                                </label>
+                                        <div className="lg:col-span-2">
+                                            <label className="block mb-2 text-sm font-semibold text-[#374151]">
+                                                Unit Cost
+                                            </label>
 
-                                                <div className="relative">
-                                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-500">
-                                                        {
-                                                            currencySymbol
-                                                        }
-                                                    </span>
-
-                                                    <input
-                                                        type="number"
-                                                        placeholder="50000"
-                                                        className={`${inputClass} pl-10`}
-                                                        value={
-                                                            item.unit_cost
-                                                        }
-                                                        onChange={(
-                                                            e
-                                                        ) =>
-                                                            handleItemChange(
-                                                                index,
-                                                                "unit_cost",
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Quantity */}
-                                            <div className="lg:col-span-2">
-                                                <label className="block mb-2 text-sm font-semibold text-[#374151]">
-                                                    Quantity
-                                                </label>
+                                            <div className="relative">
+                                                <span className="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-gray-500">
+                                                    {currencySymbol}
+                                                </span>
 
                                                 <input
                                                     type="number"
-                                                    min="1"
-                                                    placeholder="1"
-                                                    className={inputClass}
-                                                    value={
-                                                        item.quantity
-                                                    }
-                                                    onChange={(
-                                                        e
-                                                    ) =>
+                                                    min="0"
+                                                    step="any"
+                                                    placeholder="50000"
+                                                    className={`${inputClass} pl-10`}
+                                                    value={item.unit_cost}
+                                                    onChange={(e) =>
                                                         handleItemChange(
                                                             index,
-                                                            "quantity",
+                                                            "unit_cost",
                                                             e.target.value
                                                         )
                                                     }
                                                 />
                                             </div>
+                                        </div>
 
-                                            {/* Total / Remove */}
-                                            <div className="lg:col-span-2">
+                                        {/* Quantity */}
 
-                                                <label className="block mb-2 text-sm font-semibold text-[#374151]">
-                                                    Total
-                                                </label>
+                                        <div className="lg:col-span-2">
+                                            <label className="block mb-2 text-sm font-semibold text-[#374151]">
+                                                Quantity
+                                            </label>
 
-                                                <div className="flex gap-2">
+                                            <input
+                                                type="number"
+                                                min="1"
+                                                step="any"
+                                                placeholder="1"
+                                                className={inputClass}
+                                                value={item.quantity}
+                                                onChange={(e) =>
+                                                    handleItemChange(
+                                                        index,
+                                                        "quantity",
+                                                        e.target.value
+                                                    )
+                                                }
+                                            />
+                                        </div>
 
-                                                    <div
-                                                        className="
-                            flex
-                            items-center
-                            flex-1
-                            h-[52px]
-                            px-3
-                            rounded-xl
-                            bg-white
-                            border
-                            border-gray-200
-                            font-bold
-                            text-gray-800
-                          "
-                                                    >
-                                                        {
-                                                            currencySymbol
-                                                        }
-                                                        {getItemTotal(
-                                                            item
-                                                        ).toLocaleString()}
-                                                    </div>
+                                        {/* Total / Remove */}
 
-                                                    <button
-                                                        type="button"
-                                                        onClick={() =>
-                                                            handleRemoveItem(
-                                                                index
-                                                            )
-                                                        }
-                                                        disabled={
-                                                            items.length ===
-                                                            1
-                                                        }
-                                                        className="
-                            w-[52px]
-                            h-[52px]
-                            rounded-xl
-                            border
-                            border-red-100
-                            bg-red-50
-                            text-red-500
-                            flex
-                            items-center
-                            justify-center
-                            hover:bg-red-100
-                            disabled:opacity-40
-                            disabled:cursor-not-allowed
-                          "
-                                                    >
-                                                        <Trash2 className="w-5 h-5" />
-                                                    </button>
+                                        <div className="lg:col-span-2">
+                                            <label className="block mb-2 text-sm font-semibold text-[#374151]">
+                                                Total
+                                            </label>
 
+                                            <div className="flex gap-2">
+
+                                                <div className="flex items-center flex-1 min-w-0 h-[52px] px-3 rounded-xl bg-white border border-gray-200 font-bold text-gray-800 overflow-hidden">
+                                                    <span className="truncate">
+                                                        {currencySymbol}
+                                                        {getItemTotal(item).toLocaleString()}
+                                                    </span>
                                                 </div>
 
-                                            </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveItem(index)}
+                                                    disabled={items.length === 1}
+                                                    className="w-[52px] h-[52px] rounded-xl border border-red-100 bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                                                >
+                                                    <Trash2 className="w-5 h-5" />
+                                                </button>
 
+                                            </div>
                                         </div>
 
                                     </div>
-
-                                )
-                            )}
+                                </div>
+                            ))}
 
                         </div>
 
                     </div>
 
-                    {/* ==================================================
-              TAX / DISCOUNT / SHIPPING
-          =================================================== */}
+                    {/* TAX / DISCOUNT / SHIPPING */}
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
@@ -966,23 +929,21 @@ Kathmandu, Nepal`}
                             <input
                                 type="number"
                                 min="0"
+                                step="any"
                                 className={inputClass}
                                 value={taxPercentage}
                                 onChange={(e) =>
                                     setTaxPercentage(
-                                        e.target.value ===
-                                            ""
+                                        e.target.value === ""
                                             ? ""
-                                            : Number(
-                                                e.target
-                                                    .value
-                                            )
+                                            : Number(e.target.value)
                                     )
                                 }
                             />
                         </div>
 
                         {/* Discount */}
+
                         <div>
                             <label className="block mb-2 text-sm font-semibold text-[#374151]">
                                 Discount
@@ -996,10 +957,7 @@ Kathmandu, Nepal`}
                                         value={discountType}
                                         onChange={(e) =>
                                             setDiscountType(
-                                                e.target
-                                                    .value as
-                                                | "percent"
-                                                | "flat"
+                                                e.target.value as "percent" | "flat"
                                             )
                                         }
                                     >
@@ -1012,38 +970,31 @@ Kathmandu, Nepal`}
                                         </option>
                                     </select>
 
-                                    <ChevronDown
-                                        className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none"
-                                    />
+                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
                                 </div>
 
                                 <input
                                     type="number"
                                     min="0"
+                                    step="any"
                                     className={inputClass}
                                     value={discountAmount}
                                     onChange={(e) =>
                                         setDiscountAmount(
-                                            e.target.value ===
-                                                ""
+                                            e.target.value === ""
                                                 ? ""
-                                                : Number(
-                                                    e
-                                                        .target
-                                                        .value
-                                                )
+                                                : Number(e.target.value)
                                         )
                                     }
                                     placeholder={
-                                        discountType ===
-                                            "percent"
-                                            ? "10"
-                                            : "5000"
+                                        discountType === "percent" ? "10" : "5000"
                                     }
                                 />
 
                             </div>
                         </div>
+
+                        {/* Shipping Fee */}
 
                         <div>
                             <label className="block mb-2 text-sm font-semibold text-[#374151]">
@@ -1053,17 +1004,14 @@ Kathmandu, Nepal`}
                             <input
                                 type="number"
                                 min="0"
+                                step="any"
                                 className={inputClass}
                                 value={shippingFee}
                                 onChange={(e) =>
                                     setShippingFee(
-                                        e.target.value ===
-                                            ""
+                                        e.target.value === ""
                                             ? ""
-                                            : Number(
-                                                e.target
-                                                    .value
-                                            )
+                                            : Number(e.target.value)
                                     )
                                 }
                             />
@@ -1071,9 +1019,7 @@ Kathmandu, Nepal`}
 
                     </div>
 
-                    {/* ==================================================
-              TOTAL SUMMARY
-          =================================================== */}
+                    {/* TOTAL SUMMARY */}
 
                     <div className="flex justify-end">
 
@@ -1093,8 +1039,7 @@ Kathmandu, Nepal`}
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500">
                                     Discount{" "}
-                                    {discountType ===
-                                        "percent"
+                                    {discountType === "percent"
                                         ? `(${discountAmount || 0}%)`
                                         : "(Flat)"}
                                 </span>
@@ -1107,10 +1052,7 @@ Kathmandu, Nepal`}
 
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-500">
-                                    Tax (
-                                    {taxPercentage ||
-                                        0}
-                                    %)
+                                    Tax ({taxPercentage || 0}%)
                                 </span>
 
                                 <span className="font-semibold">
@@ -1145,9 +1087,7 @@ Kathmandu, Nepal`}
 
                     </div>
 
-                    {/* ==================================================
-              NOTES / BANK
-          =================================================== */}
+                    {/* NOTES / BANK */}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
@@ -1162,9 +1102,7 @@ Kathmandu, Nepal`}
                                 className={textareaClass}
                                 value={notesPaymentTerms}
                                 onChange={(e) =>
-                                    setNotesPaymentTerms(
-                                        e.target.value
-                                    )
+                                    setNotesPaymentTerms(e.target.value)
                                 }
                             />
                         </div>
@@ -1181,41 +1119,18 @@ Account No: 1234567890`}
                                 className={textareaClass}
                                 value={bankAccountDetails}
                                 onChange={(e) =>
-                                    setBankAccountDetails(
-                                        e.target.value
-                                    )
+                                    setBankAccountDetails(e.target.value)
                                 }
                             />
                         </div>
 
                     </div>
 
-                    {/* ==================================================
-              INFORMATION
-          =================================================== */}
+                    {/* INFORMATION */}
 
-                    <div className="
-            flex
-            items-start
-            gap-3
-            rounded-xl
-            border
-            border-gray-100
-            bg-gray-50
-            px-4
-            py-3
-          ">
+                    <div className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
 
-                        <div className="
-              flex
-              items-center
-              justify-center
-              w-8
-              h-8
-              rounded-lg
-              bg-[#64a11f]/10
-              shrink-0
-            ">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#64a11f]/10 shrink-0">
                             <Info
                                 className="w-4 h-4 text-[#64a11f]"
                                 strokeWidth={2.5}
@@ -1235,9 +1150,7 @@ Account No: 1234567890`}
 
                     </div>
 
-                    {/* ==================================================
-              SUBMIT
-          =================================================== */}
+                    {/* SUBMIT */}
 
                     <div className="border-t border-gray-100 pt-5">
 
@@ -1246,37 +1159,34 @@ Account No: 1234567890`}
                             onClick={handleSubmit}
                             disabled={loading}
                             className={`
-                w-full
-                h-[56px]
-                rounded-xl
-                bg-[#64a11f]
-                hover:bg-[#579119]
-                active:scale-[0.98]
-                text-white
-                font-bold
-                text-base
-                shadow-sm
-                transition-all
-                flex
-                items-center
-                justify-center
-                gap-3
-                ${loading
-                                    ? "opacity-50 cursor-not-allowed"
-                                    : "cursor-pointer"
+                                w-full
+                                h-[56px]
+                                rounded-xl
+                                bg-[#64a11f]
+                                hover:bg-[#579119]
+                                active:scale-[0.98]
+                                text-white
+                                font-bold
+                                text-base
+                                shadow-sm
+                                transition-all
+                                flex
+                                items-center
+                                justify-center
+                                gap-3
+                                ${
+                                    loading
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : "cursor-pointer"
                                 }
-              `}
+                            `}
                         >
                             {loading ? (
                                 "Saving..."
                             ) : (
                                 <>
-                                    <span>
-                                        Create Invoice
-                                    </span>
-                                    <span className="text-xl">
-                                        →
-                                    </span>
+                                    <span>Create Invoice</span>
+                                    <span className="text-xl">→</span>
                                 </>
                             )}
                         </button>

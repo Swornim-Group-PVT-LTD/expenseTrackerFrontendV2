@@ -117,11 +117,11 @@ export default function Sidebar() {
               <Link
                 key={i}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 cursor-pointer rounded-lg transition-all duration-300 ease-in-out ${isActive ? "bg-[var(--color2)]" : "hover:bg-white/10"
+                className={`flex items-center gap-3 px-4 py-3 cursor-pointer rounded-lg transition-all duration-300 ease-in-out ${isActive ? "bg-(--color2)" : "hover:bg-white/10"
                   }`}
               >
                 <div
-                  className={`p-2 rounded-lg flex items-center justify-center transition-transform duration-300 ${isActive ? "bg-[var(--color2)]" : item.color
+                  className={`p-2 rounded-lg flex items-center justify-center transition-transform duration-300 ${isActive ? "bg-(--color2)" : item.color
                     }`}
                 >
                   {item.icon}
@@ -159,7 +159,7 @@ export default function Sidebar() {
                   >
                     <div
                       className={`p-2 rounded-lg flex items-center justify-center ${isActive
-                          ? "border-[var(--color2)] border-2"
+                          ? "border-(--color2) border-2"
                           : item.color
                         }`}
                     >
@@ -168,7 +168,7 @@ export default function Sidebar() {
 
                     <span
                       className={`text-[10px] mt-1 capitalize ${isActive
-                          ? "text-[var(--color2)] font-semibold"
+                          ? "text-(--color2) font-semibold"
                           : ""
                         }`}
                     >
@@ -192,7 +192,7 @@ export default function Sidebar() {
               className="flex flex-col items-center justify-center text-xs transition-colors mr-4"
             >
               <div
-                className={`flex items-center justify-center transition-colors duration-200 ${isActive ? "text-[var(--color2)]" : "text-white/80"
+                className={`flex items-center justify-center transition-colors duration-200 ${isActive ? "text-(--color2)" : "text-white/80"
                   }`}
               >
                 {item.icon}
@@ -200,7 +200,7 @@ export default function Sidebar() {
 
               <span
                 className={`text-[10px] mt-1 capitalize ${isActive
-                    ? "text-[var(--color2)] font-semibold"
+                    ? "text-(--color2) font-semibold"
                     : ""
                   }`}
               >
@@ -235,7 +235,7 @@ export default function Sidebar() {
               className="flex flex-col items-center justify-center text-xs transition-colors ml-4"
             >
               <div
-                className={`flex items-center justify-center transition-colors duration-200 ${isActive ? "text-[var(--color2)]" : "text-white/80"
+                className={`flex items-center justify-center transition-colors duration-200 ${isActive ? "text-(--color2)" : "text-white/80"
                   }`}
               >
                 {item.icon}
@@ -243,7 +243,7 @@ export default function Sidebar() {
 
               <span
                 className={`text-[10px] mt-1 capitalize ${isActive
-                    ? "text-[var(--color2)] font-semibold"
+                    ? "text-(--color2) font-semibold"
                     : ""
                   }`}
               >
