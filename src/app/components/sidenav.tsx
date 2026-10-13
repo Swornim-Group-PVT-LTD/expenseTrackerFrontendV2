@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "@/context/SidebarContext";
@@ -13,10 +14,9 @@ import {
   Folder,
   Plus,
   FileText,
-  ReceiptText
+  ReceiptText,
 } from "lucide-react";
 import { useState } from "react";
-
 import { useTranslation } from "react-i18next";
 
 const dashboardData = [
@@ -82,7 +82,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [showAddMenu, setShowAddMenu] = useState(false);
 
-  // Separate add categories from other nav items
+  // Separate add categories from other navigation items
   const addCategories = dashboardData.filter((item) =>
     ["income", "expenses", "savings", "investment"].includes(item.title),
   );
@@ -99,9 +99,8 @@ export default function Sidebar() {
     <>
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden md:flex ${
-          collapsed ? "w-20" : "w-64"
-        } bg-[#082c28] text-white transition-all duration-500 ease-in-out flex-col h-screen fixed left-0 top-0 z-50`}
+        className={`hidden md:flex ${collapsed ? "w-20" : "w-64"
+          } bg-[#082c28] text-white transition-all duration-500 ease-in-out flex-col h-screen fixed left-0 top-0 z-50`}
       >
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -113,31 +112,28 @@ export default function Sidebar() {
         <nav className="flex-1 mt-4 space-y-2">
           {dashboardData.map((item, i) => {
             const isActive = pathname === item.href;
+
             return (
               <Link
                 key={i}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 cursor-pointer rounded-lg transition-all duration-300 ease-in-out ${
-                  isActive ? "bg-[var(--color2)]" : "hover:bg-white/10"
-                }`}
+                className={`flex items-center gap-3 px-4 py-3 cursor-pointer rounded-lg transition-all duration-300 ease-in-out ${isActive ? "bg-[var(--color2)]" : "hover:bg-white/10"
+                  }`}
               >
                 <div
-                  className={`p-2 rounded-lg flex items-center justify-center transition-transform duration-300 ${
-                    isActive ? "bg-[var(--color2)]" : item.color
-                  }`}
+                  className={`p-2 rounded-lg flex items-center justify-center transition-transform duration-300 ${isActive ? "bg-[var(--color2)]" : item.color
+                    }`}
                 >
                   {item.icon}
                 </div>
+
                 <span
-                  className={`text-sm font-medium transition-all duration-300 ${
-                    collapsed
+                  className={`text-sm font-medium capitalize transition-all duration-300 ${collapsed
                       ? "opacity-0 w-0 overflow-hidden"
                       : "opacity-100 w-auto"
-                  }`}
+                    }`}
                 >
                   {t(item.title)}
-
-                  {/* {item.title} */}
                 </span>
               </Link>
             );
@@ -145,7 +141,7 @@ export default function Sidebar() {
         </nav>
       </aside>
 
-      {/* Mobile Bottom Nav */}
+      {/* Mobile Bottom Navigation */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-[#082c28] text-white flex justify-around items-center h-20 z-50 shadow-lg rounded-t-3xl">
         {/* Add Menu Dropdown */}
         {showAddMenu && (
@@ -153,6 +149,7 @@ export default function Sidebar() {
             <div className="grid grid-cols-2 gap-4">
               {addCategories.map((item, i) => {
                 const isActive = pathname === item.href;
+
                 return (
                   <Link
                     key={i}
@@ -161,20 +158,21 @@ export default function Sidebar() {
                     className="flex flex-col items-center justify-center text-xs transition-colors p-2"
                   >
                     <div
-                      className={`p-2 rounded-lg flex items-center justify-center ${
-                        isActive
+                      className={`p-2 rounded-lg flex items-center justify-center ${isActive
                           ? "border-[var(--color2)] border-2"
                           : item.color
-                      }`}
+                        }`}
                     >
                       {item.icon}
                     </div>
+
                     <span
-                      className={`text-[10px] mt-1 ${
-                        isActive ? "text-[var(--color2)] font-semibold" : ""
-                      }`}
+                      className={`text-[10px] mt-1 capitalize ${isActive
+                          ? "text-[var(--color2)] font-semibold"
+                          : ""
+                        }`}
                     >
-                      {item.title}
+                      {t(item.title)}
                     </span>
                   </Link>
                 );
@@ -183,9 +181,10 @@ export default function Sidebar() {
           </div>
         )}
 
-        {/* Left Nav Items */}
+        {/* Left Navigation Items */}
         {leftNavItems.map((item, i) => {
           const isActive = pathname === item.href;
+
           return (
             <Link
               key={i}
@@ -193,18 +192,19 @@ export default function Sidebar() {
               className="flex flex-col items-center justify-center text-xs transition-colors mr-4"
             >
               <div
-                className={`flex items-center justify-center transition-colors duration-200 ${
-                  isActive ? "text-[var(--color2)]" : "text-white/80"
-                }`}
+                className={`flex items-center justify-center transition-colors duration-200 ${isActive ? "text-[var(--color2)]" : "text-white/80"
+                  }`}
               >
                 {item.icon}
               </div>
+
               <span
-                className={`text-[10px] mt-1 ${
-                  isActive ? "text-[var(--color2)] font-semibold" : ""
-                }`}
+                className={`text-[10px] mt-1 capitalize ${isActive
+                    ? "text-[var(--color2)] font-semibold"
+                    : ""
+                  }`}
               >
-                {item.title}
+                {t(item.title)}
               </span>
             </Link>
           );
@@ -218,12 +218,16 @@ export default function Sidebar() {
           <div className="h-14 w-14 rounded-full bg-green-600 border-4 border-[#082c28] flex items-center justify-center shadow-lg">
             <Plus className="h-6 w-6 text-white" />
           </div>
-          <span className="text-[10px] mt-1 text-white font-semibold">Add</span>
+
+          <span className="text-[10px] mt-1 text-white font-semibold">
+            Add
+          </span>
         </button>
 
-        {/* Right Nav Items */}
+        {/* Right Navigation Items */}
         {rightNavItems.map((item, i) => {
           const isActive = pathname === item.href;
+
           return (
             <Link
               key={i}
@@ -231,18 +235,19 @@ export default function Sidebar() {
               className="flex flex-col items-center justify-center text-xs transition-colors ml-4"
             >
               <div
-                className={`flex items-center justify-center transition-colors duration-200 ${
-                  isActive ? "text-[var(--color2)]" : "text-white/80"
-                }`}
+                className={`flex items-center justify-center transition-colors duration-200 ${isActive ? "text-[var(--color2)]" : "text-white/80"
+                  }`}
               >
                 {item.icon}
               </div>
+
               <span
-                className={`text-[10px] mt-1 ${
-                  isActive ? "text-[var(--color2)] font-semibold" : ""
-                }`}
+                className={`text-[10px] mt-1 capitalize ${isActive
+                    ? "text-[var(--color2)] font-semibold"
+                    : ""
+                  }`}
               >
-                {item.title}
+                {t(item.title)}
               </span>
             </Link>
           );
