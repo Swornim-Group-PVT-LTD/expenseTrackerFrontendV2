@@ -16,7 +16,7 @@ import {
   FileText,
   ReceiptText,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 const dashboardData = [
@@ -80,14 +80,36 @@ export default function Sidebar() {
   const { t } = useTranslation();
   const { collapsed, setCollapsed } = useSidebar();
   const pathname = usePathname();
+
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const [userType, setUserType] = useState<string | null>(null);
+
+  // Get the logged-in user's type
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem("user");
+
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        setUserType(user.user_type ?? null);
+      }
+    } catch (error) {
+      console.error("Unable to read logged-in user information:", error);
+      setUserType(null);
+    }
+  }, []);
+
+  // Show Invoice only for user_type C
+  const visibleDashboardData = dashboardData.filter(
+    (item) => item.title !== "invoice" || userType === "C",
+  );
 
   // Separate add categories from other navigation items
-  const addCategories = dashboardData.filter((item) =>
+  const addCategories = visibleDashboardData.filter((item) =>
     ["income", "expenses", "savings", "investment"].includes(item.title),
   );
 
-  const otherNavItems = dashboardData.filter(
+  const otherNavItems = visibleDashboardData.filter(
     (item) =>
       !["income", "expenses", "savings", "investment"].includes(item.title),
   );
@@ -99,8 +121,9 @@ export default function Sidebar() {
     <>
       {/* Desktop Sidebar */}
       <aside
-        className={`hidden md:flex ${collapsed ? "w-20" : "w-64"
-          } bg-[#082c28] text-white transition-all duration-500 ease-in-out flex-col h-screen fixed left-0 top-0 z-50`}
+        className={`hidden md:flex ${
+          collapsed ? "w-20" : "w-64"
+        } bg-[#082c28] text-white transition-all duration-500 ease-in-out flex-col h-screen fixed left-0 top-0 z-50`}
       >
         <button
           onClick={() => setCollapsed(!collapsed)}
@@ -110,28 +133,31 @@ export default function Sidebar() {
         </button>
 
         <nav className="flex-1 mt-4 space-y-2">
-          {dashboardData.map((item, i) => {
+          {visibleDashboardData.map((item, i) => {
             const isActive = pathname === item.href;
 
             return (
               <Link
                 key={i}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 cursor-pointer rounded-lg transition-all duration-300 ease-in-out ${isActive ? "bg-(--color2)" : "hover:bg-white/10"
-                  }`}
+                className={`flex items-center gap-3 px-4 py-3 cursor-pointer rounded-lg transition-all duration-300 ease-in-out ${
+                  isActive ? "bg-(--color2)" : "hover:bg-white/10"
+                }`}
               >
                 <div
-                  className={`p-2 rounded-lg flex items-center justify-center transition-transform duration-300 ${isActive ? "bg-(--color2)" : item.color
-                    }`}
+                  className={`p-2 rounded-lg flex items-center justify-center transition-transform duration-300 ${
+                    isActive ? "bg-(--color2)" : item.color
+                  }`}
                 >
                   {item.icon}
                 </div>
 
                 <span
-                  className={`text-sm font-medium capitalize transition-all duration-300 ${collapsed
+                  className={`text-sm font-medium capitalize transition-all duration-300 ${
+                    collapsed
                       ? "opacity-0 w-0 overflow-hidden"
                       : "opacity-100 w-auto"
-                    }`}
+                  }`}
                 >
                   {t(item.title)}
                 </span>
@@ -158,19 +184,21 @@ export default function Sidebar() {
                     className="flex flex-col items-center justify-center text-xs transition-colors p-2"
                   >
                     <div
-                      className={`p-2 rounded-lg flex items-center justify-center ${isActive
+                      className={`p-2 rounded-lg flex items-center justify-center ${
+                        isActive
                           ? "border-(--color2) border-2"
                           : item.color
-                        }`}
+                      }`}
                     >
                       {item.icon}
                     </div>
 
                     <span
-                      className={`text-[10px] mt-1 capitalize ${isActive
+                      className={`text-[10px] mt-1 capitalize ${
+                        isActive
                           ? "text-(--color2) font-semibold"
                           : ""
-                        }`}
+                      }`}
                     >
                       {t(item.title)}
                     </span>
@@ -192,17 +220,19 @@ export default function Sidebar() {
               className="flex flex-col items-center justify-center text-xs transition-colors mr-4"
             >
               <div
-                className={`flex items-center justify-center transition-colors duration-200 ${isActive ? "text-(--color2)" : "text-white/80"
-                  }`}
+                className={`flex items-center justify-center transition-colors duration-200 ${
+                  isActive ? "text-(--color2)" : "text-white/80"
+                }`}
               >
                 {item.icon}
               </div>
 
               <span
-                className={`text-[10px] mt-1 capitalize ${isActive
+                className={`text-[10px] mt-1 capitalize ${
+                  isActive
                     ? "text-(--color2) font-semibold"
                     : ""
-                  }`}
+                }`}
               >
                 {t(item.title)}
               </span>
@@ -235,17 +265,19 @@ export default function Sidebar() {
               className="flex flex-col items-center justify-center text-xs transition-colors ml-4"
             >
               <div
-                className={`flex items-center justify-center transition-colors duration-200 ${isActive ? "text-(--color2)" : "text-white/80"
-                  }`}
+                className={`flex items-center justify-center transition-colors duration-200 ${
+                  isActive ? "text-(--color2)" : "text-white/80"
+                }`}
               >
                 {item.icon}
               </div>
 
               <span
-                className={`text-[10px] mt-1 capitalize ${isActive
+                className={`text-[10px] mt-1 capitalize ${
+                  isActive
                     ? "text-(--color2) font-semibold"
                     : ""
-                  }`}
+                }`}
               >
                 {t(item.title)}
               </span>
