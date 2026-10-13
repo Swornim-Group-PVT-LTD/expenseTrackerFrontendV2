@@ -1,5 +1,6 @@
+
 export interface AddBalancePayload {
-  add_opening_balance: number;
+  opening_balance: number;
   currency_id: number;
 }
 
@@ -14,7 +15,7 @@ export interface BalanceResponse {
   sn: string;
   customerid: string;
 
-  // New API fields
+  // API balance fields
   master_opening_balance: string;
   opening_balance: string;
   closing_balance: string;

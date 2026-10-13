@@ -8,7 +8,31 @@
       "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
       "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
     ],
+    "[project]/src/app/authentication/register/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
     "[project]/src/app/dashboard/balance/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/catalogue/currencyCatalogue/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/catalogue/expenseCatalogue/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/catalogue/incomeCatalogue/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/catalogue/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/income/page": [
       "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
       "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
     ],
@@ -17,6 +41,10 @@
       "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
     ],
     "[project]/src/app/dashboard/page": [
+      "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
+      "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
+    ],
+    "[project]/src/app/dashboard/statement/page": [
       "static/media/b0a57561b6cb5495-s.p.d06edde1.woff2",
       "static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2"
     ],

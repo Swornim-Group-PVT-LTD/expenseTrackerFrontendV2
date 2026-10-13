@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useState, useContext, useEffect, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface User {
   id: number;
@@ -15,6 +21,10 @@ interface User {
   address: string;
   created_at: string;
   updated_at: string;
+  timezone: string;
+  user_type: string;
+  logo_uploads: string | null;
+  representative_full_name: string | null;
 }
 
 interface AuthContextType {
@@ -30,8 +40,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        localStorage.removeItem("user");
+      }
     }
   }, []);
 
@@ -54,8 +69,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error("useAuth must be used within AuthProvider");
   }
+
   return context;
 };
