@@ -460,6 +460,149 @@ export default function InvoiceTable({
 
   return (
     <>
+      {/* MOBILE INVOICE CARDS */}
+      <div className="space-y-4 lg:hidden">
+        {isLoading ? (
+          <div className="flex justify-center rounded-xl bg-white py-12">
+            <ClipLoader size={28} color="#14383F" />
+          </div>
+        ) : dataToDisplay.length === 0 ? (
+          renderEmptyState(true)
+        ) : (
+          dataToDisplay.map((invoice, index) => {
+            const sn = getInvoiceSn(invoice);
+            const isEditing =
+              editingSn !== null &&
+              sn !== null &&
+              editingSn === sn;
+
+            return (
+              <div
+                key={sn ?? `mobile-invoice-${index}`}
+                className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm"
+              >
+                {/* Card Header */}
+                <div className="flex items-start justify-between gap-3 border-b border-gray-100 bg-gray-50 p-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                      Invoice #{index + 1}
+                    </p>
+
+                    <h3 className="mt-1 break-words text-base font-bold text-[#14383F]">
+                      {invoice.invoice_number || "—"}
+                    </h3>
+
+                    <p className="mt-1 break-words text-sm text-gray-600">
+                      PO: {invoice.purchase_order || "—"}
+                    </p>
+                  </div>
+
+                  <div className="shrink-0">
+                    {renderStatus(invoice)}
+                  </div>
+                </div>
+
+                {/* Invoice Details */}
+                <div className="space-y-3 p-4">
+                  <div>
+                    <p className="text-xs font-medium text-gray-500">
+                      Bill To
+                    </p>
+                    <p className="mt-1 break-words text-sm font-semibold text-gray-800">
+                      {invoice.bill_to || "—"}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-gray-500">
+                        Currency
+                      </p>
+                      <p className="mt-1 break-words text-sm font-semibold text-gray-800">
+                        {getCurrencyDisplay(invoice)}
+                      </p>
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-gray-500">
+                        Invoice Date
+                      </p>
+                      <p className="mt-1 text-sm text-gray-800">
+                        {formatDate(invoice.invoice_date)}
+                      </p>
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-gray-500">
+                        Due Date
+                      </p>
+                      <p className="mt-1 text-sm text-gray-800">
+                        {formatDate(invoice.due_date)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mobile Actions */}
+                <div className="flex items-center justify-end gap-5 border-t border-gray-100 px-4 py-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (sn === null) {
+                        toast.error(
+                          "Invoice serial number is missing."
+                        );
+                        return;
+                      }
+                      void handleView(sn);
+                    }}
+                    disabled={loading || sn === null}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-[#14383F] disabled:opacity-50"
+                  >
+                    <Eye size={17} />
+                    View
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => startEdit(invoice)}
+                    disabled={sn === null}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-orange-600 disabled:opacity-50"
+                  >
+                    <Pencil size={17} />
+                    Edit
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (sn === null) {
+                        toast.error(
+                          "Invoice serial number is missing."
+                        );
+                        return;
+                      }
+                      handleDelete(sn);
+                    }}
+                    disabled={loading || sn === null}
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-red-600 disabled:opacity-50"
+                  >
+                    <Trash2 size={17} />
+                    Delete
+                  </button>
+                </div>
+
+                {/* Inline Edit Form */}
+                {isEditing && (
+                  <div className="border-t border-gray-200 p-3">
+                    {renderEditForm(invoice)}
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
+      </div>
       {/* DESKTOP TABLE */}
       <div className="hidden w-full overflow-x-auto lg:block">
         <Table striped hoverable>

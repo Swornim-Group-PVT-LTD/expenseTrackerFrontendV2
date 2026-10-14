@@ -212,7 +212,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
         <div
           className="
             rounded-2xl
-            bg-gradient-to-r
+            bg-linear-to-r
             from-[#ff4d4d]
             to-[#ff6262]
             p-5
