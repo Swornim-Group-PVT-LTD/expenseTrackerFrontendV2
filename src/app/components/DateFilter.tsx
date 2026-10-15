@@ -56,7 +56,7 @@ export default function DateFilter({
     setError("");
 
     // Validate date range
-    if (useDateRange && from && to && from > to) {
+    if (!useDateRange && from && to && from > to) {
       setError("'From' date cannot be later than 'To' date.");
       return;
     }
@@ -74,9 +74,10 @@ export default function DateFilter({
       }
     }
 
-    const start_date = useDateRange && from ? formatLocalDate(from) : undefined;
+    const start_date =
+      !useDateRange && from ? formatLocalDate(from) : undefined;
 
-    const end_date = useDateRange && to ? formatLocalDate(to) : undefined;
+    const end_date = !useDateRange && to ? formatLocalDate(to) : undefined;
 
     try {
       const response = await fetchService(
@@ -166,7 +167,7 @@ export default function DateFilter({
           <div className="flex items-center gap-3">
             <div
               className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors ${
-                useDateRange
+                !useDateRange
                   ? "bg-[#FFAA00]/15 text-[#FFAA00]"
                   : "bg-white text-gray-400"
               }`}
@@ -176,11 +177,11 @@ export default function DateFilter({
 
             <div>
               <p className="text-sm font-semibold text-gray-700">
-                Filter by date range
+                Filter without date range
               </p>
 
               <p className="text-xs text-gray-400">
-                {useDateRange
+                {!useDateRange
                   ? "Date filtering is enabled"
                   : "Search without date restrictions"}
               </p>
@@ -191,7 +192,7 @@ export default function DateFilter({
           <button
             type="button"
             role="switch"
-            aria-checked={useDateRange}
+            aria-checked={!useDateRange}
             onClick={() => setUseDateRange(!useDateRange)}
             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors duration-200 ${
               useDateRange ? "bg-[#FFAA00]" : "bg-gray-300"
@@ -216,12 +217,12 @@ export default function DateFilter({
 
             <div
               className={`rounded-lg transition-all ${
-                !useDateRange ? "pointer-events-none opacity-45" : ""
+                useDateRange ? "pointer-events-none opacity-45" : ""
               }`}
             >
               <Datepicker
                 value={from}
-                disabled={!useDateRange}
+                disabled={useDateRange}
                 onChange={(date: Date | null) => {
                   setFrom(date || undefined);
                 }}
@@ -238,12 +239,12 @@ export default function DateFilter({
 
             <div
               className={`rounded-lg transition-all ${
-                !useDateRange ? "pointer-events-none opacity-45" : ""
+                useDateRange ? "pointer-events-none opacity-45" : ""
               }`}
             >
               <Datepicker
                 value={to}
-                disabled={!useDateRange}
+                disabled={useDateRange}
                 onChange={(date: Date | null) => {
                   setTo(date || undefined);
                 }}
