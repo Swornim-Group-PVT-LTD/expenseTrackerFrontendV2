@@ -687,28 +687,28 @@ const ExpensesTable = ({
               striped
               className="min-w-[1100px] [&_tbody_tr]:border-b [&_tbody_tr]:border-gray-500"
             >
-              <TableHead>
+               <TableHead className="text-lg">
                 <TableRow>
-                  <TableHeadCell className={headingClass}>ID</TableHeadCell>
-                  <TableHeadCell className={headingClass}>
+                  <TableHeadCell>ID</TableHeadCell>
+                  <TableHeadCell>
                     Expenses
                   </TableHeadCell>
-                  <TableHeadCell className={headingClass}>
+                  <TableHeadCell>
                     Remarks
                   </TableHeadCell>
-                  <TableHeadCell className={headingClass}>
+                  <TableHeadCell>
                     Total Expenses
                   </TableHeadCell>
-                  <TableHeadCell className={headingClass}>
+                  <TableHeadCell>
                     Receipt
                   </TableHeadCell>
-                  <TableHeadCell className={headingClass}>
+                  <TableHeadCell>
                     Documents
                   </TableHeadCell>
-                  <TableHeadCell className={headingClass}>
+                  <TableHeadCell>
                     Added Date
                   </TableHeadCell>
-                  <TableHeadCell className={headingClass}>
+                  <TableHeadCell>
                     Action
                   </TableHeadCell>
                 </TableRow>
