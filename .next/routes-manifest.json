@@ -1,1 +1,161 @@
-{"version":3,"caseSensitive":false,"basePath":"","rewrites":{"beforeFiles":[],"afterFiles":[],"fallback":[]},"redirects":[{"source":"/:path+/","destination":"/:path+","permanent":true,"internal":true,"regex":"^(?:\\/((?:[^\\/]+?)(?:\\/(?:[^\\/]+?))*))\\/$"}],"headers":[]}
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/authentication/login",
+      "regex": "^/authentication/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/authentication/login(?:/)?$"
+    },
+    {
+      "page": "/authentication/register",
+      "regex": "^/authentication/register(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/authentication/register(?:/)?$"
+    },
+    {
+      "page": "/dashboard",
+      "regex": "^/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/dashboard/balance",
+      "regex": "^/dashboard/balance(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/balance(?:/)?$"
+    },
+    {
+      "page": "/dashboard/catalogue",
+      "regex": "^/dashboard/catalogue(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/catalogue(?:/)?$"
+    },
+    {
+      "page": "/dashboard/catalogue/currencyCatalogue",
+      "regex": "^/dashboard/catalogue/currencyCatalogue(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/catalogue/currencyCatalogue(?:/)?$"
+    },
+    {
+      "page": "/dashboard/catalogue/expenseCatalogue",
+      "regex": "^/dashboard/catalogue/expenseCatalogue(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/catalogue/expenseCatalogue(?:/)?$"
+    },
+    {
+      "page": "/dashboard/catalogue/incomeCatalogue",
+      "regex": "^/dashboard/catalogue/incomeCatalogue(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/catalogue/incomeCatalogue(?:/)?$"
+    },
+    {
+      "page": "/dashboard/catalogue/investmentCatalogue",
+      "regex": "^/dashboard/catalogue/investmentCatalogue(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/catalogue/investmentCatalogue(?:/)?$"
+    },
+    {
+      "page": "/dashboard/catalogue/savingCatalogue",
+      "regex": "^/dashboard/catalogue/savingCatalogue(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/catalogue/savingCatalogue(?:/)?$"
+    },
+    {
+      "page": "/dashboard/expenses",
+      "regex": "^/dashboard/expenses(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/expenses(?:/)?$"
+    },
+    {
+      "page": "/dashboard/income",
+      "regex": "^/dashboard/income(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/income(?:/)?$"
+    },
+    {
+      "page": "/dashboard/investment",
+      "regex": "^/dashboard/investment(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/investment(?:/)?$"
+    },
+    {
+      "page": "/dashboard/invoice",
+      "regex": "^/dashboard/invoice(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/invoice(?:/)?$"
+    },
+    {
+      "page": "/dashboard/saving",
+      "regex": "^/dashboard/saving(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/saving(?:/)?$"
+    },
+    {
+      "page": "/dashboard/statement",
+      "regex": "^/dashboard/statement(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/dashboard/statement(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/settings",
+      "regex": "^/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/settings(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "RSC",
+    "varyHeader": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Router-Segment-Prefetch",
+    "prefetchHeader": "Next-Router-Prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "Next-Router-Segment-Prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-self.__NEXT_FONT_MANIFEST="{\n  \"app\": {\n    \"[project]/src/app/dashboard/expenses/page\": [\n      \"static/media/b0a57561b6cb5495-s.p.d06edde1.woff2\",\n      \"static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2\"\n    ]\n  },\n  \"appUsingSizeAdjust\": true,\n  \"pages\": {},\n  \"pagesUsingSizeAdjust\": false\n}"
-=======
-self.__NEXT_FONT_MANIFEST="{\n  \"app\": {\n    \"[project]/src/app/dashboard/expenses/page\": [\n      \"static/media/b0a57561b6cb5495-s.p.d06edde1.woff2\",\n      \"static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2\"\n    ],\n    \"[project]/src/app/dashboard/page\": [\n      \"static/media/b0a57561b6cb5495-s.p.d06edde1.woff2\",\n      \"static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2\"\n    ],\n    \"[project]/src/app/page\": [\n      \"static/media/b0a57561b6cb5495-s.p.d06edde1.woff2\",\n      \"static/media/8ee3a1ba4ed5baee-s.p.9593fb78.woff2\"\n    ]\n  },\n  \"appUsingSizeAdjust\": true,\n  \"pages\": {},\n  \"pagesUsingSizeAdjust\": false\n}"
->>>>>>> 0cd9e197ecb51f70102d972cd5d5dbe533dcc6b4
+self.__NEXT_FONT_MANIFEST='{"pages":{},"app":{},"appUsingSizeAdjust":false,"pagesUsingSizeAdjust":false}';
