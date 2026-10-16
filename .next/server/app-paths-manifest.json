@@ -1,4 +1,9 @@
 {
   "/dashboard/expenses/page": "app/dashboard/expenses/page.js",
+<<<<<<< HEAD
   "/favicon.ico/route": "app/favicon.ico/route.js"
+=======
+  "/dashboard/page": "app/dashboard/page.js",
+  "/page": "app/page.js"
+>>>>>>> 0cd9e197ecb51f70102d972cd5d5dbe533dcc6b4
 }
