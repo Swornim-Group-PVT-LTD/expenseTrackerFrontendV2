@@ -1,9 +1,8 @@
 "use client";
-import { useState } from "react";
-import axios from "axios";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import BASE_URL from "@/app/urlConfig/urlConfig";
+import { loginService } from "@/app/services/loginService";
 
 import { useAuth } from "@/context/AuthContext";
 
@@ -11,6 +10,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const loginInProgress = useRef(false);
 
   const { login } = useAuth();
 
@@ -19,27 +20,22 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const res = await axios.post(
-        `${BASE_URL}/api/login`,
-        { email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        },
-      );
+    if (loginInProgress.current) return;
 
-      const token = res.data.access_token;
-      const userData = res.data.user;
+    loginInProgress.current = true;
+    setIsSubmitting(true);
+    setMessage("");
+
+    try {
+      const { access_token: token, user } = await loginService({ email, password });
 
       document.cookie = `access_token=${token}; path=/; Secure; SameSite=Strict`;
-      login(userData);
-      setMessage(res.data.message);
-      router.push("/dashboard");
-    } catch (error: any) {
-      setMessage(`${error.response?.data?.message || "Login failed"}`);
+      login(user);
+      router.replace("/dashboard");
+    } catch (error) {
+      loginInProgress.current = false;
+      setIsSubmitting(false);
+      setMessage(error instanceof Error ? error.message : "Login failed");
     }
   };
 
@@ -77,9 +73,10 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-[var(--color2)] hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg"
+            disabled={isSubmitting}
+            className="w-full bg-[var(--color2)] hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Login
+            {isSubmitting ? "Signing in…" : "Login"}
           </button>
 
           <div className="font-bold text-center">
