@@ -23,6 +23,7 @@ import {
 import { toast } from "react-toastify";
 import {
   getExpenseService,
+  getExpenseAttachment,
   deleteExpenseService,
   updateExpenseService,
 } from "@/app/services/expenseService";
@@ -87,6 +88,8 @@ const ExpensesTable = ({
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
+  const previewRequestRef = useRef<AbortController | null>(null);
+  const previewObjectUrlRef = useRef<string | null>(null);
   const editReceiptInputRef = useRef<HTMLInputElement>(null);
   const editDocumentsInputRef = useRef<HTMLInputElement>(null);
 
@@ -155,15 +158,28 @@ const ExpensesTable = ({
   }, [loadCategories]);
 
   // ATTACHMENT HELPERS
+  const releasePreview = useCallback(() => {
+    previewRequestRef.current?.abort();
+    previewRequestRef.current = null;
+
+    if (previewObjectUrlRef.current) {
+      URL.revokeObjectURL(previewObjectUrlRef.current);
+      previewObjectUrlRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => releasePreview, [releasePreview]);
+
   const closePreview = useCallback(() => {
+    releasePreview();
     setPreviewFile(null);
     setFullScreen(false);
-  }, []);
+  }, [releasePreview]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        if (previewFile) {
+        if (previewFile || previewRequestRef.current) {
           closePreview();
         } else {
           setOpenAttachment(null);
@@ -178,16 +194,6 @@ const ExpensesTable = ({
     };
   }, [previewFile, closePreview]);
 
-  const openPreview = (
-    url: string,
-    fileName: string,
-    fileType: string,
-  ) => {
-    setOpenAttachment(null);
-    setPreviewFile({ url, fileName, fileType });
-    setFullScreen(false);
-  };
-
   const isPdfFile = (file: PreviewFile) =>
     file.fileType === "application/pdf" ||
     file.fileName.toLowerCase().endsWith(".pdf");
@@ -195,6 +201,46 @@ const ExpensesTable = ({
   const isImageFile = (file: PreviewFile) =>
     file.fileType.startsWith("image/") ||
     /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(file.fileName);
+
+  const openPreview = async (
+    url: string,
+    fileName: string,
+    fileType: string,
+  ) => {
+    closePreview();
+    setOpenAttachment(null);
+
+    const file = { url, fileName, fileType };
+    const request = new AbortController();
+    previewRequestRef.current = request;
+
+    try {
+      if (isPdfFile(file) || isImageFile(file)) {
+        const attachment = await getExpenseAttachment(url, request.signal);
+        if (request.signal.aborted) return;
+
+        if (attachment) {
+          // Only allow PDF content in the same-origin blob iframe.
+          if (isPdfFile(file) && attachment.type !== "application/pdf") {
+            throw new Error("Expected a PDF attachment.");
+          }
+
+          file.url = URL.createObjectURL(attachment);
+          previewObjectUrlRef.current = file.url;
+        }
+      }
+
+      setPreviewFile(file);
+    } catch {
+      if (!request.signal.aborted) {
+        toast.error("Unable to load the attachment.");
+      }
+    } finally {
+      if (previewRequestRef.current === request) {
+        previewRequestRef.current = null;
+      }
+    }
+  };
 
   const resetFileInputs = () => {
     if (editReceiptInputRef.current) {

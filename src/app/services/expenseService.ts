@@ -18,6 +18,30 @@ const getToken = (): string => {
   return match[2];
 };
 
+export const getExpenseAttachment = async (
+  url: string,
+  signal: AbortSignal,
+): Promise<Blob | null> => {
+  const apiOrigin = new URL(BASE_URL).origin;
+  const attachmentUrl = new URL(url, apiOrigin);
+
+  // Legacy public files can still be displayed directly.
+  if (
+    attachmentUrl.origin !== apiOrigin ||
+    !attachmentUrl.pathname.startsWith("/api/")
+  ) {
+    return null;
+  }
+
+  const response = await axios.get<Blob>(attachmentUrl.href, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+    responseType: "blob",
+    signal,
+  });
+
+  return response.data;
+};
+
 // ============================================================
 // Add new Expense
 // ============================================================
