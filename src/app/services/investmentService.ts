@@ -1,5 +1,5 @@
 // services/InvestmentService.ts
-import axios from "axios";
+import axios from "@/app/services/apiClient";
 import BASE_URL from "@/app/urlConfig/urlConfig";
 import { AddInvestmentPayload, InvestmentResponse,TotalInvestmentResponse } from "../types/investmentType";
 

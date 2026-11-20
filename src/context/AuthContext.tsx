@@ -2,11 +2,14 @@
 
 import {
   createContext,
+  useCallback,
   useState,
   useContext,
   useEffect,
   ReactNode,
 } from "react";
+
+import { endSession, hasActiveSession, recordSessionActivity } from "@/lib/session";
 
 interface User {
   id: number;
@@ -38,7 +41,22 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
+  const logout = useCallback(() => {
+    setUser(null);
+    endSession();
+  }, []);
+
   useEffect(() => {
+    const checkSession = () => {
+      if (!hasActiveSession()) logout();
+    };
+
+    checkSession();
+    const interval = window.setInterval(checkSession, 5_000);
+    window.addEventListener("focus", checkSession);
+    window.addEventListener("storage", checkSession);
+    document.addEventListener("visibilitychange", checkSession);
+
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
@@ -48,16 +66,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.removeItem("user");
       }
     }
-  }, []);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("focus", checkSession);
+      window.removeEventListener("storage", checkSession);
+      document.removeEventListener("visibilitychange", checkSession);
+    };
+  }, [logout]);
 
   const login = (userData: User) => {
+    recordSessionActivity();
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
   };
 
   return (

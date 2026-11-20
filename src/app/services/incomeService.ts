@@ -1,5 +1,5 @@
 // services/incomeService.ts
-import axios from "axios";
+import axios from "@/app/services/apiClient";
 import BASE_URL from "@/app/urlConfig/urlConfig";
 import { AddIncomePayload, IncomeResponse,TotalIncomeResponse } from "../types/incomeType";
 

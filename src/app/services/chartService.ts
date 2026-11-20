@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "@/app/services/apiClient";
 import BASE_URL from "@/app/urlConfig/urlConfig";
 
 // Helper to get token from cookies

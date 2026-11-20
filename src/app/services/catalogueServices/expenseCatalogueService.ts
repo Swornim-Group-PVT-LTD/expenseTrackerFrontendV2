@@ -1,5 +1,5 @@
 // services/expenseCatalogueService.ts
-import axios from "axios";
+import axios from "@/app/services/apiClient";
 import BASE_URL from "@/app/urlConfig/urlConfig";
 import { AddExpenseCategoryPayload, ExpenseCategoryResponse } from "../../types/catalolgueType/expenseCatalogueType";
 

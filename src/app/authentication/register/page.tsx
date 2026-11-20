@@ -140,14 +140,14 @@ const Register = () => {
       const token = data?.access_token;
       const userData = data?.user;
 
-      if (userData) {
-        login(userData);
-      }
-
       if (token) {
         document.cookie = `access_token=${token}; path=/; ${
           window.location.protocol === "https:" ? "Secure; " : ""
         }SameSite=Strict`;
+      }
+
+      if (token && userData) {
+        login(userData);
       }
 
       setIsSuccess(true);

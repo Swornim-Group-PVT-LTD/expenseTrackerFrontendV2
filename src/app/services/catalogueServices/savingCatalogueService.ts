@@ -1,5 +1,5 @@
 // services/savingCatalogueService.ts
-import axios from "axios";
+import axios from "@/app/services/apiClient";
 import BASE_URL from "@/app/urlConfig/urlConfig";
 import { AddSavingCategoryPayload, SavingCategoryResponse } from "../../types/catalolgueType/savingCatalogueType";
 

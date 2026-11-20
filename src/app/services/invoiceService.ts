@@ -1,6 +1,7 @@
 // src/app/services/invoiceService.ts
 
-import axios from "axios";
+import { isAxiosError } from "axios";
+import axios from "@/app/services/apiClient";
 import BASE_URL from "@/app/urlConfig/urlConfig";
 
 import type {
@@ -54,7 +55,7 @@ export const addInvoiceService = async (
 
     return response.data;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
+    if (isAxiosError(error)) {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
@@ -102,7 +103,7 @@ export const getInvoiceService = async (): Promise<InvoiceResponse[]> => {
       return idA - idB;
     });
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
+    if (isAxiosError(error)) {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
@@ -139,7 +140,7 @@ export const getInvoiceBySnService = async (
 
     return response.data;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
+    if (isAxiosError(error)) {
       throw new Error(
         error.response?.data?.message ||
           error.message ||
@@ -182,7 +183,7 @@ export const updateInvoiceService = async (
 
     return response.data;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
+    if (isAxiosError(error)) {
       throw new Error(
         error.response?.data?.message ||
           error.message ||

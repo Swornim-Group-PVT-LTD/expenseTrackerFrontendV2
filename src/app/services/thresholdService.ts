@@ -1,5 +1,5 @@
 // services/thresholdService.ts
-import axios from "axios";
+import axios from "@/app/services/apiClient";
 import BASE_URL from "@/app/urlConfig/urlConfig";
 import { AddThresholdPayload, CompareExpenseAndThresholdResponse, ThresholdResponse } from "../types/thresholdType";
 

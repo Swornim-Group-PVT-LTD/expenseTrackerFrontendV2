@@ -12,15 +12,15 @@ import {
 import { useAuth } from "@/context/AuthContext";
 import { useSidebar } from "@/context/SidebarContext";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useBalanceVisibility } from "../context/BalanceHideShowContext";
 import BASE_URL from "../urlConfig/urlConfig";
 
 export default function TopNav() {
   const { collapsed } = useSidebar();
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const { isVisible, toggleVisibility } = useBalanceVisibility();
   const { user, logout } = useAuth();
@@ -50,15 +50,6 @@ export default function TopNav() {
   const userLogoUrl = logoPath
     ? `${BASE_URL.replace(/\/+$/, "")}/${logoPath.replace(/^\/+/, "")}`
     : "/user.svg";
-
-  const handleLogout = () => {
-    document.cookie =
-      "access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; SameSite=Strict";
-
-    logout();
-
-    window.location.href = "/authentication/login";
-  };
 
   return (
     <div
@@ -144,7 +135,7 @@ export default function TopNav() {
               </button>
 
               <button
-                onClick={handleLogout}
+                onClick={logout}
                 className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-(--color2)"
               >
                 <LogOut className="h-4 w-4 mr-2" />

@@ -34,8 +34,8 @@ const Login = () => {
       const token = res.data.access_token;
       const userData = res.data.user;
 
-      login(userData);
       document.cookie = `access_token=${token}; path=/; Secure; SameSite=Strict`;
+      login(userData);
       setMessage(res.data.message);
       router.push("/dashboard");
     } catch (error: any) {
