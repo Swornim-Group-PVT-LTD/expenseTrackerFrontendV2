@@ -11,7 +11,7 @@ import {
 
 import { endSession, hasActiveSession, recordSessionActivity } from "@/lib/session";
 
-interface User {
+export interface User {
   id: number;
   customerid: string;
   first_name: string;

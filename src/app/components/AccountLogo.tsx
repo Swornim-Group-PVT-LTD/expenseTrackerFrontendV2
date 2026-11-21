@@ -27,16 +27,18 @@ interface AccountLogoProps {
   alt: string;
   className: string;
   fallback?: string;
+  logoPath?: string | null;
 }
 
 export default function AccountLogo({
   alt,
   className,
   fallback,
+  logoPath,
 }: AccountLogoProps) {
   const { user } = useAuth();
   const [failedLogo, setFailedLogo] = useState<string | null>(null);
-  const logoUrl = getAccountLogoUrl(user?.logo_uploads);
+  const logoUrl = getAccountLogoUrl(logoPath === undefined ? user?.logo_uploads : logoPath);
   const src = logoUrl && logoUrl !== failedLogo ? logoUrl : fallback;
 
   if (!src) return null;
