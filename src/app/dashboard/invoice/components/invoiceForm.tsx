@@ -4,6 +4,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { ChevronDown, Info, Plus, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 import { getCurrencyService } from "@/app/services/catalogueServices/currencyCatalogueService";
 import {
@@ -24,7 +25,7 @@ interface InvoiceItem {
 }
 
 interface InvoiceFormProps {
-    onSuccess?: () => void;
+    onSuccess: () => void;
 }
 
 interface CurrencyOption {
@@ -526,21 +527,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
 
             await addInvoiceService(payload);
 
-            await Swal.fire({
-                icon: "success",
-                title: "Invoice Created",
-                html: `
-                    <div style="text-align:left">
-                        <p><strong>Invoice Number:</strong> ${nextInvoiceNumber}</p>
-                        <p><strong>Purchase Order:</strong> ${nextPurchaseOrder}</p>
-                    </div>
-                `,
-                confirmButtonColor: GREEN,
-            });
-
-            resetForm();
-            await loadInvoiceNumbers();
-            onSuccess?.();
+            toast.success(`Invoice ${nextInvoiceNumber} created successfully.`);
+            onSuccess();
         } catch (error: unknown) {
             console.error("Invoice creation failed:", error);
 

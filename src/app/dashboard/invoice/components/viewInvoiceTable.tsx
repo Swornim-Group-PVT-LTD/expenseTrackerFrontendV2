@@ -121,7 +121,9 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
       }
 
       const invoiceData = Array.isArray(rawInvoiceData)
-        ? (rawInvoiceData as InvoiceResponse[])
+        ? [...(rawInvoiceData as InvoiceResponse[])].sort(
+            (a, b) => Number(b.id ?? 0) - Number(a.id ?? 0),
+          )
         : [];
 
       setInvoices(invoiceData);
