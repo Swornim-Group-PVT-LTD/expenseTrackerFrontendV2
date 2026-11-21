@@ -42,6 +42,7 @@ function errorMessage(error: unknown, fallback: string) {
 export default function AccountDetailsForm() {
   const { login } = useAuth();
   const [profile, setProfile] = useState<User>();
+  const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -61,14 +62,14 @@ export default function AccountDetailsForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (saving || !profile) return;
+    if (!editing || saving || !profile) return;
 
     const form = event.currentTarget;
     const payload = new FormData(form);
     for (const { name } of fields) {
       if (payload.get(name) === (profile[name] ?? "")) payload.delete(name);
     }
-    if (payload.get("user_type") === (profile.user_type ?? "")) payload.delete("user_type");
+    if ((payload.get("user_type") ?? "") === (profile.user_type ?? "")) payload.delete("user_type");
     const logo = payload.get("logo_uploads");
     if (!(logo instanceof File) || !logo.name) payload.delete("logo_uploads");
     if (!payload.get("current_password")) payload.delete("current_password");
@@ -90,7 +91,7 @@ export default function AccountDetailsForm() {
       );
       setProfile(data.user);
       login(data.user);
-      form.reset();
+      setEditing(false);
       setMessage(data.message);
     } catch (requestError) {
       setError(errorMessage(requestError, "Could not save account details."));
@@ -101,11 +102,52 @@ export default function AccountDetailsForm() {
 
   return (
     <section className="rounded-xl border border-gray-200 bg-white p-6 text-gray-900 shadow-sm">
-      <h2 className="mb-4 text-lg font-semibold">Account details</h2>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-lg font-semibold">Account details</h2>
+        {profile && !editing && (
+          <button
+            type="button"
+            className="rounded-lg bg-[#082c28] px-4 py-2 font-medium text-white"
+            onClick={() => {
+              setMessage("");
+              setEditing(true);
+            }}
+          >
+            Edit profile
+          </button>
+        )}
+      </div>
       {error && <p role="alert" className="mb-4 text-sm text-red-700">{error}</p>}
       {message && <p role="status" className="mb-4 text-sm text-green-700">{message}</p>}
       {!profile && !error && <p role="status">Loading account details…</p>}
-      {profile && (
+      {profile && !editing && (
+        <dl className="grid gap-4 sm:grid-cols-2">
+          <div className="sm:col-span-2">
+            <dt className="text-sm font-medium text-gray-600">Account logo</dt>
+            <dd className="mt-1">
+              <AccountLogo
+                logoPath={profile.logo_uploads}
+                alt="Current account logo"
+                fallback="/user.svg"
+                className="h-24 w-24 rounded-lg border border-gray-200 object-contain"
+              />
+            </dd>
+          </div>
+          {fields.map(({ name, label }) => (
+            <div key={name}>
+              <dt className="text-sm font-medium text-gray-600">{label}</dt>
+              <dd className="mt-1 break-words whitespace-pre-wrap">{profile[name] || "—"}</dd>
+            </div>
+          ))}
+          <div>
+            <dt className="text-sm font-medium text-gray-600">Account type</dt>
+            <dd className="mt-1">
+              {profile.user_type === "I" ? "Individual" : profile.user_type === "C" ? "Company" : profile.user_type || "—"}
+            </dd>
+          </div>
+        </dl>
+      )}
+      {profile && editing && (
         <form onSubmit={handleSubmit}>
           <fieldset disabled={saving} className="grid gap-4 sm:grid-cols-2">
             {fields.map((field) => (
@@ -167,9 +209,19 @@ export default function AccountDetailsForm() {
               Confirm new password
               <input name="password_confirmation" type="password" autoComplete="new-password" className={inputClass} />
             </label>
-            <div className="sm:col-span-2">
-              <button className="rounded-lg bg-[#082c28] px-4 py-2 font-medium text-white disabled:opacity-60">
+            <div className="flex flex-wrap gap-3 sm:col-span-2">
+              <button type="submit" className="rounded-lg bg-[#082c28] px-4 py-2 font-medium text-white disabled:opacity-60">
                 {saving ? "Saving…" : "Save account details"}
+              </button>
+              <button
+                type="button"
+                className="rounded-lg border border-gray-300 px-4 py-2 font-medium disabled:opacity-60"
+                onClick={() => {
+                  setError("");
+                  setEditing(false);
+                }}
+              >
+                Cancel
               </button>
             </div>
           </fieldset>
