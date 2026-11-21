@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Home } from "lucide-react";
 import { toast } from "react-toastify";
 
 import SimpleDateFilter from "./components/SimpleDateFilter";
@@ -53,10 +52,6 @@ function StatementOfAccount() {
 
   return (
     <div className="">
-      <div className="flex items-center gap-1 text-md mb-1 md:mb-4 mt-4">
-        <Home className="w-4 h-4" />
-        <span>/Statement of Account</span>
-      </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
         <h1 className="text-2xl font-bold">Statement of Account</h1>

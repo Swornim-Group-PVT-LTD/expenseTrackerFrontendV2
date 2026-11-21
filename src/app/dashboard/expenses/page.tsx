@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-import { Home } from "lucide-react";
 
 import ExpenseForm from "./components/ExpenseForm";
 import BalanceCard from "@/app/components/BalanceCard";
@@ -93,10 +92,6 @@ function Expenses() {
 
   return (
     <div className="">
-      <div className="flex items-center gap-1 text-md mb-1 md:mb-4 mt-4">
-        <Home className="w-4 h-4" />
-        <span>/Add Expenses</span>
-      </div>
 
       <div className="flex items-center gap-3 mb-4">
         {/* Add Threshold */}

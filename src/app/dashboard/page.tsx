@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Home, ArrowUp, ArrowDown, PiggyBank, TrendingUp } from "lucide-react";
+import { ArrowUp, ArrowDown, PiggyBank, TrendingUp } from "lucide-react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useRouter } from "next/navigation";
 
@@ -123,10 +123,6 @@ export default function Dashboard() {
 
   return (
     <main>
-      <div className="flex items-center gap-1 text-md mb-1 md:mb-4 mt-4">
-        <Home className="w-4 h-4" />
-        <span>/Dashboard</span>
-      </div>
 
       <div className="space-y-3 md:space-y-4">
         {/* Header + Add buttons */}
