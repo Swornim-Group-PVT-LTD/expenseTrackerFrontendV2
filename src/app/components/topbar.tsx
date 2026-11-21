@@ -25,6 +25,8 @@ export default function TopNav() {
 
   const { isVisible, toggleVisibility } = useBalanceVisibility();
   const { user, logout } = useAuth();
+  const accountType = user?.user_type?.trim().toLowerCase();
+  const showHeaderLogo = Boolean(user) && accountType !== "i" && accountType !== "individual";
 
   const [open, setOpen] = useState(false);
 
@@ -51,17 +53,18 @@ export default function TopNav() {
         collapsed ? "md:ml-20" : "md:ml-64"
       }`}
     >
-      {/* Logo - Hidden on mobile */}
-      <Link
-        href="/dashboard"
-        className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity"
-      >
-        <AccountLogo
-          fallback="/app-logo.png"
-          alt="Expense Tracker"
-          className="h-10 max-w-40 object-contain"
-        />
-      </Link>
+      {showHeaderLogo && (
+        <Link
+          href="/dashboard"
+          className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
+          <AccountLogo
+            fallback="/app-logo.png"
+            alt="Expense Tracker"
+            className="h-10 max-w-40 object-contain"
+          />
+        </Link>
+      )}
 
       {/* Welcome message - Mobile */}
       <div className="md:hidden">
@@ -74,7 +77,7 @@ export default function TopNav() {
         </span>
       </div>
 
-      <div className="flex items-center gap-2 pr-2 md:gap-3">
+      <div className="ml-auto flex items-center gap-2 pr-2 md:gap-3">
         {/* Welcome message - Desktop */}
         <span className="text-white text-lg font-bold hidden md:block">
           Welcome back, {user?.first_name}
