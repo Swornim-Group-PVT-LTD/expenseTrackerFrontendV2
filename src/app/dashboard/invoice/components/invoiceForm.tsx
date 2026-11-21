@@ -10,6 +10,7 @@ import { getCurrencyService } from "@/app/services/catalogueServices/currencyCat
 import {
     addInvoiceService,
     getInvoiceService,
+    updateInvoiceService,
 } from "@/app/services/invoiceService";
 
 import type { CurrencyResponse } from "@/app/types/currencyType";
@@ -26,6 +27,7 @@ interface InvoiceItem {
 
 interface InvoiceFormProps {
     onSuccess: () => void;
+    edit?: { sn: string; invoice: InvoiceResponse };
 }
 
 interface CurrencyOption {
@@ -189,32 +191,45 @@ function getNextNumber(
     return `${prefix}-${type}-${highest + 1}`;
 }
 
-const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
-    const [invoiceNumber, setInvoiceNumber] = useState("");
-    const [purchaseOrder, setPurchaseOrder] = useState("");
+const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
+    const invoice = edit?.invoice;
+    const [invoiceNumber, setInvoiceNumber] = useState(invoice?.invoice_number ?? "");
+    const [purchaseOrder, setPurchaseOrder] = useState(invoice?.purchase_order ?? "");
 
-    const [companyDetails, setCompanyDetails] = useState("");
-    const [billTo, setBillTo] = useState("");
-    const [invoiceDate, setInvoiceDate] = useState("");
-    const [dueDate, setDueDate] = useState("");
-    const [notesPaymentTerms, setNotesPaymentTerms] = useState("");
-    const [bankAccountDetails, setBankAccountDetails] = useState("");
+    const [companyDetails, setCompanyDetails] = useState(invoice?.company_details ?? "");
+    const [billTo, setBillTo] = useState(invoice?.bill_to ?? "");
+    const [invoiceDate, setInvoiceDate] = useState(invoice?.invoice_date?.slice(0, 10) ?? "");
+    const [dueDate, setDueDate] = useState(invoice?.due_date?.slice(0, 10) ?? "");
+    const [notesPaymentTerms, setNotesPaymentTerms] = useState(invoice?.notes_payment_terms ?? "");
+    const [bankAccountDetails, setBankAccountDetails] = useState(invoice?.bank_account_details ?? "");
 
     const [currencies, setCurrencies] = useState<CurrencyOption[]>([]);
-    const [currencyId, setCurrencyId] = useState<number | null>(null);
+    const [currencyId, setCurrencyId] = useState<number | null>(() => {
+        const currency = invoice?.currency;
+        return Number(invoice?.currency_id ?? (typeof currency === "object" ? currency?.id : null)) || null;
+    });
     const [currencyLoading, setCurrencyLoading] = useState(true);
     const [currencyError, setCurrencyError] = useState("");
 
-    const [taxPercentage, setTaxPercentage] = useState<number | "">(13);
-    const [discountAmount, setDiscountAmount] = useState<number | "">(0);
+    const [taxPercentage, setTaxPercentage] = useState<number | "">(Number(invoice?.tax_percentage ?? (edit ? 0 : 13)));
+    const [discountAmount, setDiscountAmount] = useState<number | "">(Number(invoice?.discount_amount ?? 0));
     const [discountType, setDiscountType] = useState<"percent" | "flat">(
-        "percent",
+        invoice?.discount_type ?? (edit ? "flat" : "percent"),
     );
-    const [shippingFee, setShippingFee] = useState<number | "">(0);
+    const [shippingFee, setShippingFee] = useState<number | "">(Number(invoice?.shipping_fee ?? 0));
 
-    const [items, setItems] = useState<InvoiceItem[]>([createEmptyItem()]);
+    const [items, setItems] = useState<InvoiceItem[]>(() => {
+        const savedItems = invoice?.items ?? invoice?.invoice_items ?? invoice?.invoiceItems ?? invoice?.details;
+        return savedItems?.length
+            ? savedItems.map((item) => ({
+                item_description: item.item_description ?? item.description ?? item.item_name ?? "",
+                unit_cost: Number(item.unit_cost ?? item.unit_price ?? item.rate ?? 0),
+                quantity: Number(item.quantity ?? item.qty ?? 0),
+            }))
+            : [createEmptyItem()];
+    });
 
-    const [loadingNumbers, setLoadingNumbers] = useState(true);
+    const [loadingNumbers, setLoadingNumbers] = useState(!edit);
     const [saving, setSaving] = useState(false);
     const [numberingError, setNumberingError] = useState("");
 
@@ -234,9 +249,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
 
             setCurrencies(availableCurrencies);
 
-            // Never automatically select a currency.
-            setCurrencyId(null);
-
             if (availableCurrencies.length === 0) {
                 setCurrencyError(
                     "No currencies are available. Please check your currency service.",
@@ -246,7 +258,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
             console.error("Unable to load currencies:", error);
 
             setCurrencies([]);
-            setCurrencyId(null);
 
             setCurrencyError(
                 "Unable to load currencies. Please try again.",
@@ -290,8 +301,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
 
     useEffect(() => {
         void loadSavedCurrency();
-        void loadInvoiceNumbers();
-    }, [loadSavedCurrency, loadInvoiceNumbers]);
+        if (!edit) void loadInvoiceNumbers();
+    }, [edit, loadSavedCurrency, loadInvoiceNumbers]);
 
     const subtotal = items.reduce((total, item) => {
         return (
@@ -381,7 +392,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
 
         if (saving || loadingNumbers || currencyLoading) return;
 
-        if (numberingError || !invoiceNumber || !purchaseOrder) {
+        if (!edit && (numberingError || !invoiceNumber || !purchaseOrder)) {
             await Swal.fire({
                 icon: "warning",
                 title: "Invoice Numbers Not Ready",
@@ -403,7 +414,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
             return;
         }
 
-        if (!companyDetails.trim() || !billTo.trim()) {
+        if (!edit && (!companyDetails.trim() || !billTo.trim())) {
             await Swal.fire({
                 icon: "warning",
                 title: "Required Fields",
@@ -413,7 +424,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
             return;
         }
 
-        if (!invoiceDate || !dueDate) {
+        if (!invoiceDate || (!edit && !dueDate)) {
             await Swal.fire({
                 icon: "warning",
                 title: "Date Required",
@@ -423,7 +434,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
             return;
         }
 
-        if (dueDate < invoiceDate) {
+        if (dueDate && dueDate < invoiceDate) {
             await Swal.fire({
                 icon: "warning",
                 title: "Invalid Due Date",
@@ -474,7 +485,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
             (item) =>
                 !item.item_description.trim() ||
                 item.unit_cost === "" ||
-                Number(item.unit_cost) <= 0 ||
+                Number(item.unit_cost) < (edit ? 0 : 0.01) ||
                 item.quantity === "" ||
                 Number(item.quantity) <= 0,
         );
@@ -483,7 +494,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
             await Swal.fire({
                 icon: "warning",
                 title: "Invalid Invoice Items",
-                text: "Every item needs a description, positive unit cost, and positive quantity.",
+                text: "Every item needs a description, a valid unit cost, and positive quantity.",
                 confirmButtonColor: GREEN,
             });
             return;
@@ -492,17 +503,21 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
         setSaving(true);
 
         try {
-            const firstName = getRegisteredFirstName();
+            let nextInvoiceNumber = invoiceNumber;
+            let nextPurchaseOrder = purchaseOrder;
 
-            if (!firstName) {
-                throw new Error("Unable to identify the registered user.");
+            if (!edit) {
+                const firstName = getRegisteredFirstName();
+
+                if (!firstName) {
+                    throw new Error("Unable to identify the registered user.");
+                }
+
+                const prefix = getNamePrefix(firstName);
+                const invoices = normalizeInvoices(await getInvoiceService());
+                nextInvoiceNumber = getNextNumber(invoices, prefix, "INV");
+                nextPurchaseOrder = getNextNumber(invoices, prefix, "PUR");
             }
-
-            const prefix = getNamePrefix(firstName);
-            const invoices = normalizeInvoices(await getInvoiceService());
-
-            const nextInvoiceNumber = getNextNumber(invoices, prefix, "INV");
-            const nextPurchaseOrder = getNextNumber(invoices, prefix, "PUR");
 
             const payload: AddInvoicePayload = {
                 invoice_number: nextInvoiceNumber,
@@ -525,12 +540,16 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
                 })),
             };
 
-            await addInvoiceService(payload);
-
-            toast.success(`Invoice ${nextInvoiceNumber} created successfully.`);
+            if (edit) {
+                await updateInvoiceService(edit.sn, payload);
+                toast.success("Invoice updated successfully.");
+            } else {
+                await addInvoiceService(payload);
+                toast.success(`Invoice ${nextInvoiceNumber} created successfully.`);
+            }
             onSuccess();
         } catch (error: unknown) {
-            console.error("Invoice creation failed:", error);
+            console.error("Invoice save failed:", error);
 
             const apiError = error as {
                 response?: {
@@ -559,7 +578,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
                 confirmButtonColor: GREEN,
             });
 
-            await loadInvoiceNumbers();
+            if (!edit) await loadInvoiceNumbers();
         } finally {
             setSaving(false);
         }
@@ -636,7 +655,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
 
                     <div>
                         <label className={labelClass}>
-                            Company Details <span className="text-red-500">*</span>
+                            Company Details {!edit && <span className="text-red-500">*</span>}
                         </label>
                         <textarea
                             value={companyDetails}
@@ -645,21 +664,21 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
                             }
                             placeholder="Enter company name, address, and contact details"
                             rows={4}
-                            required
+                            required={!edit}
                             className={inputClass}
                         />
                     </div>
 
                     <div>
                         <label className={labelClass}>
-                            Bill To <span className="text-red-500">*</span>
+                            Bill To {!edit && <span className="text-red-500">*</span>}
                         </label>
                         <textarea
                             value={billTo}
                             onChange={(event) => setBillTo(event.target.value)}
                             placeholder="Enter customer name, address, and contact details"
                             rows={4}
-                            required
+                            required={!edit}
                             className={inputClass}
                         />
                     </div>
@@ -738,7 +757,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
                             value={dueDate}
                             min={invoiceDate || undefined}
                             onChange={(event) => setDueDate(event.target.value)}
-                            required
+                            required={!edit}
                             className={inputClass}
                         />
                     </div>
@@ -815,7 +834,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
                                     </label>
                                     <input
                                         type="number"
-                                        min="0.01"
+                                        min={edit ? "0" : "0.01"}
                                         step="0.01"
                                         value={item.unit_cost}
                                         onChange={(event) =>
@@ -837,8 +856,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
                                     </label>
                                     <input
                                         type="number"
-                                        min="1"
-                                        step="1"
+                                        min={edit ? "0.01" : "1"}
+                                        step={edit ? "0.01" : "1"}
                                         value={item.quantity}
                                         onChange={(event) =>
                                             updateItem(
@@ -1037,14 +1056,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
             </section>
 
             <div className="flex flex-wrap justify-end gap-3">
-                <button
+                {!edit && <button
                     type="button"
                     onClick={resetForm}
                     disabled={saving}
                     className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                 >
                     Clear Form
-                </button>
+                </button>}
 
                 <button
                     type="submit"
@@ -1063,7 +1082,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess }) => {
                         ? "Saving Invoice..."
                         : loadingNumbers || currencyLoading
                             ? "Loading..."
-                            : "Save Invoice"}
+                            : edit ? "Save Changes" : "Save Invoice"}
                 </button>
             </div>
         </form>
