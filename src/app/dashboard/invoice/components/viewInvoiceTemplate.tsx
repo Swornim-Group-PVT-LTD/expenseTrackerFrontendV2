@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
 import AccountLogo from "@/app/components/AccountLogo";
+import { useAuth } from "@/context/AuthContext";
 
 import type {
     InvoiceResponse,
@@ -122,10 +123,17 @@ export default function InvoiceTemplate({
     onClose,
     mode = "modal",
 }: InvoiceTemplateProps) {
+    const { user } = useAuth();
     const printRef = useRef<HTMLDivElement>(null);
     const [downloading, setDownloading] = useState(false);
 
     const item = invoice as InvoiceDetails;
+    const issuerName =
+        item.company_details?.trim().split(/\r?\n/, 1)[0]?.trim() ||
+        [user?.first_name, user?.middle_name, user?.last_name]
+            .map((name) => name?.trim())
+            .filter(Boolean)
+            .join(" ");
 
     const items =
         item.items ??
@@ -502,9 +510,11 @@ export default function InvoiceTemplate({
                                             alt="Account logo"
                                             className="mb-4 h-14 max-w-40 object-contain object-left"
                                         />
-                                        <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#F4C95D]">
-                                            Swornim Group
-                                        </p>
+                                        {issuerName && (
+                                            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#F4C95D]">
+                                                {issuerName}
+                                            </p>
+                                        )}
 
                                         <h2 className="mt-3 wrap-break-word text-3xl font-bold sm:text-4xl">
                                             {invoice.invoice_number || "INVOICE"}
