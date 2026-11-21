@@ -465,21 +465,21 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
           )}
         </button>
 
-        <button
-          type="button"
-          onClick={() => {
-            if (sn === null) return;
-
-            window.location.href = `/dashboard/invoice/edit/${encodeURIComponent(
-              String(sn)
-            )}`;
-          }}
-          title="Edit Invoice"
-          aria-label="Edit Invoice"
-          className="rounded-md p-1 text-blue-600 hover:bg-blue-50"
-        >
-          <Pencil size={18} />
-        </button>
+        {sn !== null && getStatus(invoice) === "Active" && (
+          <button
+            type="button"
+            onClick={() => {
+              window.location.href = `/dashboard/invoice/edit/${encodeURIComponent(
+                String(sn)
+              )}`;
+            }}
+            title="Edit Invoice"
+            aria-label="Edit Invoice"
+            className="rounded-md p-1 text-blue-600 hover:bg-blue-50"
+          >
+            <Pencil size={18} />
+          </button>
+        )}
 
         <button
           type="button"
@@ -730,20 +730,20 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
                         View
                       </button>
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (sn === null) return;
-
-                          window.location.href = `/dashboard/invoice/edit/${encodeURIComponent(
-                            String(sn)
-                          )}`;
-                        }}
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600"
-                      >
-                        <Pencil size={17} />
-                        Edit
-                      </button>
+                      {sn !== null && getStatus(invoice) === "Active" && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            window.location.href = `/dashboard/invoice/edit/${encodeURIComponent(
+                              String(sn)
+                            )}`;
+                          }}
+                          className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600"
+                        >
+                          <Pencil size={17} />
+                          Edit
+                        </button>
+                      )}
 
                       <button
                         type="button"
