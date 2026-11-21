@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { X, FileText } from "lucide-react";
 
+import InvoiceBreadcrumbs from "./components/InvoiceBreadcrumbs";
 import InvoiceForm from "../invoice/components/invoiceForm";
 import InvoicesTable from "../invoice/components/viewInvoiceTable";
 import InvoiceTemplate from "../invoice/components/viewInvoiceTemplate";
@@ -42,6 +43,11 @@ export default function Page() {
 
     return (
         <div className="mt-5 space-y-5 p-4">
+            <InvoiceBreadcrumbs
+                page={showForm ? "Add Invoice" : undefined}
+                onReturnToList={() => setShowForm(false)}
+            />
+
             {/* Page Header */}
             <div className="flex items-center justify-between gap-3">
                 <div>
