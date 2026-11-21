@@ -2,7 +2,6 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import AccountLogo from "@/app/components/AccountLogo";
 import { loginService } from "@/app/services/loginService";
 
 import { useAuth } from "@/context/AuthContext";
@@ -44,8 +43,8 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen  bg-gray-50 dark:bg-gray-900 px-5  sm-px-0">
       <div className="bg-[var(--color1)] shadow-xl rounded-xl p-8 w-full max-w-md text-white">
         <div className="flex flex-col items-center mb-6">
-          <AccountLogo
-            fallback="/app-logo.png"
+          <img
+            src="/app-logo.png"
             alt="Expense Tracker"
             className="mb-4 h-20 max-w-full object-contain"
           />
