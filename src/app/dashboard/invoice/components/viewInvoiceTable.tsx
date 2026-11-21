@@ -88,7 +88,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
       case "Rejected":
         return "border-red-200 bg-red-50 text-red-700";
       default:
-        return "border-orange-200 bg-orange-50 text-orange-700";
+        return "border-blue-200 bg-blue-50 text-blue-700";
     }
   };
 
@@ -121,7 +121,9 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
       }
 
       const invoiceData = Array.isArray(rawInvoiceData)
-        ? (rawInvoiceData as InvoiceResponse[])
+        ? [...(rawInvoiceData as InvoiceResponse[])].sort(
+            (a, b) => Number(b.id ?? 0) - Number(a.id ?? 0),
+          )
         : [];
 
       setInvoices(invoiceData);

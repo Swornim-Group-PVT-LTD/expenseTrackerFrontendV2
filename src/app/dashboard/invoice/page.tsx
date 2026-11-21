@@ -66,7 +66,7 @@ export default function Page() {
             </div>
 
             {/* Invoice Form */}
-            {showForm && (
+            {showForm ? (
                 <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-lg font-semibold text-[#14383F]">
@@ -82,14 +82,13 @@ export default function Page() {
                         </button>
                     </div>
 
-                    <InvoiceForm />
+                    <InvoiceForm onSuccess={() => setShowForm(false)} />
+                </div>
+            ) : (
+                <div className="w-full">
+                    <InvoicesTable onViewInvoice={handleViewInvoice} />
                 </div>
             )}
-
-            {/* Invoices Table */}
-            <div className="w-full">
-                <InvoicesTable onViewInvoice={handleViewInvoice} />
-            </div>
 
             {/* Invoice Preview Modal */}
             {selectedInvoice && (
