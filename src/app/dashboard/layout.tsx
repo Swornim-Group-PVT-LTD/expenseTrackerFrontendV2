@@ -2,6 +2,7 @@
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import DashboardBreadcrumbs from "./DashboardBreadcrumbs";
 import Sidebar from "../components/sidenav";
 import Topbar from "../components/topbar";
 import { SidebarProvider, useSidebar } from "@/context/SidebarContext";
@@ -29,6 +30,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
           collapsed ? "md:ml-20" : "md:ml-64"
         }`}
       >
+        <DashboardBreadcrumbs />
         {children}
       </div>
     </CurrencyProvider>

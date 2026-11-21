@@ -1,6 +1,5 @@
 "use client";
 
-import { Home } from "lucide-react";
 import { useState, useEffect } from "react";
 import SavingForm from "./components/SavingForm";
 import BalanceCard from "@/app/components/BalanceCard";
@@ -79,10 +78,6 @@ function Saving() {
 
   return (
     <div className="">
-      <div className="flex items-center gap-1 text-md mb-1 md:mb-4 mt-4">
-        <Home className="w-4 h-4" />
-        <span>/Add Saving</span>
-      </div>
 
       <h1 className="text-2xl font-bold mb-4">Add Saving</h1>
 

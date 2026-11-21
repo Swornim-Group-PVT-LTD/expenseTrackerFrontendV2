@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { X, FileText } from "lucide-react";
 
-import InvoiceBreadcrumbs from "./components/InvoiceBreadcrumbs";
+import Breadcrumbs from "@/app/components/Breadcrumbs";
 import InvoiceForm from "../invoice/components/invoiceForm";
 import InvoicesTable from "../invoice/components/viewInvoiceTable";
 import InvoiceTemplate from "../invoice/components/viewInvoiceTemplate";
@@ -43,9 +43,16 @@ export default function Page() {
 
     return (
         <div className="mt-5 space-y-5 p-4">
-            <InvoiceBreadcrumbs
-                page={showForm ? "Add Invoice" : undefined}
-                onReturnToList={() => setShowForm(false)}
+            <Breadcrumbs
+                parents={[
+                    { label: "Dashboard", href: "/dashboard" },
+                    ...(showForm ? [{
+                        label: "Invoices",
+                        href: "/dashboard/invoice",
+                        onNavigate: () => setShowForm(false),
+                    }] : []),
+                ]}
+                current={showForm ? "Add Invoice" : "Invoices"}
             />
 
             {/* Page Header */}

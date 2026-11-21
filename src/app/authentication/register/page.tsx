@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Breadcrumbs from "@/app/components/Breadcrumbs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -198,10 +199,13 @@ const Register = () => {
     "mb-2 block text-sm font-semibold text-slate-700";
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-4 py-8 sm:px-6 lg:px-8">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 px-4 py-8 sm:px-6 lg:px-8 flex-col gap-3">
       <div className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full bg-teal-100/60 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-40 -right-24 h-96 w-96 rounded-full bg-amber-100/60 blur-3xl" />
 
+      <div className="relative w-full max-w-5xl">
+        <Breadcrumbs parents={[{ label: "Login", href: "/authentication/login" }]} current="Register" />
+      </div>
       <div className="relative w-full max-w-5xl overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-2xl shadow-slate-200/60">
         <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
           {/* Branding panel */}
