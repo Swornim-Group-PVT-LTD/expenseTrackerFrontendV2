@@ -15,7 +15,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useBalanceVisibility } from "../context/BalanceHideShowContext";
-import BASE_URL from "../urlConfig/urlConfig";
+import AccountLogo from "./AccountLogo";
 
 export default function TopNav() {
   const { collapsed } = useSidebar();
@@ -44,13 +44,6 @@ export default function TopNav() {
     };
   }, []);
 
-  // Build the complete URL for the user's uploaded logo.
-  const logoPath = user?.logo_uploads?.trim();
-
-  const userLogoUrl = logoPath
-    ? `${BASE_URL.replace(/\/+$/, "")}/${logoPath.replace(/^\/+/, "")}`
-    : "/user.svg";
-
   return (
     <div
       className={`text-white h-16 bg-[#082c28] shadow-lg z-40 flex items-center justify-between px-3 fixed top-0 right-0 left-0 transition-all duration-500 ${
@@ -62,10 +55,10 @@ export default function TopNav() {
         href="/dashboard"
         className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity"
       >
-        <img
-          src="/app-logo.png"
+        <AccountLogo
+          fallback="/app-logo.png"
           alt="Expense Tracker"
-          className="h-10 object-contain"
+          className="h-10 max-w-40 object-contain"
         />
       </Link>
 
@@ -95,14 +88,10 @@ export default function TopNav() {
           {/* Profile image with hover zoom */}
           <div className="relative group">
             <div className="w-10 h-10 rounded-full bg-[#EFF0F3] flex items-center justify-center overflow-hidden">
-              <img
-                src={userLogoUrl}
+              <AccountLogo
+                fallback="/user.svg"
                 alt="User profile"
                 className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-125 cursor-pointer"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = "/user.svg";
-                }}
               />
             </div>
 

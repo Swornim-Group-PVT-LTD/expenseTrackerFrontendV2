@@ -6,6 +6,7 @@ import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
+import AccountLogo from "@/app/components/AccountLogo";
 
 import type {
     InvoiceResponse,
@@ -497,6 +498,10 @@ export default function InvoiceTemplate({
                             <div className="bg-[#14383F] px-6 py-8 text-white sm:px-10">
                                 <div className="flex flex-col justify-between gap-6 sm:flex-row">
                                     <div>
+                                        <AccountLogo
+                                            alt="Account logo"
+                                            className="mb-4 h-14 max-w-40 object-contain object-left"
+                                        />
                                         <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#F4C95D]">
                                             Swornim Group
                                         </p>

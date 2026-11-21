@@ -23,6 +23,9 @@ import { useAuth } from "@/context/AuthContext";
 // Change this import to the actual path of your existing registration service.
 import registerService from "../../services/registerService";
 
+const logoMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+const maxLogoSize = 2 * 1024 * 1024;
+
 const Register = () => {
   const router = useRouter();
   const { login } = useAuth();
@@ -73,8 +76,8 @@ const Register = () => {
 
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      setMessage("Please select a valid image file.");
+    if (!logoMimeTypes.includes(file.type)) {
+      setMessage("Choose a JPEG, PNG, GIF, or WebP image.");
       setIsSuccess(false);
       setLogoUpload(null);
       setImagePreview(null);
@@ -82,8 +85,8 @@ const Register = () => {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setMessage("Image size must be less than 5 MB.");
+    if (file.size > maxLogoSize) {
+      setMessage("Image size must not exceed 2 MB.");
       setIsSuccess(false);
       setLogoUpload(null);
       setImagePreview(null);
@@ -107,13 +110,13 @@ const Register = () => {
     setMessage("");
     setIsSuccess(false);
 
-    if (logoUpload && !logoUpload.type.startsWith("image/")) {
-      setMessage("Please select a valid image file.");
+    if (logoUpload && !logoMimeTypes.includes(logoUpload.type)) {
+      setMessage("Choose a JPEG, PNG, GIF, or WebP image.");
       return;
     }
 
-    if (logoUpload && logoUpload.size > 5 * 1024 * 1024) {
-      setMessage("Image size must be less than 5 MB.");
+    if (logoUpload && logoUpload.size > maxLogoSize) {
+      setMessage("Image size must not exceed 2 MB.");
       return;
     }
 
@@ -129,7 +132,7 @@ const Register = () => {
       // Send the actual image file. Do not send the database path.
       // The backend should store the image and save its relative path.
       if (logoUpload) {
-        payload.append("logo_upload", logoUpload, logoUpload.name);
+        payload.append("logo_uploads", logoUpload, logoUpload.name);
       }
 
       // Use your existing service instead of calling axios.post here.
@@ -600,20 +603,20 @@ const Register = () => {
                       </p>
                       <p className="mt-1 text-xs leading-5 text-slate-500">
                         Choose a profile picture or company logo.
-                        Image files up to 5 MB.
+                        JPEG, PNG, GIF, or WebP up to 2 MB.
                       </p>
 
                       <label
-                        htmlFor="logo_upload"
+                        htmlFor="logo_uploads"
                         className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-teal-700 hover:text-teal-800"
                       >
                         <ImagePlus size={15} />
                         Choose Image
                         <input
-                          id="logo_upload"
+                          id="logo_uploads"
                           type="file"
-                          name="logo_upload"
-                          accept="image/*"
+                          name="logo_uploads"
+                          accept={logoMimeTypes.join(",")}
                           onChange={handleImageChange}
                           className="sr-only"
                         />
