@@ -4,6 +4,7 @@ import {
   ChevronDown,
   Bell,
   Settings,
+  UserRound,
   HelpCircle,
   LogOut,
   Eye,
@@ -104,6 +105,17 @@ export default function TopNav() {
           {/* Dropdown */}
           {open && (
             <div className="absolute right-0 top-full mt-2 w-48 bg-(--color1) rounded-lg shadow-lg py-2 z-50">
+              <Link
+                href="/dashboard/profile"
+                className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-(--color2)"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setOpen(false);
+                }}
+              >
+                <UserRound className="h-4 w-4 mr-2" aria-hidden="true" />
+                Profile
+              </Link>
               <button
                 className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-(--color2)"
                 onClick={() => {
