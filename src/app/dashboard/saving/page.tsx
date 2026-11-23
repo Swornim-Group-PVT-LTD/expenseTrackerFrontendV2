@@ -5,6 +5,7 @@ import SavingForm from "./components/SavingForm";
 import BalanceCard from "@/app/components/BalanceCard";
 import SavingLineChart from "./components/SavingLineChart";
 import DateFilter from "@/app/components/DateFilter";
+import SavingTransferForm from "./components/SavingTransferForm";
 import SavingTable from "./components/SavingTable";
 import SavingBarChart from "./components/SavingBarChart";
 import { toast } from "react-toastify";
@@ -98,7 +99,8 @@ function Saving() {
       </div>
 
       {/* Added mt-10 here */}
-      <div className="mt-10">
+      <div className="mt-10 space-y-3">
+        <SavingTransferForm onSuccess={handleRefresh} />
         <DateFilter
           fetchService={getSavingByDateRangeService}
           onFilter={handleFilter}
@@ -115,11 +117,16 @@ function Saving() {
             }
 
             downloadService.downloadPDF(
-              data,
+              data.map((row) => ({
+                ...row,
+                add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
+                remarks: row.remarks || row.saving_category,
+              })),
               [
                 { header: "ID", field: "id" },
                 { header: "Saving", field: "add_saving" },
                 { header: "Category", field: "saving_category" },
+                { header: "Remarks", field: "remarks" },
                 { header: "Total Saving", field: "total_saving" },
                 { header: "Date", field: "created_date" },
               ],
@@ -137,11 +144,16 @@ function Saving() {
             }
 
             downloadService.downloadExcel(
-              data,
+              data.map((row) => ({
+                ...row,
+                add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
+                remarks: row.remarks || row.saving_category,
+              })),
               [
                 { header: "ID", field: "id" },
                 { header: "Saving", field: "add_saving" },
                 { header: "Category", field: "saving_category" },
+                { header: "Remarks", field: "remarks" },
                 { header: "Total Saving", field: "total_saving" },
                 { header: "Date", field: "created_date" },
               ],
