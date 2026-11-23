@@ -1,6 +1,5 @@
 "use client";
 import { useRef, useState } from "react";
-import Breadcrumbs from "@/app/components/Breadcrumbs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { loginService } from "@/app/services/loginService";
@@ -41,10 +40,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen  bg-gray-50 dark:bg-gray-900 px-5  sm-px-0 flex-col gap-3">
-      <div className="relative w-full max-w-md">
-        <Breadcrumbs current="Login" />
-      </div>
+    <div className="flex items-center justify-center min-h-screen  bg-gray-50 dark:bg-gray-900 px-5  sm-px-0">
       <div className="bg-[var(--color1)] shadow-xl rounded-xl p-8 w-full max-w-md text-white">
         <div className="flex flex-col items-center mb-6">
           <img
