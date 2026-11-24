@@ -38,7 +38,7 @@ export default function DateFilter() {
           </div>
 
           {/* Search Button */}
-          <button className="bg-[#FFAA00] hover:bg-[#FF9900] text-white font-bold text-lg h-[46px] rounded-lg transition-colors cursor-pointer w-full lg:px-10 lg:w-auto mt-2 lg:mt-0">
+          <button className="search-button font-bold text-lg h-[46px] rounded-lg transition-colors cursor-pointer w-full lg:px-10 lg:w-auto mt-2 lg:mt-0">
             Search
           </button>
         </div>

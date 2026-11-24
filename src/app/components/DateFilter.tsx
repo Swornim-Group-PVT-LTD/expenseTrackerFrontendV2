@@ -279,7 +279,7 @@ export default function DateFilter({
             <button
               type="button"
               onClick={handleSearch}
-              className={`flex h-[46px] w-full items-center justify-center gap-2 rounded-lg bg-[#FFAA00] text-base font-bold text-white shadow-sm transition-all hover:bg-[#FF9900] hover:shadow-md active:scale-[0.98] ${action ? "px-3 sm:px-5" : "px-6 xl:px-8"}`}
+              className={`flex h-[46px] w-full items-center justify-center gap-2 rounded-lg search-button text-base font-bold shadow-sm transition-all hover:shadow-md active:scale-[0.98] ${action ? "px-3 sm:px-5" : "px-6 xl:px-8"}`}
             >
               <Search size={19} strokeWidth={2.5} />
               Search

@@ -141,11 +141,11 @@ export default function SimpleDateFilter({
           <button
             onClick={() => handleSearch()}
             disabled={isLoading}
-            className="flex-1 bg-[var(--color2)] hover:bg-yellow-600 disabled:bg-yellow-400 text-white font-semibold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="flex-1 search-button disabled:opacity-70 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
                 Loading...
               </>
             ) : (

@@ -16,6 +16,15 @@
   --color2: #f7bc4c;
 }
 
+@utility search-button {
+  background-color: #f7bd51;
+  color: #12332d;
+
+  &:hover:not(:disabled) {
+    background-color: #edaf3c;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
