@@ -99,7 +99,7 @@ export default function SavingTransferForm({
       {renderFilters(
         <button
           type="button"
-          className="h-[46px] shrink-0 whitespace-nowrap rounded-lg bg-[#0D312F] px-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#164944] disabled:opacity-50 sm:px-4"
+          className="h-[46px] shrink-0 whitespace-nowrap rounded-lg bg-green-700 px-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-green-800 disabled:opacity-50 sm:px-4"
           onClick={openForm}
           aria-expanded={formOpen}
           disabled={loading || formOpen}
@@ -184,7 +184,7 @@ export default function SavingTransferForm({
               Cancel
             </button>
             {(showSelected || Boolean(options?.length)) && (
-              <button type="submit" disabled={submitting} className="rounded-lg bg-[#0D312F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+              <button type="submit" disabled={submitting} className="rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-800 disabled:opacity-50">
                 {submitting ? "Transferring…" : "Transfer to balance"}
               </button>
             )}
