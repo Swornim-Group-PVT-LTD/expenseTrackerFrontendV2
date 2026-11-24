@@ -14,6 +14,10 @@ export interface SavingResponse {
   created_date: string; // or Date
   updated_date: string; // or Date
   want_to_deduct_from_balance: boolean;
+  is_transfer?: boolean;
+  transferable_amount?: number;
+  source_saving_id?: number | null;
+  remarks?: string | null;
   currency?: string;
   symbol?: string;
 }
@@ -25,3 +29,15 @@ export interface TotalSavingResponse {
   symbol: string;
 }
 
+
+export interface SavingTransferOption {
+  saving_category: string;
+  total_amount: number | string;
+}
+
+export interface SavingTransferPayload {
+  saving_category: string;
+  amount: string;
+  transfer_key: string;
+  remarks?: string;
+}

@@ -5,6 +5,7 @@ import SavingForm from "./components/SavingForm";
 import BalanceCard from "@/app/components/BalanceCard";
 import SavingLineChart from "./components/SavingLineChart";
 import DateFilter from "@/app/components/DateFilter";
+import SavingTransferForm from "./components/SavingTransferForm";
 import SavingTable from "./components/SavingTable";
 import SavingBarChart from "./components/SavingBarChart";
 import { toast } from "react-toastify";
@@ -18,6 +19,7 @@ function Saving() {
   const [categories, setCategories] = useState<SavingCategoryResponse[]>([]);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   const [filteredData, setFilteredData] = useState<SavingResponse[]>([]);
+  const [selected, setSelected] = useState<SavingResponse[]>([]);
   const [allData, setAllData] = useState<SavingResponse[]>([]);
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [currentDateRange, setCurrentDateRange] = useState<{
@@ -27,6 +29,7 @@ function Saving() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleRefresh = async () => {
+    setSelected([]);
     setRefreshTrigger((prev) => prev + 1);
     if (isFilterActive) {
       try {
@@ -48,6 +51,7 @@ function Saving() {
     endDate?: string,
     category?: string, // NEW
   ) => {
+    setSelected([]);
     setFilteredData(data);
     setIsFilterActive(true);
     setCurrentDateRange(
@@ -57,6 +61,7 @@ function Saving() {
   };
 
   const clearFilter = () => {
+    setSelected([]);
     setFilteredData([]);
     setIsFilterActive(false);
     setCurrentDateRange(null);
@@ -98,7 +103,12 @@ function Saving() {
       </div>
 
       {/* Added mt-10 here */}
-      <div className="mt-10">
+      <div className="mt-10 space-y-3">
+        <SavingTransferForm
+          key={selected.map((row) => row.id).join(",")}
+          selected={selected}
+          onSuccess={handleRefresh}
+        />
         <DateFilter
           fetchService={getSavingByDateRangeService}
           onFilter={handleFilter}
@@ -115,11 +125,16 @@ function Saving() {
             }
 
             downloadService.downloadPDF(
-              data,
+              data.map((row) => ({
+                ...row,
+                add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
+                remarks: row.remarks || row.saving_category,
+              })),
               [
                 { header: "ID", field: "id" },
                 { header: "Saving", field: "add_saving" },
                 { header: "Category", field: "saving_category" },
+                { header: "Remarks", field: "remarks" },
                 { header: "Total Saving", field: "total_saving" },
                 { header: "Date", field: "created_date" },
               ],
@@ -137,11 +152,16 @@ function Saving() {
             }
 
             downloadService.downloadExcel(
-              data,
+              data.map((row) => ({
+                ...row,
+                add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
+                remarks: row.remarks || row.saving_category,
+              })),
               [
                 { header: "ID", field: "id" },
                 { header: "Saving", field: "add_saving" },
                 { header: "Category", field: "saving_category" },
+                { header: "Remarks", field: "remarks" },
                 { header: "Total Saving", field: "total_saving" },
                 { header: "Date", field: "created_date" },
               ],
@@ -171,6 +191,10 @@ function Saving() {
         filteredData={isFilterActive ? filteredData : null}
         onSuccess={handleRefresh}
         onDataLoad={setAllData}
+        selectedIds={selected.map((row) => row.id)}
+        onSelect={(row, checked) =>
+          setSelected((rows) => checked ? [...rows, row] : rows.filter((item) => item.id !== row.id))
+        }
       />
     </div>
   );

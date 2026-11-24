@@ -30,11 +30,15 @@ export default function SavingTable({
   filteredData,
   onSuccess,
   onDataLoad,
+  selectedIds,
+  onSelect,
 }: {
   refreshTrigger: number;
   filteredData?: SavingResponse[] | null;
   onSuccess?: () => void;
   onDataLoad?: (data: SavingResponse[]) => void;
+  selectedIds: number[];
+  onSelect: (row: SavingResponse, checked: boolean) => void;
 }) {
   const [saving, setSaving] = useState<SavingResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -142,22 +146,33 @@ export default function SavingTable({
 
       cancelEdit();
     } catch (err) {
-      console.error(err);
-      alert("Failed to update");
+      toast.error(err instanceof Error ? err.message : "Failed to update saving.");
     }
   };
 
-  const handleDelete = (sn: string) => {
+  const handleDelete = async (sn: string) => {
     if (!confirm("Are you sure you want to delete this saving?")) return;
     try {
-      deleteSavingService(sn);
+      await deleteSavingService(sn);
       onSuccess && onSuccess();
       toast.success("saving deleted successfully");
       setSaving(saving.filter((saving) => saving.sn !== sn));
     } catch (error) {
-      console.error("Error deleting saving:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to delete saving.");
     }
   };
+
+  const selectionCheckbox = (row: SavingResponse) =>
+    !row.is_transfer && Number(row.transferable_amount) > 0 ? (
+      <input
+        type="checkbox"
+        checked={selectedIds.includes(row.id)}
+        disabled={selectedIds.length >= 100 && !selectedIds.includes(row.id)}
+        onChange={(event) => onSelect(row, event.target.checked)}
+        aria-label={`Select saving ${row.id} from ${row.saving_category}`}
+        className="mr-2 rounded border-gray-300"
+      />
+    ) : null;
 
   return (
     <>
@@ -206,6 +221,7 @@ export default function SavingTable({
                       className="bg-white dark:border-gray-700 dark:bg-gray-800"
                     >
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {selectionCheckbox(row)}
                         {row.id}
                       </TableCell>
                       <TableCell>
@@ -224,7 +240,7 @@ export default function SavingTable({
                             />
                           </>
                         ) : (
-                          maskAmount(row.add_saving, isVisible, currency)
+                          maskAmount(row.is_transfer ? -Number(row.add_saving) : row.add_saving, isVisible, currency)
                         )}
                       </TableCell>
 
@@ -244,7 +260,7 @@ export default function SavingTable({
                           />
                         ) : (
                           <span>
-                            {row.want_to_deduct_from_balance ? "Yes" : "No"}
+                            {row.is_transfer ? "Transferred to balance" : row.want_to_deduct_from_balance ? "Yes" : "No"}
                           </span>
                         )}
                       </TableCell>
@@ -267,7 +283,9 @@ export default function SavingTable({
                             className="w-full sm:w-80"
                           />
                         ) : (
-                          row.saving_category
+                          row.is_transfer && row.source_saving_id
+                            ? `${row.remarks ?? row.saving_category} · Saving #${row.source_saving_id}`
+                            : row.remarks ?? row.saving_category
                         )}
                       </TableCell>
 
@@ -291,7 +309,7 @@ export default function SavingTable({
                               Cancel
                             </button>
                           </>
-                        ) : (
+                        ) : row.is_transfer ? null : (
                           <button
                             className="text-blue-600 cursor-pointer"
                             onClick={() => startEdit(row)}
@@ -299,13 +317,15 @@ export default function SavingTable({
                             Edit
                           </button>
                         )}
-                        <a
-                          href="#"
-                          className="font-medium text-red-600 hover:underline dark:text-red-500 ml-2"
-                          onClick={() => handleDelete(row.sn)}
-                        >
-                          Delete
-                        </a>
+                        {!row.is_transfer && (
+                          <button
+                            type="button"
+                            className="font-medium text-red-600 hover:underline dark:text-red-500 ml-2"
+                            onClick={() => handleDelete(row.sn)}
+                          >
+                            Delete
+                          </button>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))
@@ -356,6 +376,7 @@ export default function SavingTable({
               {/* Row 1: ID and Actions */}
               <div className="flex justify-between items-center">
                 <span className="text-sm font-bold text-gray-800">
+                  {selectionCheckbox(row)}
                   ID {row.id}
                 </span>
                 <div className="flex gap-1 text-xs font-bold">
@@ -375,7 +396,7 @@ export default function SavingTable({
                         Cancel
                       </button>
                     </>
-                  ) : (
+                  ) : row.is_transfer ? null : (
                     <>
                       <button
                         onClick={() => startEdit(row)}
@@ -434,7 +455,7 @@ export default function SavingTable({
                     </>
                   ) : (
                     <span className="text-sm text-gray-600">
-                      {row.saving_category}
+                      {row.is_transfer ? row.remarks : row.saving_category}
                       {row.want_to_deduct_from_balance && (
                         <span className="text-[10px] ml-1 text-blue-500 font-medium">
                           (Deducted)
@@ -463,7 +484,7 @@ export default function SavingTable({
                     </div>
                   ) : (
                     <span className="text-sm font-bold text-gray-800">
-                      Saving {maskAmount(row.add_saving, isVisible, currency)}
+                      {row.is_transfer ? "Transferred to balance" : "Saving"} {maskAmount(row.is_transfer ? -Number(row.add_saving) : row.add_saving, isVisible, currency)}
                     </span>
                   )}
                 </div>

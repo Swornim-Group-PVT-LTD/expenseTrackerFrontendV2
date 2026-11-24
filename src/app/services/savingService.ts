@@ -2,7 +2,7 @@
 import axios from "@/app/services/apiClient";
 import BASE_URL from "@/app/urlConfig/urlConfig";
 
-import { AddSavingPayload, SavingResponse,TotalSavingResponse } from "@/app/types/savingType";
+import { AddSavingPayload, SavingResponse, SavingTransferOption, SavingTransferPayload, TotalSavingResponse } from "@/app/types/savingType";
 
 // Helper to get token from cookies
 const getToken = (): string => {
@@ -167,3 +167,36 @@ export const getTotalSavingService = async (): Promise<number> => {
     );
   }
 };
+
+export async function getSavingTransferOptions(): Promise<SavingTransferOption[]> {
+  const { data } = await axios.get<{ data: SavingTransferOption[] }>(
+    `${BASE_URL}/api/savings/transfer-options`,
+    { headers: { Authorization: `Bearer ${getToken()}` } },
+  );
+
+  return data.data.filter((option) => Number(option.total_amount) > 0);
+}
+
+export async function transferSavingService(
+  payload: SavingTransferPayload | {
+    entries: { id: number; amount: string }[];
+    transfer_key: string;
+    remarks?: string;
+  },
+): Promise<void> {
+  const endpoint = "entries" in payload ? "transfer-selected" : "transfer";
+  try {
+    await axios.post(`${BASE_URL}/api/savings/${endpoint}`, payload, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    });
+  } catch (error: unknown) {
+    if (error && typeof error === "object" && "response" in error) {
+      const response = error.response as { data?: { message?: string; errors?: Record<string, string[]> } } | undefined;
+      const validation = Object.values(response?.data?.errors ?? {}).flat()[0];
+      if (validation || response?.data?.message) {
+        throw new Error(validation || response?.data?.message);
+      }
+    }
+    throw error;
+  }
+}
