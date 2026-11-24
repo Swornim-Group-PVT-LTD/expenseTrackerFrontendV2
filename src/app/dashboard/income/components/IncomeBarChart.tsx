@@ -69,7 +69,7 @@ const MonthlyIncomeChart = ({ refreshTrigger }: { refreshTrigger: number }) => {
             ]}
           />
 
-          <Bar dataKey="amount" fill="#5EAC24">
+          <Bar dataKey="amount" fill="#056455">
             {/* Amount labels at top of each bar */}
             <LabelList dataKey="amount" position="top" />
           </Bar>

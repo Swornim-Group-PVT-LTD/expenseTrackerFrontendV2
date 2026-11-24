@@ -248,7 +248,7 @@ export default function IncomeTable({
                         {editingSn === row.sn ? (
                           <>
                             <button
-                              className="text-green-600 mr-2 cursor-pointer"
+                              className="text-[#056455] mr-2 cursor-pointer"
                               onClick={() => saveEdit(row.sn)}
                             >
                               Save
@@ -286,7 +286,7 @@ export default function IncomeTable({
                     <TableCell colSpan={6}>
                       <div
                         className="flex justify-between items-center p-4 text-white font-semibold rounded-lg shadow mt-2"
-                        style={{ backgroundColor: "#5eac24" }}
+                        style={{ backgroundColor: "#056455" }}
                       >
                         <span>Total Income</span>
                         <span>
@@ -332,7 +332,7 @@ export default function IncomeTable({
                     <>
                       <button
                         onClick={() => saveEdit(row.sn)}
-                        className="text-green-600 hover:underline"
+                        className="text-[#056455] hover:underline"
                       >
                         Save
                       </button>
@@ -438,7 +438,7 @@ export default function IncomeTable({
         {income.length > 0 && (
           <div
             className="p-4 text-white font-semibold rounded-lg shadow"
-            style={{ backgroundColor: "#5eac24" }}
+            style={{ backgroundColor: "#056455" }}
           >
             <div className="flex justify-between items-center">
               <span>Total Income</span>

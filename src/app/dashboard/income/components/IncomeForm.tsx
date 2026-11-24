@@ -144,8 +144,8 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
           className="
             rounded-2xl
             bg-gradient-to-r
-            from-[#208120]
-            to-[#319331]
+            from-[#e0f5e9]
+            to-[#d5f1e2]
             p-5
             mb-5
             shadow-sm
@@ -153,9 +153,9 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-white/80">Total Income</p>
+              <p className="text-sm font-medium text-[#11554b]">Total Income</p>
 
-              <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-[#082c28] mt-1">
                 {maskAmount(totalIncome, isVisible, currency)}
               </p>
             </div>
@@ -166,11 +166,11 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
                 w-12
                 h-12
                 rounded-xl
-                bg-white/20
+                bg-[#056455]/10
                 flex
                 items-center
                 justify-center
-                text-white
+                text-[#056455]
                 text-xl
                 font-bold
               "
@@ -195,10 +195,10 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
         flex items-center h-[56px] rounded-xl
         border border-gray-200 bg-gray-50 px-4
         transition-all
-        focus-within:border-[#64a11f]
+        focus-within:border-[#056455]
         focus-within:bg-white
         focus-within:ring-4
-        focus-within:ring-[#64a11f]/10
+        focus-within:ring-[#056455]/10
       "
             >
               <span className="text-lg font-bold text-gray-500 mr-3 select-none">
@@ -250,8 +250,8 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
               w-full
               h-[56px]
               rounded-xl
-              bg-[#64a11f]
-              hover:bg-[#579119]
+              bg-[#056455]
+              hover:bg-[#034e43]
               active:scale-[0.98]
               text-white
               font-bold

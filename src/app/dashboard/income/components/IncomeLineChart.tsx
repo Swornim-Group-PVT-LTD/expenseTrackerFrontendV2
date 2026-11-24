@@ -78,7 +78,7 @@ const IncomeLineChart = ({ refreshTrigger }: { refreshTrigger: number }) => {
           <Line
             type="monotone"
             dataKey="amount"
-            stroke="#5EAC24"
+            stroke="#056455"
             strokeWidth={3}
             dot={{ r: 4 }} // small dots at points
             activeDot={{ r: 6 }}
