@@ -54,6 +54,7 @@ export default function SavingTransferForm({
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (submitting || (!bulk && !category)) return;
+    if (!window.confirm("Are you sure you want to transfer savings to your balance?")) return;
 
     transferKey.current ??= crypto.randomUUID();
     setSubmitting(true);
