@@ -125,17 +125,26 @@ export default function Sidebar() {
         }`}
       >
         <div className={`flex h-16 shrink-0 items-center border-b border-white/10 px-4 ${
-          collapsed ? "justify-center" : "justify-start"
+          collapsed ? "justify-center" : "gap-4"
         }`}>
           <button
             type="button"
             onClick={() => setCollapsed(!collapsed)}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-expanded={!collapsed}
-            className="flex size-10 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/5 text-teal-50 transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-amber-300"
+            className="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/5 text-teal-50 transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-amber-300"
           >
             <Menu className="size-5" aria-hidden="true" />
           </button>
+          {!collapsed && (
+            <Link
+              href="/dashboard"
+              aria-label="Expense Tracker dashboard"
+              className="ml-auto flex min-w-0 items-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
+            >
+              <img src="/app-logo.png" alt="" className="h-10 max-w-full object-contain" />
+            </Link>
+          )}
         </div>
 
         <nav aria-label="Dashboard navigation" className="flex-1 space-y-1.5 overflow-y-auto px-3 py-4">
