@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 import { useCurrency } from "@/app/context/CurrencyContext";
 import { maskAmount } from "@/app/utils/maskAmount";
@@ -11,9 +11,11 @@ import type { SavingResponse, SavingTransferOption } from "@/app/types/savingTyp
 export default function SavingTransferForm({
   onSuccess,
   selected,
+  renderFilters,
 }: {
   onSuccess: () => Promise<void>;
   selected: SavingResponse[];
+  renderFilters: (action: ReactNode) => ReactNode;
 }) {
   const [showSelected, setShowSelected] = useState(false);
   const [options, setOptions] = useState<SavingTransferOption[] | null>(null);
@@ -29,6 +31,15 @@ export default function SavingTransferForm({
 
   const bulk = selected.length > 0;
   const total = selected.reduce((cents, row) => cents + Math.round(Number(row.transferable_amount) * 100), 0) / 100;
+
+  const selectionKey = selected.map((row) => row.id).join(",");
+
+  useEffect(() => {
+    setShowSelected(false);
+    setOptions(null);
+    setRemarks("");
+    transferKey.current = null;
+  }, [selectionKey]);
 
   async function openForm() {
     if (bulk) {
@@ -81,101 +92,105 @@ export default function SavingTransferForm({
     }
   }
 
-  if (!showSelected && !options) {
-    return (
-      <button
-        type="button"
-        className="rounded-lg bg-[#0D312F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
-        onClick={openForm}
-        disabled={loading}
-      >
-        {loading ? "Loading savings…" : bulk ? `Transfer selected (${selected.length})` : "Transfer saving"}
-      </button>
-    );
-  }
+  const formOpen = showSelected || options !== null;
 
   return (
-    <form onSubmit={submit} className="rounded-lg border border-gray-200 bg-white p-4">
-      {showSelected ? (
-        <fieldset disabled={submitting} className="space-y-3">
-          <p className="text-sm font-medium">
-            Transfer {selected.length} selected savings entries · {maskAmount(total, isVisible, currency)}
-          </p>
-          <ul className="max-h-44 overflow-y-auto text-sm text-gray-700">
-            {selected.map((row) => (
-              <li key={row.id}>
-                #{row.id} · {row.saving_category} · {maskAmount(row.transferable_amount, isVisible, currency)}
-              </li>
-            ))}
-          </ul>
-          <label className="block text-sm font-medium">
-            Remarks
-            <input
-              value={remarks}
-              onChange={(event) => setRemarks(event.target.value)}
-              placeholder="Optional"
-              maxLength={255}
-              className="mt-1 block w-full rounded-lg border-gray-300"
-            />
-          </label>
-        </fieldset>
-      ) : options?.length ? (
-        <fieldset disabled={submitting} className="grid gap-3 sm:grid-cols-3">
-          <label className="text-sm font-medium">
-            Saving category
-            <select
-              value={category}
-              onChange={(event) => setCategory(event.target.value)}
-              className="mt-1 block w-full rounded-lg border-gray-300"
-              required
-            >
-              {options.map((option) => (
-                <option key={option.saving_category} value={option.saving_category}>
-                  {option.saving_category}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm font-medium">
-            Amount
-            <input
-              type="number"
-              min="0.01"
-              max={availableAmount}
-              step="0.01"
-              value={amount}
-              onChange={(event) => setAmount(event.target.value)}
-              className="mt-1 block w-full rounded-lg border-gray-300"
-              required
-            />
-            <span className="mt-1 block text-xs text-gray-600">
-              Available {maskAmount(Number(availableAmount ?? 0), isVisible, currency)}
-            </span>
-          </label>
-          <label className="text-sm font-medium">
-            Remarks
-            <input
-              value={remarks}
-              onChange={(event) => setRemarks(event.target.value)}
-              placeholder={category}
-              maxLength={255}
-              className="mt-1 block w-full rounded-lg border-gray-300"
-            />
-          </label>
-        </fieldset>
-      ) : (
-        <p className="text-sm text-gray-600">No savings are available to transfer.</p>
+    <>
+      {renderFilters(
+        <button
+          type="button"
+          className="h-[46px] shrink-0 whitespace-nowrap rounded-lg bg-[#0D312F] px-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#164944] disabled:opacity-50 sm:px-4"
+          onClick={openForm}
+          aria-expanded={formOpen}
+          disabled={loading || formOpen}
+        >
+          {loading ? "Loading savings…" : bulk ? `Transfer selected (${selected.length})` : "Transfer saving"}
+        </button>,
       )}
-      <div className="mt-3 flex justify-end gap-2">
-        <button type="button" onClick={() => { setOptions(null); setShowSelected(false); }} disabled={submitting} className="rounded-lg border px-4 py-2 text-sm">
-          Cancel
-        </button>
-        {(showSelected || Boolean(options?.length)) && (
-          <button type="submit" disabled={submitting} className="rounded-lg bg-[#0D312F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
-            {submitting ? "Transferring…" : "Transfer to balance"}
-          </button>
-        )}
-      </div>
-    </form>
+      {formOpen && (
+        <form onSubmit={submit} className="rounded-lg border border-gray-200 bg-white p-4">
+          {showSelected ? (
+            <fieldset disabled={submitting} className="space-y-3">
+              <p className="text-sm font-medium">
+                Transfer {selected.length} selected savings entries · {maskAmount(total, isVisible, currency)}
+              </p>
+              <ul className="max-h-44 overflow-y-auto text-sm text-gray-700">
+                {selected.map((row) => (
+                  <li key={row.id}>
+                    #{row.id} · {row.saving_category} · {maskAmount(row.transferable_amount, isVisible, currency)}
+                  </li>
+                ))}
+              </ul>
+              <label className="block text-sm font-medium">
+                Remarks
+                <input
+                  value={remarks}
+                  onChange={(event) => setRemarks(event.target.value)}
+                  placeholder="Optional"
+                  maxLength={255}
+                  className="mt-1 block w-full rounded-lg border-gray-300"
+                />
+              </label>
+            </fieldset>
+          ) : options?.length ? (
+            <fieldset disabled={submitting} className="grid gap-3 sm:grid-cols-3">
+              <label className="text-sm font-medium">
+                Saving category
+                <select
+                  value={category}
+                  onChange={(event) => setCategory(event.target.value)}
+                  className="mt-1 block w-full rounded-lg border-gray-300"
+                  required
+                >
+                  {options.map((option) => (
+                    <option key={option.saving_category} value={option.saving_category}>
+                      {option.saving_category}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="text-sm font-medium">
+                Amount
+                <input
+                  type="number"
+                  min="0.01"
+                  max={availableAmount}
+                  step="0.01"
+                  value={amount}
+                  onChange={(event) => setAmount(event.target.value)}
+                  className="mt-1 block w-full rounded-lg border-gray-300"
+                  required
+                />
+                <span className="mt-1 block text-xs text-gray-600">
+                  Available {maskAmount(Number(availableAmount ?? 0), isVisible, currency)}
+                </span>
+              </label>
+              <label className="text-sm font-medium">
+                Remarks
+                <input
+                  value={remarks}
+                  onChange={(event) => setRemarks(event.target.value)}
+                  placeholder={category}
+                  maxLength={255}
+                  className="mt-1 block w-full rounded-lg border-gray-300"
+                />
+              </label>
+            </fieldset>
+          ) : (
+            <p className="text-sm text-gray-600">No savings are available to transfer.</p>
+          )}
+          <div className="mt-3 flex justify-end gap-2">
+            <button type="button" onClick={() => { setOptions(null); setShowSelected(false); }} disabled={submitting} className="rounded-lg border px-4 py-2 text-sm">
+              Cancel
+            </button>
+            {(showSelected || Boolean(options?.length)) && (
+              <button type="submit" disabled={submitting} className="rounded-lg bg-[#0D312F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
+                {submitting ? "Transferring…" : "Transfer to balance"}
+              </button>
+            )}
+          </div>
+        </form>
+      )}
+    </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   CalendarDays,
   Download,
@@ -21,6 +21,7 @@ interface DateFilterProps {
   categoryKey: string;
   onDownloadPDF?: () => void;
   onDownloadExcel?: () => void;
+  action?: ReactNode;
   initialFrom?: Date;
   initialTo?: Date;
 }
@@ -32,6 +33,7 @@ export default function DateFilter({
   categoryKey,
   onDownloadPDF,
   onDownloadExcel,
+  action,
   initialFrom,
   initialTo,
 }: DateFilterProps) {
@@ -207,7 +209,7 @@ export default function DateFilter({
         </div>
 
         {/* ================= FILTER CONTROLS ================= */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className={`grid grid-cols-1 gap-4 md:grid-cols-2 ${action ? "xl:grid-cols-[repeat(3,minmax(0,1fr))_auto]" : "xl:grid-cols-4"}`}>
           {/* FROM */}
           <div className="min-w-0">
             <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-[#716A6A]">
@@ -273,15 +275,16 @@ export default function DateFilter({
           </div>
 
           {/* SEARCH */}
-          <div className="flex items-end">
+          <div className="flex items-end gap-2">
             <button
               type="button"
               onClick={handleSearch}
-              className="flex h-[46px] w-full items-center justify-center gap-2 rounded-lg bg-[#FFAA00] px-6 text-base font-bold text-white shadow-sm transition-all hover:bg-[#FF9900] hover:shadow-md active:scale-[0.98] xl:px-8"
+              className={`flex h-[46px] w-full items-center justify-center gap-2 rounded-lg bg-[#FFAA00] text-base font-bold text-white shadow-sm transition-all hover:bg-[#FF9900] hover:shadow-md active:scale-[0.98] ${action ? "px-3 sm:px-5" : "px-6 xl:px-8"}`}
             >
               <Search size={19} strokeWidth={2.5} />
               Search
             </button>
+            {action}
           </div>
         </div>
 

@@ -105,69 +105,71 @@ function Saving() {
       {/* Added mt-10 here */}
       <div className="mt-10 space-y-3">
         <SavingTransferForm
-          key={selected.map((row) => row.id).join(",")}
           selected={selected}
           onSuccess={handleRefresh}
-        />
-        <DateFilter
-          fetchService={getSavingByDateRangeService}
-          onFilter={handleFilter}
-          categories={categories}
-          categoryKey="saving_category"
-          onDownloadPDF={() => {
-            const data = isFilterActive ? filteredData : allData;
+          renderFilters={(action) => (
+            <DateFilter
+              action={action}
+              fetchService={getSavingByDateRangeService}
+              onFilter={handleFilter}
+              categories={categories}
+              categoryKey="saving_category"
+              onDownloadPDF={() => {
+                const data = isFilterActive ? filteredData : allData;
 
-            if (data.length === 0) {
-              toast.warning(
-                "No data to download. Please apply filters or wait for data to load.",
-              );
-              return;
-            }
+                if (data.length === 0) {
+                  toast.warning(
+                    "No data to download. Please apply filters or wait for data to load.",
+                  );
+                  return;
+                }
 
-            downloadService.downloadPDF(
-              data.map((row) => ({
-                ...row,
-                add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
-                remarks: row.remarks || row.saving_category,
-              })),
-              [
-                { header: "ID", field: "id" },
-                { header: "Saving", field: "add_saving" },
-                { header: "Category", field: "saving_category" },
-                { header: "Remarks", field: "remarks" },
-                { header: "Total Saving", field: "total_saving" },
-                { header: "Date", field: "created_date" },
-              ],
-              "Saving_Report",
-            );
-          }}
-          onDownloadExcel={() => {
-            const data = isFilterActive ? filteredData : allData;
+                downloadService.downloadPDF(
+                  data.map((row) => ({
+                    ...row,
+                    add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
+                    remarks: row.remarks || row.saving_category,
+                  })),
+                  [
+                    { header: "ID", field: "id" },
+                    { header: "Saving", field: "add_saving" },
+                    { header: "Category", field: "saving_category" },
+                    { header: "Remarks", field: "remarks" },
+                    { header: "Total Saving", field: "total_saving" },
+                    { header: "Date", field: "created_date" },
+                  ],
+                  "Saving_Report",
+                );
+              }}
+              onDownloadExcel={() => {
+                const data = isFilterActive ? filteredData : allData;
 
-            if (data.length === 0) {
-              toast.warning(
-                "No data to download. Please apply filters or wait for data to load.",
-              );
-              return;
-            }
+                if (data.length === 0) {
+                  toast.warning(
+                    "No data to download. Please apply filters or wait for data to load.",
+                  );
+                  return;
+                }
 
-            downloadService.downloadExcel(
-              data.map((row) => ({
-                ...row,
-                add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
-                remarks: row.remarks || row.saving_category,
-              })),
-              [
-                { header: "ID", field: "id" },
-                { header: "Saving", field: "add_saving" },
-                { header: "Category", field: "saving_category" },
-                { header: "Remarks", field: "remarks" },
-                { header: "Total Saving", field: "total_saving" },
-                { header: "Date", field: "created_date" },
-              ],
-              "Saving_Report",
-            );
-          }}
+                downloadService.downloadExcel(
+                  data.map((row) => ({
+                    ...row,
+                    add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
+                    remarks: row.remarks || row.saving_category,
+                  })),
+                  [
+                    { header: "ID", field: "id" },
+                    { header: "Saving", field: "add_saving" },
+                    { header: "Category", field: "saving_category" },
+                    { header: "Remarks", field: "remarks" },
+                    { header: "Total Saving", field: "total_saving" },
+                    { header: "Date", field: "created_date" },
+                  ],
+                  "Saving_Report",
+                );
+              }}
+            />
+          )}
         />
       </div>
 
