@@ -82,8 +82,8 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
       </div>
 
       {/* Desktop Table View */}
-      <div className="hidden lg:block overflow-x-auto w-full mt-4">
-        <table className="min-w-full border border-gray-200 divide-y divide-gray-200">
+      <div className="table-surface mt-4 hidden w-full overflow-x-auto lg:block">
+        <table className="ledger-table min-w-full">
           <thead className="bg-gray-100">
             <tr>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ID</th>
@@ -93,7 +93,7 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Action</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white">
             {loading ? <tr>
               <td colSpan={100} className="text-center py-4">
                 <ClipLoader size={22} color="#000000" />

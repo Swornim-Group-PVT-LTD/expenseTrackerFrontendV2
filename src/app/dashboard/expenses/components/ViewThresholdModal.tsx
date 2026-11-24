@@ -161,23 +161,23 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                     ) : (
                         <>
                             {/* Desktop Table View */}
-                            <div className="hidden lg:block overflow-x-auto">
-                                <table className="w-full border-collapse">
+                            <div className="table-surface hidden overflow-x-auto lg:block">
+                                <table className="ledger-table w-full min-w-[640px] border-collapse">
                                     <thead>
                                         <tr className="bg-gray-100">
-                                            <th className="border border-gray-300 px-4 py-2 text-left">ID</th>
-                                            <th className="border border-gray-300 px-4 py-2 text-left">Amount</th>
-                                            <th className="border border-gray-300 px-4 py-2 text-left">Frequency</th>
-                                            <th className="border border-gray-300 px-4 py-2 text-left">Status</th>
-                                            <th className="border border-gray-300 px-4 py-2 text-left">Created Date</th>
-                                            <th className="border border-gray-300 px-4 py-2 text-center">Actions</th>
+                                            <th className="px-4 py-2 text-left">ID</th>
+                                            <th className="px-4 py-2 text-left">Amount</th>
+                                            <th className="px-4 py-2 text-left">Frequency</th>
+                                            <th className="px-4 py-2 text-left">Status</th>
+                                            <th className="px-4 py-2 text-left">Created Date</th>
+                                            <th className="px-4 py-2 text-center">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {thresholds.map((threshold) => (
                                             <tr key={threshold.id} className="hover:bg-gray-50">
-                                                <td className="border border-gray-300 px-4 py-2">{threshold.id}</td>
-                                                <td className="border border-gray-300 px-4 py-2 font-semibold">
+                                                <td className="px-4 py-2">{threshold.id}</td>
+                                                <td className="px-4 py-2 font-semibold">
                                                     {editingSn === threshold.sn ? (
                                                         <input
                                                             type="number"
@@ -194,7 +194,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                         Number(threshold.expense_threshold_amount).toLocaleString()
                                                     )}
                                                 </td>
-                                                <td className="border border-gray-300 px-4 py-2">
+                                                <td className="px-4 py-2">
                                                     {editingSn === threshold.sn ? (
                                                         <select
                                                             className="p-2 border rounded-md border-gray-300 w-full capitalize"
@@ -213,7 +213,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                         <span className="capitalize">{threshold.frequency}</span>
                                                     )}
                                                 </td>
-                                                <td className="border border-gray-300 px-4 py-2">
+                                                <td className="px-4 py-2">
                                                     {editingSn === threshold.sn ? (
                                                         <label className="relative inline-flex items-center cursor-pointer">
                                                             <input
@@ -254,10 +254,10 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                         </span>
                                                     )}
                                                 </td>
-                                                <td className="border border-gray-300 px-4 py-2">
+                                                <td className="px-4 py-2">
                                                     {formatDate(threshold.create_date)}
                                                 </td>
-                                                <td className="border border-gray-300 px-4 py-2 text-center">
+                                                <td className="px-4 py-2 text-center">
                                                     {editingSn === threshold.sn ? (
                                                         <>
                                                             <button

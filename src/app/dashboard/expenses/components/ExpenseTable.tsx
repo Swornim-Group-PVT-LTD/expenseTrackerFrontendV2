@@ -726,12 +726,12 @@ const ExpensesTable = ({
   return (
     <>
       {/* DESKTOP TABLE */}
-      <div className="hidden lg:block overflow-x-auto -mx-4 sm:mx-0">
-        <div className="inline-block min-w-full py-2 align-middle px-4 sm:px-0">
+      <div className="table-surface hidden overflow-x-auto lg:block">
+        <div className="inline-block min-w-full align-middle">
           <div className="overflow-hidden">
             <Table
               striped
-              className="min-w-[1100px] [&_tbody_tr]:border-b [&_tbody_tr]:border-gray-500"
+              className="ledger-table min-w-[1100px]"
             >
                <TableHead className="text-lg">
                 <TableRow>
@@ -782,7 +782,7 @@ const ExpensesTable = ({
 
                     return (
                       <React.Fragment key={expense.sn}>
-                        <TableRow className="border-b border-gray-500 bg-white">
+                        <TableRow className="bg-white">
                           <TableCell className="whitespace-nowrap font-medium text-gray-700">
                             {expense.id}
                           </TableCell>
@@ -869,7 +869,7 @@ const ExpensesTable = ({
                         </TableRow>
 
                         {isEditing && (
-                          <TableRow className="border-b border-gray-500 bg-gray-50">
+                          <TableRow className="bg-gray-50">
                             <TableCell colSpan={8}>
                               <div className="rounded-lg border border-gray-200 bg-white p-4">
                                 <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
@@ -888,7 +888,7 @@ const ExpensesTable = ({
                 )}
 
                 {!isLoading && lastExpense && (
-                  <TableRow className="border-b border-gray-500">
+                  <TableRow>
                     <TableCell colSpan={8}>
                       {renderTotalBar()}
                     </TableCell>

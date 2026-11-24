@@ -50,8 +50,8 @@ export default function BalanceTable({
   return (
     <>
       {/* Desktop Table View */}
-      <div className="hidden lg:block overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
-        <Table hoverable>
+      <div className="hidden lg:block table-surface overflow-x-auto">
+        <Table hoverable className="ledger-table">
           <TableHead className="bg-gray-100 dark:bg-gray-700">
             <TableRow>
               <TableHeadCell>ID</TableHeadCell>

@@ -149,10 +149,10 @@ export default function IncomeTable({
   return (
     <>
       {/* Desktop Table View */}
-      <div className="hidden lg:block overflow-x-auto -mx-4 sm:mx-0">
-        <div className="inline-block min-w-full py-2 align-middle px-4 sm:px-0">
+      <div className="table-surface hidden overflow-x-auto lg:block">
+        <div className="inline-block min-w-full align-middle">
           <div className="overflow-hidden">
-            <Table striped className="min-w-[800px]">
+            <Table striped className="ledger-table min-w-[800px]">
               <TableHead className="text-lg">
                 <TableRow>
                   <TableHeadCell>ID</TableHeadCell>

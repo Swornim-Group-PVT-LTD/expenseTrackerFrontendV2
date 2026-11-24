@@ -579,10 +579,10 @@ export default function InvoiceTemplate({
                                         Invoice Items
                                     </h3>
 
-                                    <div className="overflow-x-auto rounded-lg border border-gray-200">
-                                        <table className="w-full border-collapse text-left text-sm">
+                                    <div className="overflow-x-auto rounded-xl border border-slate-200">
+                                        <table className="ledger-table w-full border-collapse text-left text-sm">
                                             <thead>
-                                                <tr className="bg-[#14383F] text-white">
+                                                <tr className="bg-slate-50 text-[#082c28]">
                                                     <th className="px-4 py-3">
                                                         Description
                                                     </th>

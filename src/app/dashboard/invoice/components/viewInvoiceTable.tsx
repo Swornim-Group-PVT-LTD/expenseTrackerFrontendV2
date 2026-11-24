@@ -547,7 +547,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+      <div className="table-surface overflow-hidden bg-white">
         {loading ? (
           <div className="flex min-h-[220px] items-center justify-center">
             <ClipLoader size={36} color="#14383F" />
@@ -567,7 +567,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
         ) : (
           <>
             <div className="hidden overflow-x-auto md:block">
-              <Table hoverable>
+              <Table hoverable className="ledger-table min-w-[840px]">
                 <TableHead>
                   <TableRow>
                     <TableHeadCell>S.N.</TableHeadCell>
