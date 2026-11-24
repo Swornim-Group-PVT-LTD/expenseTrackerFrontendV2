@@ -51,11 +51,10 @@ function StatementOfAccount() {
   };
 
   return (
-    <div className="">
-
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-        <h1 className="text-2xl font-bold">Statement of Account</h1>
-      </div>
+    <div className="space-y-5">
+      <h1 className="text-2xl font-bold tracking-tight text-[#082c28] sm:text-3xl">
+        Statement of Account
+      </h1>
 
       <SimpleDateFilter
         initialFrom={

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { CalendarDays } from "lucide-react";
 import {
   StatementEntry,
   GroupedStatement,
@@ -87,29 +88,29 @@ export default function StatementTable({
   return (
     <>
       {/* Desktop Table View */}
-      <div className="hidden lg:block overflow-x-auto -mx-4 sm:mx-0">
+      <div className="hidden xl:block">
         <div className="inline-block min-w-full align-middle">
-          <div className="overflow-hidden border border-gray-200 rounded-lg shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             {/* Currency Info Header */}
-            <div className="bg-[var(--color2)] text-white px-6 py-4">
+            <div className="border-b border-white/10 bg-[#082c28] px-6 py-5 text-white">
               <div className="flex justify-between items-center">
                 <div>
                   <h2 className="text-xl font-bold">Account Statement</h2>
-                  <p className="text-sm  mt-1">
+                  <p className="mt-1 text-sm text-teal-100/80">
                     Currency: {currency.currency} ({currency.symbol}) -{" "}
                     {currency.country}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm">Opening Balance</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-sm text-teal-100/80">Opening Balance</p>
+                  <p className="text-2xl font-bold tracking-tight tabular-nums">
                     {formatAmount(openingBalance)}
                   </p>
                 </div>
               </div>
             </div>
 
-            <Table className="min-w-[800px]">
+            <Table className="min-w-[720px] tabular-nums">
               <TableHead className="bg-gray-50">
                 <TableRow>
                   <TableHeadCell className="text-sm font-semibold">
@@ -129,7 +130,7 @@ export default function StatementTable({
                   </TableHeadCell>
                 </TableRow>
               </TableHead>
-              <TableBody className="divide-y">
+              <TableBody className="divide-y divide-slate-100">
                 {data.length === 0 ? (
                   <TableRow>
                     <TableCell
@@ -143,21 +144,21 @@ export default function StatementTable({
                   groupedData.map((group, groupIndex) => (
                     <React.Fragment key={`group-${group.date}-${groupIndex}`}>
                       {/* Date Header Row */}
-                      <TableRow className="bg-[var(--color1)] border-t-2 border-[var(--color2)] text-white">
+                      <TableRow className="border-y border-slate-200 bg-slate-100 text-[#082c28]">
                         <TableCell colSpan={5} className="py-3">
                           <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center justify-center w-8 h-8 bg-white text-white rounded-full text-sm font-bold">
-                              📅
+                            <span className="inline-flex size-7 items-center justify-center rounded-lg bg-white text-[#056455]">
+                              <CalendarDays className="size-4" aria-hidden="true" />
                             </span>
-                            <span className="text-base font-bold">
-                              Date: {formatDate(group.date)}
+                            <span className="text-sm font-semibold">
+                              {formatDate(group.date)}
                             </span>
                           </div>
                         </TableCell>
                       </TableRow>
 
                       {/* Opening Balance Row */}
-                      <TableRow className="bg-green-50">
+                      <TableRow className="bg-teal-50/55">
                         <TableCell className="text-sm text-gray-600">
                           {formatDate(group.date)}
                         </TableCell>
@@ -221,7 +222,7 @@ export default function StatementTable({
                       ))}
 
                       {/* Closing Balance Row */}
-                      <TableRow className="bg-yellow-50 border-b-2 border-yellow-200">
+                      <TableRow className="border-t border-amber-100 bg-amber-50/70">
                         <TableCell className="text-sm text-gray-600"></TableCell>
                         <TableCell className="font-semibold text-gray-800">
                           Closing Balance
@@ -240,13 +241,13 @@ export default function StatementTable({
 
             {/* Footer with Final Closing Balance */}
             {data.length > 0 && (
-              <div className="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-4">
+              <div className="bg-linear-to-r from-[#034e43] to-[#056455] text-white px-6 py-4">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-sm text-green-100">
+                    <p className="text-sm text-teal-50">
                       Final Closing Balance
                     </p>
-                    <p className="text-xs text-green-200 mt-1">
+                    <p className="text-xs text-teal-100 mt-1">
                       As of{" "}
                       {formatDate(
                         groupedData[groupedData.length - 1]?.date ||
@@ -255,7 +256,7 @@ export default function StatementTable({
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-3xl font-bold">
+                    <p className="text-3xl font-bold tracking-tight tabular-nums">
                       {formatAmount(closingBalance)}
                     </p>
                   </div>
@@ -267,19 +268,19 @@ export default function StatementTable({
       </div>
 
       {/* Mobile Card View */}
-      <div className="lg:hidden space-y-6">
+      <div className="space-y-4 xl:hidden">
         {/* Currency Info Card */}
-        <div className="bg-gradient-to-r from-[var(--color2)] to-yellow-600 text-white rounded-lg shadow-lg p-4">
-          <div className="flex justify-between items-start">
+        <div className="rounded-2xl bg-[#082c28] p-4 text-white shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 className="text-lg font-bold">Account Statement</h2>
-              <p className="text-xs text-yellow-100 mt-1">
+              <p className="text-xs text-teal-100/80 mt-1">
                 {currency.currency} ({currency.symbol})
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-yellow-100">Opening</p>
-              <p className="text-xl font-bold">
+              <p className="text-xs text-teal-100/80">Opening Balance</p>
+              <p className="text-xl font-bold tabular-nums">
                 {formatAmount(openingBalance)}
               </p>
             </div>
@@ -294,9 +295,9 @@ export default function StatementTable({
           groupedData.map((group, groupIndex) => (
             <div key={`mobile-group-${group.date}`} className="space-y-3">
               {/* Date Header */}
-              <div className="bg-yellow-50 border-l-4 border-[var(--color2)] rounded-lg p-3 shadow-sm">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl">📅</span>
+                  <CalendarDays className="size-5 shrink-0 text-[#056455]" aria-hidden="true" />
                   <div>
                     <p className="text-sm font-bold text-gray-800">
                       {formatDate(group.date)}
@@ -312,10 +313,10 @@ export default function StatementTable({
               {group.transactions.map((entry, index) => (
                 <div
                   key={`mobile-${entry.id}-${index}`}
-                  className="bg-white rounded-lg shadow-sm p-4 border-l-4 border-gray-200 hover:border-yellow-400 transition-colors"
+                  className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
                 >
                   {/* Type Badge and Description */}
-                  <div className="flex justify-between items-start mb-3">
+                  <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <p className="font-semibold text-gray-900 text-sm">
@@ -335,7 +336,7 @@ export default function StatementTable({
                   </div>
 
                   {/* Credit/Debit and Balance */}
-                  <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-100">
+                  <div className="grid grid-cols-1 gap-2 border-t border-slate-100 pt-3 tabular-nums min-[400px]:grid-cols-3">
                     <div>
                       <p className="text-xs text-gray-500 mb-1">Credit</p>
                       <p className="text-sm font-bold text-green-600">
@@ -367,7 +368,7 @@ export default function StatementTable({
               ))}
 
               {/* Closing Balance */}
-              <div className="bg-yellow-50 rounded-lg p-3 shadow-sm">
+              <div className="rounded-xl border border-amber-100 bg-amber-50 p-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-semibold text-gray-700">
                     Closing Balance
@@ -383,11 +384,11 @@ export default function StatementTable({
 
         {/* Final Closing Balance Card */}
         {data.length > 0 && (
-          <div className="bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg shadow-lg p-4">
+          <div className="bg-linear-to-r from-[#034e43] to-[#056455] rounded-2xl p-4 text-white shadow-sm">
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-sm text-green-100">Final Closing Balance</p>
-                <p className="text-xs text-green-200 mt-1">
+                <p className="text-sm text-teal-50">Final Closing Balance</p>
+                <p className="text-xs text-teal-100 mt-1">
                   As of{" "}
                   {formatDate(
                     groupedData[groupedData.length - 1]?.date ||
@@ -396,7 +397,7 @@ export default function StatementTable({
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold tracking-tight tabular-nums">
                   {formatAmount(closingBalance)}
                 </p>
               </div>

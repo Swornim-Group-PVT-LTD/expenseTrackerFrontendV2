@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, Download, FileDown } from "lucide-react";
+import { Calendar, Download, FileDown, Search } from "lucide-react";
 import { toast } from "react-toastify";
 
 interface SimpleDateFilterProps {
@@ -87,10 +87,10 @@ export default function SimpleDateFilter({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6 mb-6">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="flex flex-col lg:flex-row gap-4 lg:items-end">
         {/* Date Inputs */}
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 min-w-0">
+        <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
           {/* From Date */}
           <div className="flex flex-col">
             <label
@@ -101,14 +101,14 @@ export default function SimpleDateFilter({
             </label>
 
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Calendar aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
 
               <input
                 type="date"
                 id="fromDate"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors [appearance:none] [-webkit-appearance:none]"
+                className="h-11 w-full min-w-0 rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 focus:border-[#056455] focus:outline-none focus:ring-2 focus:ring-[#056455]/25"
               />
             </div>
           </div>
@@ -123,25 +123,25 @@ export default function SimpleDateFilter({
             </label>
 
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Calendar aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
 
               <input
                 type="date"
                 id="toDate"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-colors [appearance:none] [-webkit-appearance:none]"
+                className="h-11 w-full min-w-0 rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 focus:border-[#056455] focus:outline-none focus:ring-2 focus:ring-[#056455]/25"
               />
             </div>
           </div>
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-col sm:flex-row lg:flex-col gap-2 lg:w-48">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => handleSearch()}
             disabled={isLoading}
-            className="flex-1 search-button disabled:opacity-70 font-semibold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="search-button inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] disabled:opacity-70"
           >
             {isLoading ? (
               <>
@@ -150,7 +150,7 @@ export default function SimpleDateFilter({
               </>
             ) : (
               <>
-                <Calendar className="w-4 h-4" />
+                <Search className="size-4" aria-hidden="true" />
                 Search
               </>
             )}
@@ -158,7 +158,7 @@ export default function SimpleDateFilter({
 
           <button
             onClick={handleToday}
-            className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded-lg transition-colors"
+            className="h-11 flex-1 rounded-lg border border-slate-200 bg-white px-5 text-sm font-semibold text-[#082c28] transition-colors hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
           >
             Today
           </button>
@@ -167,12 +167,12 @@ export default function SimpleDateFilter({
 
       {/* Download Buttons */}
       {(onDownloadPDF || onDownloadExcel) && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-4 border-t border-slate-100 pt-3">
           <div className="flex flex-wrap gap-2">
             {onDownloadPDF && (
               <button
                 onClick={onDownloadPDF}
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-[#082c28] transition-colors hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
               >
                 <FileDown className="w-4 h-4" />
                 Download PDF
@@ -182,7 +182,7 @@ export default function SimpleDateFilter({
             {onDownloadExcel && (
               <button
                 onClick={onDownloadExcel}
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-[#082c28] transition-colors hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
               >
                 <Download className="w-4 h-4" />
                 Download Excel
