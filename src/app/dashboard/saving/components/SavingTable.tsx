@@ -240,7 +240,7 @@ export default function SavingTable({
                             />
                           </>
                         ) : (
-                          maskAmount(row.is_transfer ? -Number(row.add_saving) : row.add_saving, isVisible, currency)
+                          maskAmount(row.is_transfer ? -Number(row.savings_deduction ?? row.add_saving) : row.add_saving, isVisible, currency)
                         )}
                       </TableCell>
 
@@ -260,7 +260,7 @@ export default function SavingTable({
                           />
                         ) : (
                           <span>
-                            {row.is_transfer ? "Transferred to balance" : row.want_to_deduct_from_balance ? "Yes" : "No"}
+                            {row.is_transfer ? `Credited ${maskAmount(row.add_saving, isVisible, currency)}` : row.want_to_deduct_from_balance ? "Yes" : "No"}
                           </span>
                         )}
                       </TableCell>
@@ -484,7 +484,7 @@ export default function SavingTable({
                     </div>
                   ) : (
                     <span className="text-sm font-bold text-gray-800">
-                      {row.is_transfer ? "Transferred to balance" : "Saving"} {maskAmount(row.is_transfer ? -Number(row.add_saving) : row.add_saving, isVisible, currency)}
+                      {row.is_transfer ? "Transferred to balance" : "Saving"} {maskAmount(row.add_saving, isVisible, currency)}
                     </span>
                   )}
                 </div>
