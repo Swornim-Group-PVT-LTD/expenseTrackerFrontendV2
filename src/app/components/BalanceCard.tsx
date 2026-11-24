@@ -50,7 +50,7 @@ const BalanceCard = ({ refreshTrigger }: BalanceCardProps) => {
   };
 
   return (
-    <div className="@container relative isolate flex min-h-36 items-center gap-4 overflow-hidden rounded-2xl border border-[#17625a] bg-linear-to-br from-[#082c28] via-[#0a3f39] to-[#126158] p-5 text-white shadow-sm transition-shadow hover:shadow-md">
+    <div className="@container relative isolate flex min-h-36 items-center gap-4 overflow-hidden rounded-2xl border border-[#056455] bg-linear-to-br from-[#034e43] to-[#056455] p-5 text-white shadow-sm transition-shadow hover:shadow-md">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute -right-12 -bottom-24 h-52 w-52 rounded-full border border-white/10 bg-white/5 ring-24 ring-white/5"
