@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "rea
 import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 import { useCurrency } from "@/app/context/CurrencyContext";
 import { maskAmount } from "@/app/utils/maskAmount";
+import { ArrowRightLeft, LoaderCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import { getSavingTransferOptions, transferSavingService } from "@/app/services/savingService";
 import type { SavingResponse, SavingTransferOption } from "@/app/types/savingType";
@@ -99,11 +100,16 @@ export default function SavingTransferForm({
       {renderFilters(
         <button
           type="button"
-          className="h-[46px] shrink-0 whitespace-nowrap rounded-lg bg-green-700 px-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-green-800 disabled:opacity-50 sm:px-4"
+          className="group inline-flex h-[46px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-green-700 px-3 text-sm font-semibold text-white shadow-sm transition-shadow hover:bg-green-800 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 disabled:opacity-50 sm:px-4"
           onClick={openForm}
           aria-expanded={formOpen}
           disabled={loading || formOpen}
         >
+          {loading ? (
+            <LoaderCircle aria-hidden="true" size={17} className="shrink-0 motion-safe:animate-spin" />
+          ) : (
+            <ArrowRightLeft aria-hidden="true" size={17} className="shrink-0 motion-safe:transition-transform motion-safe:group-enabled:group-hover:translate-x-0.5" />
+          )}
           {loading ? "Loading savings…" : bulk ? `Transfer selected (${selected.length})` : "Transfer saving"}
         </button>,
       )}
