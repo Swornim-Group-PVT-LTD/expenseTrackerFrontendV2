@@ -127,12 +127,14 @@ function Saving() {
                 downloadService.downloadPDF(
                   data.map((row) => ({
                     ...row,
-                    add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
+                    add_saving: row.is_transfer ? -Number(row.savings_deduction ?? row.add_saving) : row.add_saving,
+                    transferred: row.is_transfer ? row.add_saving : null,
                     remarks: row.remarks || row.saving_category,
                   })),
                   [
                     { header: "ID", field: "id" },
                     { header: "Saving", field: "add_saving" },
+                    { header: "Transferred to Balance", field: "transferred" },
                     { header: "Category", field: "saving_category" },
                     { header: "Remarks", field: "remarks" },
                     { header: "Total Saving", field: "total_saving" },
@@ -154,12 +156,14 @@ function Saving() {
                 downloadService.downloadExcel(
                   data.map((row) => ({
                     ...row,
-                    add_saving: row.is_transfer ? -Number(row.add_saving) : row.add_saving,
+                    add_saving: row.is_transfer ? -Number(row.savings_deduction ?? row.add_saving) : row.add_saving,
+                    transferred: row.is_transfer ? row.add_saving : null,
                     remarks: row.remarks || row.saving_category,
                   })),
                   [
                     { header: "ID", field: "id" },
                     { header: "Saving", field: "add_saving" },
+                    { header: "Transferred to Balance", field: "transferred" },
                     { header: "Category", field: "saving_category" },
                     { header: "Remarks", field: "remarks" },
                     { header: "Total Saving", field: "total_saving" },

@@ -16,6 +16,7 @@ export interface SavingResponse {
   want_to_deduct_from_balance: boolean;
   is_transfer?: boolean;
   transferable_amount?: number;
+  savings_deduction?: number | string | null;
   source_saving_id?: number | null;
   remarks?: string | null;
   currency?: string;
