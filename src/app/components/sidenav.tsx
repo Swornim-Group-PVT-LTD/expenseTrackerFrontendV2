@@ -119,48 +119,56 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <aside
-        className={`hidden md:flex ${
+        className={`fixed inset-y-0 left-0 z-50 hidden flex-col border-r border-white/10 bg-[#082c28] text-white transition-[width] duration-500 ease-in-out md:flex ${
           collapsed ? "w-20" : "w-64"
-        } bg-[#082c28] text-white transition-all duration-500 ease-in-out flex-col h-screen fixed left-0 top-0 z-50`}
+        }`}
       >
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="p-4 hover:bg-white/10 flex items-center justify-center transition-colors duration-200"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
+        <div className={`flex h-16 shrink-0 items-center border-b border-white/10 px-4 ${
+          collapsed ? "justify-center" : "justify-start"
+        }`}>
+          <button
+            type="button"
+            onClick={() => setCollapsed(!collapsed)}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-expanded={!collapsed}
+            className="flex size-10 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/5 text-teal-50 transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-amber-300"
+          >
+            <Menu className="size-5" aria-hidden="true" />
+          </button>
+        </div>
 
-        <nav className="flex-1 mt-4 space-y-2">
-          {visibleDashboardData.map((item, i) => {
-            const isActive = pathname === item.href;
+        <nav aria-label="Dashboard navigation" className="flex-1 space-y-1.5 overflow-y-auto px-3 py-4">
+          {visibleDashboardData.map((item) => {
+            const isActive = item.href === "/dashboard"
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const label = t(item.title);
 
             return (
               <Link
-                key={i}
+                key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-4 py-3 cursor-pointer rounded-lg transition-all duration-300 ease-in-out ${
-                  isActive ? "bg-(--color2)" : "hover:bg-white/10"
+                title={collapsed ? label : undefined}
+                aria-label={label}
+                aria-current={isActive ? "page" : undefined}
+                className={`flex h-12 items-center overflow-hidden rounded-xl px-2 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-amber-300 ${
+                  collapsed ? "justify-center" : "gap-3"
+                } ${
+                  isActive
+                    ? "bg-[#f7bd51] text-[#12332d] shadow-sm"
+                    : "text-teal-50 hover:bg-white/10"
                 }`}
               >
-                <div
-                  className={`p-2 rounded-lg flex items-center justify-center transition-transform duration-300 ${
-                    isActive ? "bg-(--color2)" : item.color
+                <span
+                  aria-hidden="true"
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-lg [&>svg]:size-[18px] ${
+                    isActive ? "bg-[#12332d]/10" : "bg-white/10"
                   }`}
                 >
                   {item.icon}
-                </div>
-
-                <span
-                  className={`text-sm font-medium capitalize transition-all duration-300 ${
-                    collapsed
-                      ? "opacity-0 w-0 overflow-hidden"
-                      : "opacity-100 w-auto"
-                  }`}
-                >
-                  {t(item.title)}
                 </span>
+                {!collapsed && <span className="truncate capitalize">{label}</span>}
               </Link>
             );
           })}

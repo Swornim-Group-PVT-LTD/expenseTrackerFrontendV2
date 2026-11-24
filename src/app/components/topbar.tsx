@@ -48,8 +48,8 @@ export default function TopNav() {
   }, []);
 
   return (
-    <div
-      className={`text-white h-16 bg-[#082c28] shadow-lg z-40 flex items-center justify-between px-3 fixed top-0 right-0 left-0 transition-all duration-500 ${
+    <header
+      className={`fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-white/10 bg-[#082c28] px-4 text-white shadow-sm transition-[margin] duration-500 md:px-6 ${
         collapsed ? "md:ml-20" : "md:ml-64"
       }`}
     >
@@ -66,61 +66,47 @@ export default function TopNav() {
         </Link>
       )}
 
-      {/* Welcome message - Mobile */}
-      <div className="md:hidden">
-        <span className="text-white text-2xl font-bold">
-          <span className="text-sm font-medium text-gray-200">
-            Welcome back,
-          </span>
-          <br />
-          {user?.first_name}
-        </span>
-      </div>
-
-      <div className="ml-auto flex items-center gap-2 pr-2 md:gap-3">
-        {/* Welcome message - Desktop */}
-        <span className="text-white text-lg font-bold hidden md:block">
-          Welcome back, {user?.first_name}
-        </span>
-
-        {/* User profile dropdown */}
-        <div
-          className="relative flex items-center gap-1"
-          onClick={() => setOpen(!open)}
-          ref={dropdownRef}
-        >
-          {/* Profile image with hover zoom */}
-          <div className="relative group">
-            <div className="w-10 h-10 rounded-full bg-[#EFF0F3] flex items-center justify-center overflow-hidden">
+      <div className="ml-auto flex min-w-0 items-center gap-1.5 sm:gap-3">
+        <div ref={dropdownRef} className="relative min-w-0">
+          <button
+            type="button"
+            aria-label="Account options"
+            aria-expanded={open}
+            onClick={() => setOpen(!open)}
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setOpen(false);
+            }}
+            className="flex max-w-full cursor-pointer items-center gap-2.5 rounded-xl px-2 py-1 text-left transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-amber-300"
+          >
+            {user?.first_name && (
+              <span className="min-w-0 truncate text-sm font-semibold">
+                <span className="hidden text-teal-100/75 lg:inline">Welcome back, </span>
+                {user.first_name}
+              </span>
+            )}
+            <span className="size-9 shrink-0 overflow-hidden rounded-full border border-white/20 bg-[#eff0f3]">
               <AccountLogo
                 fallback="/user.svg"
-                alt="User profile"
-                className="w-full h-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-125 cursor-pointer"
+                alt=""
+                className="size-full object-cover"
               />
-            </div>
-
-            {/* Online indicator */}
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full" />
-          </div>
-
-          <ChevronDown className="w-4 h-4 text-gray-400 cursor-pointer transition-transform duration-200" />
+            </span>
+            <ChevronDown aria-hidden="true" className={`size-4 shrink-0 text-teal-100/80 transition-transform ${open ? "rotate-180" : ""}`} />
+          </button>
 
           {/* Dropdown */}
           {open && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-(--color1) rounded-lg shadow-lg py-2 z-50">
+            <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-white/10 bg-[#103b35] p-1.5 shadow-xl z-50">
               <Link
                 href="/dashboard/profile"
-                className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-(--color2)"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  setOpen(false);
-                }}
+                className="flex items-center w-full px-4 py-2 text-sm rounded-lg text-white hover:bg-white/10"
+                onClick={() => setOpen(false)}
               >
                 <UserRound className="h-4 w-4 mr-2" aria-hidden="true" />
                 Profile
               </Link>
               <button
-                className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-(--color2)"
+                className="flex items-center w-full px-4 py-2 text-sm rounded-lg text-white hover:bg-white/10"
                 onClick={() => {
                   setOpen(false);
                   router.push("/settings");
@@ -131,7 +117,7 @@ export default function TopNav() {
               </button>
 
               <button
-                className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-(--color2)"
+                className="flex items-center w-full px-4 py-2 text-sm rounded-lg text-white hover:bg-white/10"
                 onClick={() => setOpen(false)}
               >
                 <HelpCircle className="h-4 w-4 mr-2" />
@@ -140,7 +126,7 @@ export default function TopNav() {
 
               <button
                 onClick={logout}
-                className="flex items-center w-full px-4 py-2 text-sm text-white hover:bg-(--color2)"
+                className="flex items-center w-full px-4 py-2 text-sm rounded-lg text-white hover:bg-white/10"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
@@ -151,11 +137,11 @@ export default function TopNav() {
 
         {/* Notifications */}
         <div className="relative">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:bg-white/10 transition-colors">
+          <div className="flex size-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 md:size-10">
             <Bell className="w-5 h-5 text-white" />
           </div>
 
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#FDC300] rounded-full flex items-center justify-center">
+          <div className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-[#f7bd51] ring-2 ring-[#082c28]">
             <span className="text-[#082c28] text-[8px] font-bold">
               1
             </span>
@@ -167,7 +153,7 @@ export default function TopNav() {
           onClick={toggleVisibility}
           aria-label={isVisible ? "Hide balances" : "Show balances"}
           title={isVisible ? "Hide balances" : "Show balances"}
-          className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white cursor-pointer bg-white/10 hover:bg-white/20 transition-colors"
+          className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-amber-300 md:size-10"
         >
           {isVisible ? (
             <Eye size={18} className="md:w-5 md:h-5" />
@@ -176,6 +162,6 @@ export default function TopNav() {
           )}
         </button>
       </div>
-    </div>
+    </header>
   );
 }
