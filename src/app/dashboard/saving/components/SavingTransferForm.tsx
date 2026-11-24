@@ -6,9 +6,16 @@ import { useCurrency } from "@/app/context/CurrencyContext";
 import { maskAmount } from "@/app/utils/maskAmount";
 import { toast } from "react-toastify";
 import { getSavingTransferOptions, transferSavingService } from "@/app/services/savingService";
-import type { SavingTransferOption } from "@/app/types/savingType";
+import type { SavingResponse, SavingTransferOption } from "@/app/types/savingType";
 
-export default function SavingTransferForm({ onSuccess }: { onSuccess: () => Promise<void> }) {
+export default function SavingTransferForm({
+  onSuccess,
+  selected,
+}: {
+  onSuccess: () => Promise<void>;
+  selected: SavingResponse[];
+}) {
+  const [showSelected, setShowSelected] = useState(false);
   const [options, setOptions] = useState<SavingTransferOption[] | null>(null);
   const [category, setCategory] = useState("");
   const [amount, setAmount] = useState("");
@@ -20,7 +27,15 @@ export default function SavingTransferForm({ onSuccess }: { onSuccess: () => Pro
   const { currency } = useCurrency();
   const availableAmount = options?.find((option) => option.saving_category === category)?.total_amount;
 
+  const bulk = selected.length > 0;
+  const total = selected.reduce((cents, row) => cents + Math.round(Number(row.transferable_amount) * 100), 0) / 100;
+
   async function openForm() {
+    if (bulk) {
+      setShowSelected(true);
+      return;
+    }
+
     setLoading(true);
     try {
       const available = await getSavingTransferOptions();
@@ -38,17 +53,23 @@ export default function SavingTransferForm({ onSuccess }: { onSuccess: () => Pro
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submitting || !category) return;
+    if (submitting || (!bulk && !category)) return;
 
     transferKey.current ??= crypto.randomUUID();
     setSubmitting(true);
     try {
-      await transferSavingService({
-        saving_category: category,
-        amount,
+      const common = {
         remarks: remarks.trim() || undefined,
         transfer_key: transferKey.current,
-      });
+      };
+      await transferSavingService(bulk ? {
+        ...common,
+        entries: selected.map((row) => ({
+          id: row.id,
+          amount: Number(row.transferable_amount).toFixed(2),
+        })),
+      } : { ...common, saving_category: category, amount });
+      setShowSelected(false);
       setOptions(null);
       toast.success("Savings transferred to your balance.");
       await onSuccess();
@@ -59,7 +80,7 @@ export default function SavingTransferForm({ onSuccess }: { onSuccess: () => Pro
     }
   }
 
-  if (!options) {
+  if (!showSelected && !options) {
     return (
       <button
         type="button"
@@ -67,14 +88,37 @@ export default function SavingTransferForm({ onSuccess }: { onSuccess: () => Pro
         onClick={openForm}
         disabled={loading}
       >
-        {loading ? "Loading savings…" : "Transfer saving"}
+        {loading ? "Loading savings…" : bulk ? `Transfer selected (${selected.length})` : "Transfer saving"}
       </button>
     );
   }
 
   return (
     <form onSubmit={submit} className="rounded-lg border border-gray-200 bg-white p-4">
-      {options.length ? (
+      {showSelected ? (
+        <fieldset disabled={submitting} className="space-y-3">
+          <p className="text-sm font-medium">
+            Transfer {selected.length} selected savings entries · {maskAmount(total, isVisible, currency)}
+          </p>
+          <ul className="max-h-44 overflow-y-auto text-sm text-gray-700">
+            {selected.map((row) => (
+              <li key={row.id}>
+                #{row.id} · {row.saving_category} · {maskAmount(row.transferable_amount, isVisible, currency)}
+              </li>
+            ))}
+          </ul>
+          <label className="block text-sm font-medium">
+            Remarks
+            <input
+              value={remarks}
+              onChange={(event) => setRemarks(event.target.value)}
+              placeholder="Optional"
+              maxLength={255}
+              className="mt-1 block w-full rounded-lg border-gray-300"
+            />
+          </label>
+        </fieldset>
+      ) : options?.length ? (
         <fieldset disabled={submitting} className="grid gap-3 sm:grid-cols-3">
           <label className="text-sm font-medium">
             Saving category
@@ -122,10 +166,10 @@ export default function SavingTransferForm({ onSuccess }: { onSuccess: () => Pro
         <p className="text-sm text-gray-600">No savings are available to transfer.</p>
       )}
       <div className="mt-3 flex justify-end gap-2">
-        <button type="button" onClick={() => setOptions(null)} disabled={submitting} className="rounded-lg border px-4 py-2 text-sm">
+        <button type="button" onClick={() => { setOptions(null); setShowSelected(false); }} disabled={submitting} className="rounded-lg border px-4 py-2 text-sm">
           Cancel
         </button>
-        {options.length > 0 && (
+        {(showSelected || Boolean(options?.length)) && (
           <button type="submit" disabled={submitting} className="rounded-lg bg-[#0D312F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">
             {submitting ? "Transferring…" : "Transfer to balance"}
           </button>

@@ -30,11 +30,15 @@ export default function SavingTable({
   filteredData,
   onSuccess,
   onDataLoad,
+  selectedIds,
+  onSelect,
 }: {
   refreshTrigger: number;
   filteredData?: SavingResponse[] | null;
   onSuccess?: () => void;
   onDataLoad?: (data: SavingResponse[]) => void;
+  selectedIds: number[];
+  onSelect: (row: SavingResponse, checked: boolean) => void;
 }) {
   const [saving, setSaving] = useState<SavingResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -158,6 +162,18 @@ export default function SavingTable({
     }
   };
 
+  const selectionCheckbox = (row: SavingResponse) =>
+    !row.is_transfer && Number(row.transferable_amount) > 0 ? (
+      <input
+        type="checkbox"
+        checked={selectedIds.includes(row.id)}
+        disabled={selectedIds.length >= 100 && !selectedIds.includes(row.id)}
+        onChange={(event) => onSelect(row, event.target.checked)}
+        aria-label={`Select saving ${row.id} from ${row.saving_category}`}
+        className="mr-2 rounded border-gray-300"
+      />
+    ) : null;
+
   return (
     <>
       {/* Desktop Table View */}
@@ -205,6 +221,7 @@ export default function SavingTable({
                       className="bg-white dark:border-gray-700 dark:bg-gray-800"
                     >
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {selectionCheckbox(row)}
                         {row.id}
                       </TableCell>
                       <TableCell>
@@ -266,7 +283,9 @@ export default function SavingTable({
                             className="w-full sm:w-80"
                           />
                         ) : (
-                          row.is_transfer ? row.remarks : row.saving_category
+                          row.is_transfer && row.source_saving_id
+                            ? `${row.remarks ?? row.saving_category} · Saving #${row.source_saving_id}`
+                            : row.remarks ?? row.saving_category
                         )}
                       </TableCell>
 
@@ -357,6 +376,7 @@ export default function SavingTable({
               {/* Row 1: ID and Actions */}
               <div className="flex justify-between items-center">
                 <span className="text-sm font-bold text-gray-800">
+                  {selectionCheckbox(row)}
                   ID {row.id}
                 </span>
                 <div className="flex gap-1 text-xs font-bold">

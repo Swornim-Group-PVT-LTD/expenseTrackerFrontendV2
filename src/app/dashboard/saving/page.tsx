@@ -19,6 +19,7 @@ function Saving() {
   const [categories, setCategories] = useState<SavingCategoryResponse[]>([]);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   const [filteredData, setFilteredData] = useState<SavingResponse[]>([]);
+  const [selected, setSelected] = useState<SavingResponse[]>([]);
   const [allData, setAllData] = useState<SavingResponse[]>([]);
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [currentDateRange, setCurrentDateRange] = useState<{
@@ -28,6 +29,7 @@ function Saving() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleRefresh = async () => {
+    setSelected([]);
     setRefreshTrigger((prev) => prev + 1);
     if (isFilterActive) {
       try {
@@ -49,6 +51,7 @@ function Saving() {
     endDate?: string,
     category?: string, // NEW
   ) => {
+    setSelected([]);
     setFilteredData(data);
     setIsFilterActive(true);
     setCurrentDateRange(
@@ -58,6 +61,7 @@ function Saving() {
   };
 
   const clearFilter = () => {
+    setSelected([]);
     setFilteredData([]);
     setIsFilterActive(false);
     setCurrentDateRange(null);
@@ -100,7 +104,11 @@ function Saving() {
 
       {/* Added mt-10 here */}
       <div className="mt-10 space-y-3">
-        <SavingTransferForm onSuccess={handleRefresh} />
+        <SavingTransferForm
+          key={selected.map((row) => row.id).join(",")}
+          selected={selected}
+          onSuccess={handleRefresh}
+        />
         <DateFilter
           fetchService={getSavingByDateRangeService}
           onFilter={handleFilter}
@@ -183,6 +191,10 @@ function Saving() {
         filteredData={isFilterActive ? filteredData : null}
         onSuccess={handleRefresh}
         onDataLoad={setAllData}
+        selectedIds={selected.map((row) => row.id)}
+        onSelect={(row, checked) =>
+          setSelected((rows) => checked ? [...rows, row] : rows.filter((item) => item.id !== row.id))
+        }
       />
     </div>
   );

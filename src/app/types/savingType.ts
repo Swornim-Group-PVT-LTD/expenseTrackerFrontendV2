@@ -15,6 +15,8 @@ export interface SavingResponse {
   updated_date: string; // or Date
   want_to_deduct_from_balance: boolean;
   is_transfer?: boolean;
+  transferable_amount?: number;
+  source_saving_id?: number | null;
   remarks?: string | null;
   currency?: string;
   symbol?: string;

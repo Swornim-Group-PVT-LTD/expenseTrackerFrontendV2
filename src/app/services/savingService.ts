@@ -177,9 +177,16 @@ export async function getSavingTransferOptions(): Promise<SavingTransferOption[]
   return data.data.filter((option) => Number(option.total_amount) > 0);
 }
 
-export async function transferSavingService(payload: SavingTransferPayload): Promise<void> {
+export async function transferSavingService(
+  payload: SavingTransferPayload | {
+    entries: { id: number; amount: string }[];
+    transfer_key: string;
+    remarks?: string;
+  },
+): Promise<void> {
+  const endpoint = "entries" in payload ? "transfer-selected" : "transfer";
   try {
-    await axios.post(`${BASE_URL}/api/savings/transfer`, payload, {
+    await axios.post(`${BASE_URL}/api/savings/${endpoint}`, payload, {
       headers: { Authorization: `Bearer ${getToken()}` },
     });
   } catch (error: unknown) {
