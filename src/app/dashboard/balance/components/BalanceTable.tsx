@@ -50,8 +50,8 @@ export default function BalanceTable({
   return (
     <>
       {/* Desktop Table View */}
-      <div className="hidden lg:block table-surface overflow-x-auto">
-        <Table hoverable className="ledger-table">
+      <div className="table-surface hidden overflow-x-auto lg:block">
+        <Table hoverable className="ledger-table min-w-[620px]">
           <TableHead className="bg-gray-100 dark:bg-gray-700">
             <TableRow>
               <TableHeadCell>ID</TableHeadCell>
@@ -137,7 +137,7 @@ export default function BalanceTable({
           balances.map((row) => (
             <div
               key={row.sn}
-              className="bg-white rounded-lg shadow-sm p-4 border border-gray-100 flex flex-col gap-3"
+              className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 tabular-nums"
             >
               {/* Row 1: ID */}
               <div className="text-xs font-bold uppercase tracking-wider text-gray-800">

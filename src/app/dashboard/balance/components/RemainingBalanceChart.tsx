@@ -1,191 +1,78 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  ReferenceLine,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+
 import { getMonthlyRemainingBalanceService } from "@/app/services/balanceService";
-import { MonthlyRemainingBalanceResponse } from "@/app/types/balanceType";
-import { getBalancesService } from "@/app/services/balanceService";
-import { BalanceResponse } from "@/app/types/balanceType";
+import type { MonthlyRemainingBalanceResponse } from "@/app/types/balanceType";
 import { useCurrency } from "@/app/context/CurrencyContext";
+import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 
-interface RemainingBalanceChartProps {
-  refreshTrigger?: number;
-}
+const compactNumber = new Intl.NumberFormat(undefined, { notation: "compact" });
 
-const RemainingBalanceChart = ({
-  refreshTrigger = 0,
-}: RemainingBalanceChartProps) => {
-  const [data, setData] = useState<MonthlyRemainingBalanceResponse | null>(
-    null,
-  );
-  const [loading, setLoading] = useState(true);
-
+export default function RemainingBalanceChart({ refreshTrigger }: { refreshTrigger: number }) {
+  const [result, setResult] = useState<MonthlyRemainingBalanceResponse | null>();
+  const [loadedRefresh, setLoadedRefresh] = useState<number | null>(null);
   const { currency } = useCurrency();
-
-  // Fetch data from API
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const data = await getMonthlyRemainingBalanceService();
-
-      setData(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { isVisible } = useBalanceVisibility();
 
   useEffect(() => {
-    fetchData();
+    let ignore = false;
+    getMonthlyRemainingBalanceService()
+      .then((response) => {
+        if (!ignore) setResult(response);
+      })
+      .catch((error) => {
+        if (ignore) return;
+        console.error("Failed to load monthly balance:", error);
+        setResult(null);
+      })
+      .finally(() => {
+        if (!ignore) setLoadedRefresh(refreshTrigger);
+      });
+
+    return () => { ignore = true; };
   }, [refreshTrigger]);
 
-  // Custom tooltip component
-  interface CustomTooltipProps {
-    active?: boolean;
-    payload?: any[];
-    label?: string;
-  }
-
-  const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-    if (active && payload && payload.length) {
-      const value = payload[0].value;
-      return (
-        <div className="bg-black text-white px-4 py-2 rounded-lg shadow-lg">
-          <p className="font-medium">
-            {currency}. {Number(value).toLocaleString()}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Format Y-axis values
-  const formatYAxis = (value: number) => {
-    if (value >= 1000) {
-      return `${(value / 1000).toFixed(0)}k`;
-    }
-    return value.toString();
-  };
-
-  // Format month labels to show only first 3 letters
-  const formatMonth = (month: string) => {
-    return month.substring(0, 3);
-  };
-
-  if (loading || !data) {
-    return (
-      <div className="w-full h-80 bg-white rounded-lg shadow-sm p-6 flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading chart...</div>
-      </div>
-    );
-  }
-
-  // Calculate max value for Y-axis (add some padding)
-  const maxBalance =
-    data.data.length > 0
-      ? Math.max(...data.data.map((d) => d.remaining_balance))
-      : 0;
-
-  // Determine a suitable step size based on the magnitude of the max balance
-  let step = 10000;
-  if (maxBalance < 1000) step = 100;
-  else if (maxBalance < 10000) step = 1000;
-  else if (maxBalance < 100000) step = 10000;
-  else step = 50000;
-
-  const yAxisMax = Math.ceil((maxBalance * 1.2) / step) * step || step; // Fallback to step if 0
-  const midPoint = yAxisMax / 2;
-
-  if (!data.data || data.data.length === 0) {
-    return (
-      <div className="w-full bg-white rounded-lg shadow-sm p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
-          Remaining Balance Monthly
-        </h2>
-        <div className="w-full h-[300px] flex items-center justify-center text-gray-500">
-          No data available
-        </div>
-      </div>
-    );
-  }
+  const loading = loadedRefresh !== refreshTrigger;
+  const chartData = result?.data ?? [];
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm p-6 mb-4">
-      {/* Chart Title */}
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
-        Remaining Balance Monthly
-      </h2>
+    <section aria-labelledby="balance-chart-heading" className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 id="balance-chart-heading" className="text-lg font-bold tracking-tight text-[#082c28]">
+          Monthly remaining balance
+        </h2>
+        {!loading && result?.year && (
+          <span className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-sm font-medium text-slate-700">{result.year}</span>
+        )}
+      </div>
 
-      {/* Chart */}
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart
-          data={data.data}
-          margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-        >
-          <CartesianGrid
-            strokeDasharray="3 3"
-            stroke="#e5e7eb"
-            vertical={false}
-          />
-
-          <XAxis
-            dataKey="month"
-            tickFormatter={formatMonth}
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "#6b7280", fontSize: 14 }}
-            dy={10}
-          />
-
-          <YAxis
-            tickFormatter={formatYAxis}
-            axisLine={false}
-            tickLine={false}
-            tick={{ fill: "#6b7280", fontSize: 12 }}
-            domain={[0, yAxisMax]}
-            // Dynamic ticks for better visual
-            ticks={[0, yAxisMax * 0.25, midPoint, yAxisMax * 0.75, yAxisMax]}
-          />
-
-          <Tooltip
-            content={<CustomTooltip />}
-            cursor={{ stroke: "#d1d5db", strokeWidth: 1 }}
-          />
-
-          {/* Horizontal reference line in the middle */}
-          <ReferenceLine
-            y={midPoint}
-            stroke="#1f2937"
-            strokeWidth={2}
-            strokeDasharray="3 3"
-          />
-
-          <Line
-            type="monotone"
-            dataKey="remaining_balance"
-            stroke="#bef264"
-            strokeWidth={3}
-            dot={{ fill: "#bef264", strokeWidth: 2, r: 4 }}
-            activeDot={{
-              r: 6,
-              fill: "#bef264",
-              stroke: "#fff",
-              strokeWidth: 2,
-            }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
+      {!loading && chartData.length > 0 ? (
+        <ResponsiveContainer width="100%" height={264}>
+          <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
+            <CartesianGrid vertical={false} stroke="#e2e8f0" strokeDasharray="3 4" />
+            <XAxis dataKey="month" tickFormatter={(month: string) => month.slice(0, 3)} axisLine={false} tickLine={false} tickMargin={8} tick={{ fill: "#475569", fontSize: 12 }} />
+            <YAxis width={52} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 12 }} tickFormatter={(value) => isVisible ? compactNumber.format(value) : "XXX"} />
+            <Tooltip
+              cursor={{ stroke: "#cbd5e1" }}
+              formatter={(value) => [isVisible ? `${currency} ${Number(value).toLocaleString()}`.trim() : "XXX", "Remaining balance"]}
+            />
+            <Line
+              type="monotone"
+              dataKey="remaining_balance"
+              stroke="#056455"
+              strokeWidth={3}
+              dot={{ fill: "#fff", stroke: "#056455", strokeWidth: 2, r: 3 }}
+              activeDot={{ r: 5 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      ) : (
+        <p role="status" className="grid h-[264px] place-items-center text-center text-sm text-slate-600">
+          {loading ? "Loading monthly balance…" : result === null ? "Monthly balance is unavailable." : "No monthly balance data yet."}
+        </p>
+      )}
+    </section>
   );
-};
-
-export default RemainingBalanceChart;
+}

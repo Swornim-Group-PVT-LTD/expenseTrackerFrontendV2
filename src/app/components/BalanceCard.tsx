@@ -11,9 +11,10 @@ import { Wallet, EyeOff, Eye } from "lucide-react";
 
 interface BalanceCardProps {
   refreshTrigger: number;
+  linkToDetails?: boolean;
 }
 
-const BalanceCard = ({ refreshTrigger }: BalanceCardProps) => {
+const BalanceCard = ({ refreshTrigger, linkToDetails = true }: BalanceCardProps) => {
   const [balance, setBalance] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [currency, setCurrency] = useState("NPR");
@@ -55,11 +56,13 @@ const BalanceCard = ({ refreshTrigger }: BalanceCardProps) => {
         aria-hidden="true"
         className="pointer-events-none absolute -right-12 -bottom-24 h-52 w-52 rounded-full border border-white/10 bg-white/5 ring-24 ring-white/5"
       />
-      <Link
-        href="/dashboard/balance"
-        aria-label="View total balance details"
-        className="absolute inset-0 z-0 rounded-2xl focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-amber-300"
-      />
+      {linkToDetails && (
+        <Link
+          href="/dashboard/balance"
+          aria-label="View total balance details"
+          className="absolute inset-0 z-0 rounded-2xl focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-amber-300"
+        />
+      )}
       <div className="hidden size-12 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-teal-100 @min-[15rem]:flex @min-[21rem]:size-14">
         <Wallet className="size-6" aria-hidden="true" />
       </div>

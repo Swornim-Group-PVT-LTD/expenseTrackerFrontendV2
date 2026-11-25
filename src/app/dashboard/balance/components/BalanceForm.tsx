@@ -2,7 +2,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronDown, Info } from "lucide-react";
+import { ArrowRight, ChevronDown, Info } from "lucide-react";
+import Link from "next/link";
 import Swal from "sweetalert2";
 
 // Services
@@ -312,9 +313,19 @@ export default function BalanceForm({
   // ============================================================
 
   return (
-    <div className="col-span-full h-fit lg:col-span-3 lg:pb-0">
-      <div className="w-full rounded-2xl bg-white p-4 shadow-sm sm:p-5">
-        <div className="space-y-5">
+    <section aria-labelledby="opening-balance-heading" className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <h2 id="opening-balance-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">
+        Opening balance
+      </h2>
+      {balanceExists ? (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-teal-100 bg-teal-50 px-4 py-3">
+          <p className="text-sm font-medium text-[#082c28]">Your opening balance is already set.</p>
+          <Link href="/dashboard/income" className="inline-flex items-center gap-1.5 rounded text-sm font-semibold text-[#056455] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]">
+            Add income <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
           {/* CURRENCY */}
           <div>
             <label
@@ -327,7 +338,7 @@ export default function BalanceForm({
             <div className="relative">
               <select
                 id="balance-currency"
-                className="h-[56px] w-full appearance-none rounded-xl border border-gray-200 bg-gray-50 px-4 pr-12 text-base font-semibold text-gray-800 outline-none transition-all focus:border-[#64a11f] focus:bg-white focus:ring-4 focus:ring-[#64a11f]/10 disabled:cursor-not-allowed disabled:opacity-60"
+                className="h-12 w-full appearance-none rounded-xl border border-gray-200 bg-gray-50 px-4 pr-12 text-base font-semibold text-gray-800 outline-none transition-all focus:border-[#056455] focus:bg-white focus:ring-4 focus:ring-[#056455]/10 disabled:cursor-not-allowed disabled:opacity-60"
                 value={currencyId === null ? "" : String(currencyId)}
                 onChange={(event) =>
                   handleCurrencyChange(event.target.value)
@@ -373,7 +384,7 @@ export default function BalanceForm({
               Amount
             </label>
 
-            <div className="flex h-[56px] items-center rounded-xl border border-gray-200 bg-gray-50 px-4 transition-all focus-within:border-[#64a11f] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#64a11f]/10">
+            <div className="flex h-12 items-center rounded-xl border border-gray-200 bg-gray-50 px-4 transition-all focus-within:border-[#056455] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#056455]/10">
               <span className="mr-3 select-none text-lg font-bold text-gray-500">
                 {currencySymbol || "—"}
               </span>
@@ -384,7 +395,7 @@ export default function BalanceForm({
                 min="0"
                 step="any"
                 placeholder="Enter opening balance"
-                className="h-full flex-1 border-none bg-transparent text-base font-semibold text-gray-800 outline-none placeholder:text-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                className="h-full min-w-0 flex-1 border-none bg-transparent text-base font-semibold text-gray-800 outline-none placeholder:text-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 value={amount}
                 onChange={(event) =>
                   setAmount(
@@ -399,10 +410,10 @@ export default function BalanceForm({
           </div>
 
           {/* INFORMATION */}
-          <div className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#64a11f]/10">
+          <div className="flex items-start gap-3 rounded-xl border border-teal-100 bg-teal-50 px-4 py-3 sm:col-span-2">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#056455]/10">
               <Info
-                className="h-4 w-4 text-[#64a11f]"
+                className="h-4 w-4 text-[#056455]"
                 strokeWidth={2.5}
               />
             </div>
@@ -418,9 +429,6 @@ export default function BalanceForm({
             </div>
           </div>
 
-          {/* DIVIDER */}
-          <div className="border-t border-gray-100 pt-1" />
-
           {/* ADD BALANCE */}
           <button
             type="button"
@@ -433,7 +441,7 @@ export default function BalanceForm({
               currencyList.length === 0 ||
               currencyId === null
             }
-            className={`flex h-[56px] w-full items-center justify-center gap-3 rounded-xl bg-[#64a11f] text-base font-bold text-white shadow-sm transition-all hover:bg-[#579119] active:scale-[0.98] ${loading ||
+            className={`flex h-12 w-full items-center justify-center gap-3 rounded-xl bg-[#056455] text-base sm:col-span-2 font-bold text-white shadow-sm transition-all hover:bg-[#034e43] active:scale-[0.98] ${loading ||
                 balanceExists ||
                 checkingBalance ||
                 loadingCurrencies ||
@@ -461,7 +469,7 @@ export default function BalanceForm({
                       )}
           </button>
         </div>
-      </div>
-    </div>
+      )}
+    </section>
   );
 }
