@@ -16,6 +16,14 @@
   --color2: #f7bc4c;
 }
 
+@layer base {
+  a[href],
+  button:enabled,
+  input:is([type="button"], [type="submit"], [type="reset"]):enabled {
+    cursor: pointer;
+  }
+}
+
 @utility search-button {
   background-color: #f7bd51;
   color: #12332d;
