@@ -1,5 +1,6 @@
 "use client";
 
+import { calculateInvoiceTotals } from "@/app/utils/invoiceTotals";
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Table,
@@ -22,7 +23,7 @@ import { toast } from "react-toastify";
 import {
   getInvoiceService,
   getInvoiceBySnService,
-  updateInvoiceService,
+  updateInvoiceStatusService,
   deleteInvoiceService,
 } from "@/app/services/invoiceService";
 import type {
@@ -173,17 +174,13 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
       );
     }, 0);
 
-    const discount = Number(invoice.discount_amount ?? 0);
-    const discountValue =
-      String(invoice.discount_type ?? "percent").toLowerCase() === "flat"
-        ? discount
-        : (subtotal * discount) / 100;
-
-    const taxableAmount = Math.max(0, subtotal - discountValue);
-    const tax = (taxableAmount * Number(invoice.tax_percentage ?? 0)) / 100;
-    const shipping = Number(invoice.shipping_fee ?? 0);
-
-    return taxableAmount + tax + shipping;
+    return calculateInvoiceTotals(
+      invoice.subtotal != null ? Number(invoice.subtotal) : subtotal,
+      Number(invoice.discount_amount ?? 0),
+      invoice.discount_type ?? null,
+      Number(invoice.tax_percentage ?? 0),
+      Number(invoice.shipping_fee ?? 0),
+    ).total;
   };
 
   const formatCurrency = (
@@ -223,57 +220,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
     try {
       setUpdatingStatusSn(sn);
 
-      const currencyId = Number(
-        invoice.currency_id ??
-        (typeof invoice.currency === "object"
-          ? invoice.currency.id
-          : undefined)
-      );
-
-      const items =
-        invoice.items ??
-        invoice.invoice_items ??
-        invoice.invoiceItems ??
-        invoice.details ??
-        [];
-
-      if (
-        !Number.isFinite(currencyId) ||
-        currencyId <= 0 ||
-        !invoice.invoice_date ||
-        items.length === 0
-      ) {
-        toast.error(
-          "Cannot update status because required invoice details are missing. Reload the invoice details first."
-        );
-        return;
-      }
-
-      await updateInvoiceService(sn, {
-        invoice_number: invoice.invoice_number ?? "",
-        purchase_order: invoice.purchase_order ?? "",
-        company_details: invoice.company_details ?? "",
-        bill_to: invoice.bill_to ?? "",
-        currency_id: currencyId,
-        invoice_date: invoice.invoice_date,
-        due_date: invoice.due_date ?? "",
-        notes_payment_terms: invoice.notes_payment_terms ?? "",
-        bank_account_details: invoice.bank_account_details ?? "",
-        tax_percentage: Number(invoice.tax_percentage ?? 0),
-        discount_type:
-          invoice.discount_type === "flat" ? "flat" : "percent",
-        discount_amount: Number(invoice.discount_amount ?? 0),
-        shipping_fee: Number(invoice.shipping_fee ?? 0),
-        items: items.map((item) => ({
-          item_description:
-            item.item_description ?? item.description ?? item.item_name ?? "",
-          unit_cost: Number(
-            item.unit_cost ?? item.unit_price ?? item.rate ?? 0
-          ),
-          quantity: Number(item.quantity ?? item.qty ?? 0),
-        })),
-        status: selectedStatus,
-      });
+      await updateInvoiceStatusService(sn, selectedStatus);
 
       setInvoices((previous) =>
         previous.map((item) =>

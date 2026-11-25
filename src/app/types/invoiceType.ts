@@ -52,7 +52,7 @@ export type UpdateInvoicePayload = Partial<AddInvoicePayload> & {
 export interface InvoiceResponse
   extends Omit<
     Partial<AddInvoicePayload>,
-    "tax_percentage" | "discount_amount" | "shipping_fee" | "items"
+    "tax_percentage" | "discount_amount" | "discount_type" | "shipping_fee" | "items"
   > {
   id?: number | string;
   sn?: string | number;
@@ -66,6 +66,7 @@ export interface InvoiceResponse
 
   tax_percentage?: number | string;
   discount_amount?: number | string;
+  discount_type?: AddInvoicePayload["discount_type"] | null;
   shipping_fee?: number | string;
 
   subtotal?: number | string;

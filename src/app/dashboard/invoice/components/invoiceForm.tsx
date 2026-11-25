@@ -1,6 +1,7 @@
 
 "use client";
 
+import { calculateInvoiceTotals } from "@/app/utils/invoiceTotals";
 import React, { useCallback, useEffect, useState } from "react";
 import { ChevronDown, Info, Plus, Trash2 } from "lucide-react";
 import Swal from "sweetalert2";
@@ -304,28 +305,18 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         if (!edit) void loadInvoiceNumbers();
     }, [edit, loadSavedCurrency, loadInvoiceNumbers]);
 
-    const subtotal = items.reduce((total, item) => {
-        return (
-            total +
-            (Number(item.unit_cost) || 0) *
-            (Number(item.quantity) || 0)
+    const rawSubtotal = items.reduce(
+        (total, item) => total + (Number(item.unit_cost) || 0) * (Number(item.quantity) || 0),
+        0,
+    );
+    const { subtotal, discount: calculatedDiscount, tax: calculatedTax, total: grandTotal } =
+        calculateInvoiceTotals(
+            rawSubtotal,
+            Number(discountAmount) || 0,
+            discountType,
+            Number(taxPercentage) || 0,
+            Number(shippingFee) || 0,
         );
-    }, 0);
-
-    const calculatedDiscount =
-        discountType === "percent"
-            ? (subtotal * (Number(discountAmount) || 0)) / 100
-            : Number(discountAmount) || 0;
-
-    const calculatedTax =
-        ((subtotal - calculatedDiscount) * (Number(taxPercentage) || 0)) /
-        100;
-
-    const grandTotal =
-        subtotal -
-        calculatedDiscount +
-        calculatedTax +
-        (Number(shippingFee) || 0);
 
     const formatAmount = (amount: number) =>
         new Intl.NumberFormat("en-US", {
@@ -585,15 +576,15 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
     };
 
     const inputClass =
-        "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-800 outline-none transition focus:border-[#64a11f] focus:ring-2 focus:ring-[#64a11f]/20";
+        "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-800 outline-none transition focus:border-[#056455] focus:ring-2 focus:ring-[#056455]/20";
 
     const labelClass = "mb-1.5 block text-sm font-medium text-gray-700";
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
-            <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                 <div className="mb-5">
-                    <h2 className="text-lg font-semibold text-gray-900">
+                    <h2 className="text-lg font-bold tracking-tight text-[#082c28]">
                         Invoice Information
                     </h2>
                     <p className="mt-1 text-sm text-gray-500">
@@ -764,10 +755,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                 </div>
             </section>
 
-            <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                 <div className="mb-5 flex items-center justify-between gap-3">
                     <div>
-                        <h2 className="text-lg font-semibold text-gray-900">
+                        <h2 className="text-lg font-bold tracking-tight text-[#082c28]">
                             Invoice Items
                         </h2>
                         <p className="mt-1 text-sm text-gray-500">
@@ -887,8 +878,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                 </div>
             </section>
 
-            <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-                <h2 className="mb-5 text-lg font-semibold text-gray-900">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+                <h2 className="mb-5 text-lg font-bold tracking-tight text-[#082c28]">
                     Tax, Discount and Totals
                 </h2>
 
@@ -970,7 +961,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     </div>
                 </div>
 
-                <div className="mt-6 rounded-xl bg-gray-50 p-4">
+                <div className="mt-6 rounded-xl border border-teal-100 bg-teal-50/60 p-4 tabular-nums">
                     <div className="ml-auto max-w-md space-y-3">
                         <div className="flex justify-between gap-4 text-sm text-gray-600">
                             <span>Subtotal</span>
@@ -981,7 +972,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                         </div>
 
                         <div className="flex justify-between gap-4 text-sm text-gray-600">
-                            <span>Discount</span>
+                            <span>Discount{discountType === "percent" ? ` (${Number(discountAmount) || 0}%)` : ""}</span>
                             <span>
                                 -{selectedCurrency?.symbol ?? ""}
                                 {formatAmount(calculatedDiscount)}
@@ -1017,8 +1008,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                 </div>
             </section>
 
-            <section className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-                <h2 className="mb-5 text-lg font-semibold text-gray-900">
+            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+                <h2 className="mb-5 text-lg font-bold tracking-tight text-[#082c28]">
                     Payment Information
                 </h2>
 

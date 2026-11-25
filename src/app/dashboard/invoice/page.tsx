@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X, FileText } from "lucide-react";
+import { Plus } from "lucide-react";
 
 import Breadcrumbs from "@/app/components/Breadcrumbs";
 import InvoiceForm from "../invoice/components/invoiceForm";
@@ -42,7 +42,7 @@ export default function Page() {
     };
 
     return (
-        <div className="mt-5 space-y-5 p-4">
+        <main className="mt-4 space-y-5">
             <Breadcrumbs
                 parents={[
                     { label: "Dashboard", href: "/dashboard" },
@@ -56,24 +56,21 @@ export default function Page() {
             />
 
             {/* Page Header */}
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h1 className="text-xl font-bold text-[#14383F]">
-                        Invoice Management
+                    <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">
+                        {showForm ? "New invoice" : "Invoices"}
                     </h1>
 
-                    <p className="mt-1 text-sm text-gray-500">
-                        Create, manage, view and download invoices.
-                    </p>
                 </div>
 
                 {!showForm && (
                     <button
                         type="button"
                         onClick={() => setShowForm(true)}
-                        className="rounded-lg bg-[#14383F] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#20515A]"
+                        className="inline-flex items-center gap-2 rounded-xl bg-[#056455] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#034e43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
                     >
-                        + Add Invoice
+                        <Plus className="size-4" aria-hidden="true" /> Add Invoice
                     </button>
                 )}
             </div>
@@ -103,100 +100,12 @@ export default function Page() {
                 </div>
             )}
 
-            {/* Invoice Preview Modal */}
             {selectedInvoice && (
-                <div
-                    className="no-print fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-2 backdrop-blur-sm sm:p-5"
-                    onMouseDown={(event) => {
-                        if (event.target === event.currentTarget) {
-                            handleClosePreview();
-                        }
-                    }}
-                >
-                    <div
-                        role="dialog"
-                        aria-modal="true"
-                        aria-label="Invoice preview"
-                        className="flex max-h-[96vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
-                        onMouseDown={(event) => event.stopPropagation()}
-                    >
-                        {/* Modal Header */}
-                        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3 sm:px-6">
-                            <div className="flex min-w-0 items-center gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF3C4] text-[#14383F]">
-                                    <FileText size={21} />
-                                </div>
-
-                                <div className="min-w-0">
-                                    <h2 className="font-bold text-[#14383F]">
-                                        Invoice Preview
-                                    </h2>
-
-                                    <p className="truncate text-xs text-gray-500">
-                                        {selectedInvoice.invoice_number ||
-                                            "Invoice"}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <button
-                                type="button"
-                                onClick={handleClosePreview}
-                                aria-label="Close invoice preview"
-                                className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-800"
-                            >
-                                <X size={21} />
-                            </button>
-                        </div>
-
-                        {/* Invoice Template */}
-                        <div className="min-h-0 flex-1 overflow-y-auto bg-slate-100">
-                            <InvoiceTemplate
-                                invoice={selectedInvoice}
-                                onClose={handleClosePreview}
-                                mode="page"
-                            />
-                        </div>
-                    </div>
-                </div>
+                <InvoiceTemplate
+                    invoice={selectedInvoice}
+                    onClose={handleClosePreview}
+                />
             )}
-
-            {/* Print Styles */}
-            <style jsx global>{`
-                @media print {
-                    body * {
-                        visibility: hidden !important;
-                    }
-
-                    .invoice-print-area,
-                    .invoice-print-area * {
-                        visibility: visible !important;
-                    }
-
-                    .invoice-print-area {
-                        position: absolute !important;
-                        left: 0 !important;
-                        top: 0 !important;
-                        width: 100% !important;
-                        max-width: none !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        background: white !important;
-                        box-shadow: none !important;
-                    }
-
-                    .invoice-modal-toolbar,
-                    .invoice-modal-backdrop,
-                    .no-print {
-                        display: none !important;
-                    }
-
-                    @page {
-                        size: A4;
-                        margin: 12mm;
-                    }
-                }
-            `}</style>
-        </div>
+        </main>
     );
 }

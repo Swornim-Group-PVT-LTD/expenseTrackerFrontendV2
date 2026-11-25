@@ -6,6 +6,7 @@ import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
+import { calculateInvoiceTotals } from "@/app/utils/invoiceTotals";
 import AccountLogo from "@/app/components/AccountLogo";
 import { useAuth } from "@/context/AuthContext";
 
@@ -34,7 +35,6 @@ type InvoiceDetails = Omit<InvoiceResponse, "currency"> & {
     Status?: string;
     currency?: string | CurrencyInfo;
     currency_symbol?: string;
-    discount_type?: string;
     subtotal?: number | string;
     grand_total?: number | string;
     total_amount?: number | string;
@@ -185,26 +185,16 @@ export default function InvoiceTemplate({
             ? numberValue(item.subtotal)
             : calculatedSubtotal;
 
-    const discountAmount = numberValue(item.discount_amount);
-    const discountType = String(item.discount_type ?? "flat").toLowerCase();
-
-    const discount = ["percent", "percentage", "%"].includes(discountType)
-        ? (subtotal * discountAmount) / 100
-        : discountAmount;
-
-    const taxableAmount = Math.max(0, subtotal - discount);
     const taxPercentage = numberValue(item.tax_percentage);
-    const tax = (taxableAmount * taxPercentage) / 100;
     const shippingFee = numberValue(item.shipping_fee);
-
-    const calculatedTotal = taxableAmount + tax + shippingFee;
-
-    const total =
-        item.grand_total != null
-            ? numberValue(item.grand_total)
-            : item.total_amount != null
-              ? numberValue(item.total_amount)
-              : calculatedTotal;
+    const { discount, tax, total: calculatedTotal } = calculateInvoiceTotals(
+        subtotal,
+        numberValue(item.discount_amount),
+        invoice.discount_type ?? null,
+        taxPercentage,
+        shippingFee,
+    );
+    const total = item.grand_total ?? item.total_amount ?? calculatedTotal;
 
     const status = item.status || item.Status || "Pending";
 
@@ -390,9 +380,17 @@ export default function InvoiceTemplate({
                         box-shadow: none !important;
                     }
 
-                    .invoice-modal-toolbar,
-                    .invoice-modal-backdrop {
+                    .invoice-modal-toolbar {
                         display: none !important;
+                    }
+
+                    .invoice-modal-backdrop,
+                    .invoice-modal-shell,
+                    .invoice-modal-content {
+                        position: static !important;
+                        display: block !important;
+                        max-height: none !important;
+                        overflow: visible !important;
                     }
 
                     @page {
@@ -417,7 +415,7 @@ export default function InvoiceTemplate({
                     className={
                         mode === "page"
                             ? "mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-sm"
-                            : "flex max-h-[96vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+                            : "invoice-modal-shell flex max-h-[96vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
                     }
                     onClick={
                         mode === "modal"
@@ -479,7 +477,7 @@ export default function InvoiceTemplate({
                                         ? "Back to invoices"
                                         : "Close invoice preview"
                                 }
-                                className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+                                className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-[#082c28] hover:bg-teal-50"
                             >
                                 <X size={19} />
 
@@ -496,7 +494,7 @@ export default function InvoiceTemplate({
                         className={
                             mode === "page"
                                 ? "min-h-0 flex-1 bg-gray-100 p-3 sm:p-6"
-                                : "min-h-0 flex-1 overflow-y-auto bg-gray-100 p-3 sm:p-6"
+                                : "invoice-modal-content min-h-0 flex-1 overflow-y-auto bg-gray-100 p-3 sm:p-6"
                         }
                     >
                         <div
@@ -658,7 +656,7 @@ export default function InvoiceTemplate({
                                         {discount !== 0 && (
                                             <div className="flex justify-between gap-4">
                                                 <span className="text-gray-500">
-                                                    Discount
+                                                    Discount{invoice.discount_type === "percent" ? ` (${numberValue(invoice.discount_amount)}%)` : ""}
                                                 </span>
                                                 <span className="font-semibold text-green-700">
                                                     −{formatMoney(discount)}
@@ -694,7 +692,7 @@ export default function InvoiceTemplate({
                                                     Grand Total
                                                 </span>
                                                 <span className="text-xl font-bold text-[#14383F]">
-                                                    {formatMoney(total)}
+                                                    {formatMoney(numberValue(total))}
                                                 </span>
                                             </div>
                                         </div>

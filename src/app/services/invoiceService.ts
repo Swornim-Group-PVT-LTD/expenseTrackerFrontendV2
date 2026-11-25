@@ -197,6 +197,23 @@ export const updateInvoiceService = async (
   }
 };
 
+export const updateInvoiceStatusService = async (
+  sn: string | number,
+  status: NonNullable<UpdateInvoicePayload["status"]>,
+): Promise<void> => {
+  await axios.patch(
+    `${BASE_URL}/api/invoices/${encodeURIComponent(String(sn))}/status`,
+    { status },
+    {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${getToken()}`,
+      },
+      withCredentials: true,
+    },
+  );
+};
+
 export const deleteInvoiceService = async (
   sn: string | number
 ): Promise<void> => {
