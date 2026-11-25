@@ -53,6 +53,14 @@ export default function TopNav() {
         collapsed ? "md:ml-20" : "md:ml-64"
       }`}
     >
+      <Link
+        href="/dashboard"
+        aria-label="Expense Tracker dashboard"
+        className="mr-2 flex w-24 shrink-0 items-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300 md:hidden"
+      >
+        <img src="/app-logo.png" alt="" className="h-9 max-w-full object-contain" />
+      </Link>
+
       {showHeaderLogo && (
         <Link
           href="/dashboard"
