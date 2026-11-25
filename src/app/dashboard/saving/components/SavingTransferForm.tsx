@@ -100,7 +100,7 @@ export default function SavingTransferForm({
       {renderFilters(
         <button
           type="button"
-          className="group inline-flex h-[46px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-green-700 px-3 text-sm font-semibold text-white shadow-sm transition-shadow hover:bg-green-800 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 disabled:opacity-50 sm:px-4"
+          className="group inline-flex h-[46px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-[#056455] px-3 text-sm font-semibold text-white shadow-sm transition-shadow hover:bg-[#034e43] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] disabled:opacity-50 sm:px-4"
           onClick={openForm}
           aria-expanded={formOpen}
           disabled={loading || formOpen}
@@ -114,7 +114,7 @@ export default function SavingTransferForm({
         </button>,
       )}
       {formOpen && (
-        <form onSubmit={submit} className="rounded-lg border border-gray-200 bg-white p-4">
+        <form onSubmit={submit} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           {showSelected ? (
             <fieldset disabled={submitting} className="space-y-3">
               <p className="text-sm font-medium">
@@ -190,7 +190,7 @@ export default function SavingTransferForm({
               Cancel
             </button>
             {(showSelected || Boolean(options?.length)) && (
-              <button type="submit" disabled={submitting} className="rounded-lg bg-green-700 px-4 py-2 text-sm font-semibold text-white hover:bg-green-800 disabled:opacity-50">
+              <button type="submit" disabled={submitting} className="rounded-lg bg-[#056455] px-4 py-2 text-sm font-semibold text-white hover:bg-[#034e43] disabled:opacity-50">
                 {submitting ? "Transferring…" : "Transfer to balance"}
               </button>
             )}

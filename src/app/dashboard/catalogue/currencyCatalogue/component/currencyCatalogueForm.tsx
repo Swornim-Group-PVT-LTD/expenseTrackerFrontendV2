@@ -66,30 +66,30 @@ export default function CurrencyCatalogueForm({
   };
 
   const inputClass = (field: string) =>
-    `w-full px-3 py-2 border rounded-md ${errors[field] ? "border-red-500" : "border-gray-300"
+    `h-11 w-full rounded-lg border px-3 text-sm text-slate-900 focus-visible:outline-2 focus-visible:outline-[#056455] ${errors[field] ? "border-red-500" : "border-gray-300"
     }`;
 
   return (
-    <div className="p-6 bg-gray-50 rounded-md max-w-full mt-6">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       {errors.form && (
         <p className="text-red-500 mb-2 font-medium">{errors.form}</p>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {/* Catalogue */}
         <div className="lg:col-span-1">
-          <label className="block mb-1 text-gray-700">Catalogue</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Catalogue</label>
           <input
             type="text"
             value="CURRENCY"
             readOnly
-            className="w-full px-3 py-2 border rounded-md bg-gray-200 cursor-not-allowed"
+            className="h-11 w-full rounded-lg border px-3 text-sm text-slate-900 bg-gray-200 cursor-not-allowed"
           />
         </div>
 
         {/* Country*/}
         <div className="lg:col-span-1">
-          <label className="block mb-1 text-gray-700">Country</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Country</label>
           <input
             type="text"
             value={country}
@@ -104,7 +104,7 @@ export default function CurrencyCatalogueForm({
 
         {/* Symbol */}
         <div className="lg:col-span-1">
-          <label className="block mb-1 text-gray-700">Symbol</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Symbol</label>
           <input
             type="text"
             value={symbol}
@@ -119,7 +119,7 @@ export default function CurrencyCatalogueForm({
 
         {/* Code */}
         <div className="lg:col-span-1">
-          <label className="block mb-1 text-gray-700">Code</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Code</label>
           <input
             type="text"
             value={code}
@@ -133,11 +133,11 @@ export default function CurrencyCatalogueForm({
         </div>
 
         {/* Submit Button */}
-        <div className="md:col-span-2 lg:col-span-1 flex items-end">
+        <div className="flex items-end sm:col-span-2 xl:col-span-1">
           <button
             onClick={handleAdd}
             disabled={loading}
-            className={`w-full px-6 py-2 bg-yellow-400 text-white font-semibold rounded-md hover:bg-yellow-600 transition cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : ""
+            className={`h-11 w-full cursor-pointer rounded-lg bg-[#056455] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#034e43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] ${loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
           >
             {loading ? "Adding..." : "Add"}

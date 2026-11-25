@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { ArrowRight } from "lucide-react";
 import { toast } from "react-toastify";
 import SearchInput from "@/app/components/SearchInput";
 
@@ -21,9 +22,10 @@ import { maskAmount } from "@/app/utils/maskAmount";
 
 interface SavingFormProps {
   onSuccess?: () => void;
+  balanceCard: React.ReactNode;
 }
 
-const SavingForm = ({ onSuccess }: SavingFormProps) => {
+const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
   const [amount, setAmount] = useState<number | "">("");
   const [currency, setCurrency] = useState("");
   const [remarks, setRemarks] = useState("");
@@ -141,11 +143,9 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
   };
 
   return (
-    <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
-      <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
-        {/* =====================================================
-            TOTAL SAVING
-        ====================================================== */}
+    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)]">
+      <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-1">
+        {balanceCard}
         <div
           className="
             rounded-2xl
@@ -153,15 +153,14 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
             from-[#22C55E]
             to-[#44EEAA]
             p-5
-            mb-5
             shadow-sm
           "
         >
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
               <p className="text-sm font-medium text-white/80">Total Saving</p>
 
-              <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-white mt-1 break-words tabular-nums">
                 {maskAmount(totalSaving, isVisible, currency)}
               </p>
             </div>
@@ -170,6 +169,7 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
             <div
               className="
                 w-12
+                shrink-0
                 h-12
                 rounded-xl
                 bg-white/20
@@ -186,14 +186,12 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
           </div>
         </div>
 
-        {/* =====================================================
-            FORM
-        ====================================================== */}
-        <div className="space-y-5">
-          {/* ===================================================
-              AMOUNT + CATEGORY + DEDUCT (single row)
-          ==================================================== */}
-          <div className="flex flex-col md:flex-row md:items-end gap-4">
+      </div>
+
+      <section aria-labelledby="add-saving-heading" className="@container min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <h2 id="add-saving-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Add saving</h2>
+        <div className="space-y-4">
+          <div className="flex flex-col gap-4 @min-[34rem]:flex-row @min-[34rem]:flex-wrap @min-[34rem]:items-end">
             {/* AMOUNT */}
             <div className="flex-1 min-w-0">
               <label className="block mb-2 text-sm font-semibold text-[#374151]">
@@ -202,7 +200,7 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
 
               <div
                 className="
-                  flex items-center h-[56px] rounded-xl
+                  flex items-center h-12 rounded-xl
                   border border-gray-200 bg-gray-50 px-4
                   transition-all
                   focus-within:border-[#44EEAA]
@@ -249,7 +247,7 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
                 value={remarks}
                 onChange={setRemarks}
                 placeholder="Search saving category..."
-                className="w-full h-[56px] text-gray-800"
+                className="w-full h-12 text-gray-800"
               />
             </div>
 
@@ -258,7 +256,7 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
               <label
                 className="
                   flex items-center justify-between gap-4
-                  h-[56px] rounded-xl border border-gray-100 bg-gray-50 px-4
+                  h-12 rounded-xl border border-gray-100 bg-gray-50 px-4
                   cursor-pointer
                 "
               >
@@ -301,10 +299,13 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
             disabled={loading}
             className={`
               w-full
-              h-[56px]
+              h-12
               rounded-xl
-              bg-[#22C55E]
-              hover:bg-[#44EEAA]
+              bg-[#056455]
+              hover:bg-[#034e43]
+              focus-visible:outline-2
+              focus-visible:outline-offset-2
+              focus-visible:outline-[#056455]
               active:scale-[0.98]
               text-white
               font-bold
@@ -323,12 +324,12 @@ const SavingForm = ({ onSuccess }: SavingFormProps) => {
             ) : (
               <>
                 <span>Add Saving</span>
-                <span className="text-xl">→</span>
+                <ArrowRight className="size-5" aria-hidden="true" />
               </>
             )}
           </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

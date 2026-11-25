@@ -1,81 +1,39 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import {
-  Wallet,
-  ArrowUp,
-  ArrowDown,
-  PiggyBank,
-  Info,
-} from "lucide-react";
+import Link from "next/link";
+import { ArrowDown, ArrowUp, ArrowUpRight, Coins, PiggyBank, TrendingUp } from "lucide-react";
 
 const catalogues = [
-  {
-    label: "Add Expenses Catalogue",
-    icon: <ArrowDown size={32} />,
-    path: "catalogue/expenseCatalogue",
-    bgClass: "bg-red-500",
-  },
-  {
-    label: "Add Income Catalogue",
-    icon: <ArrowUp size={32} />,
-    path: "catalogue/incomeCatalogue",
-    bgClass: "bg-green-600",
-  },
-  {
-    label: "Add Saving Catalogue",
-    icon: <PiggyBank size={32} />,
-    path: "catalogue/savingCatalogue",
-    bgClass: "bg-[#f7bc4c]",
-  },
-  {
-    label: "Add Investment Catalogue",
-    icon: <Wallet size={32} />,
-    path: "catalogue/investmentCatalogue",
-    bgClass: "bg-blue-500",
-  },
-  {
-    label: "Add Currency Catalogue",
-    icon: <Wallet size={32} />,
-    path: "catalogue/currencyCatalogue",
-    bgClass: "bg-green-400",
-  },
+  { title: "Expense categories", path: "expenseCatalogue", Icon: ArrowDown, accent: "bg-rose-50 text-rose-700" },
+  { title: "Income categories", path: "incomeCatalogue", Icon: ArrowUp, accent: "bg-emerald-50 text-emerald-800" },
+  { title: "Savings categories", path: "savingCatalogue", Icon: PiggyBank, accent: "bg-teal-50 text-teal-800" },
+  { title: "Investment categories", path: "investmentCatalogue", Icon: TrendingUp, accent: "bg-amber-50 text-amber-800" },
+  { title: "Currencies", path: "currencyCatalogue", Icon: Coins, accent: "bg-sky-50 text-sky-800" },
 ];
 
-export default function CatalogueUI() {
-  const router = useRouter();
-
+export default function CataloguePage() {
   return (
-    <div>
-      <div className="mb-4">
-        <h1 className="text-2xl font-bold">Add Your Static Values</h1>
-      </div>
-
-      {/* Catalogue Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {catalogues.map((item) => (
-          <div
-            key={item.label}
-            className={`flex flex-col items-center justify-center p-6 shadow-md rounded-xl cursor-pointer hover:shadow-xl transition transform hover:-translate-y-1 ${item.bgClass}`}
-            onClick={() => router.push(item.path)}
-          >
-            <div className="mb-4 text-white">{item.icon}</div>
-            <span className="text-center font-medium text-white">
-              {item.label}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {/* Notification Card */}
-      <div className="flex items-start gap-4 bg-yellow-100 border-l-4 border-yellow-400 p-6 rounded-lg mt-6">
-        <Info className="w-6 h-6 text-yellow-600 mt-1" />
-        <p className="text-yellow-800">
-          <strong>Note:</strong> From this page you can create your new custom
-          remarks that will appear in a dropdown. So no need to type remarks,
-          you can simply select from the dropdown.
+    <main className="space-y-5">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">Catalogue</h1>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+          Manage the categories and currencies available in your forms.
         </p>
       </div>
-    </div>
+
+      <nav aria-label="Catalogue sections" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {catalogues.map(({ title, path, Icon, accent }) => (
+          <Link
+            key={path}
+            href={`/dashboard/catalogue/${path}`}
+            className="group flex min-w-0 items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-base font-semibold text-[#082c28] shadow-sm transition-colors hover:border-teal-300 hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] sm:p-5"
+          >
+            <span className={`grid size-11 shrink-0 place-items-center rounded-xl ${accent}`}>
+              <Icon className="size-5" aria-hidden="true" />
+            </span>
+            <span>{title}</span>
+            <ArrowUpRight className="ml-auto size-4 shrink-0 text-slate-500 group-hover:text-[#056455]" aria-hidden="true" />
+          </Link>
+        ))}
+      </nav>
+    </main>
   );
 }

@@ -5,12 +5,16 @@ import {
   Bar,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   LabelList,
 } from "recharts";
 
 import { useCurrency } from "@/app/context/CurrencyContext";
+import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
+
+const compactNumber = new Intl.NumberFormat(undefined, { notation: "compact" });
 
 const MonthlySavingsChart = ({
   refreshTrigger,
@@ -21,6 +25,7 @@ const MonthlySavingsChart = ({
     { month: string; amount: number }[]
   >([]);
   const { currency } = useCurrency();
+  const { isVisible } = useBalanceVisibility();
 
   useEffect(() => {
     const fetchMonthlySavings = async () => {
@@ -45,42 +50,30 @@ const MonthlySavingsChart = ({
   }, [refreshTrigger]);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        marginTop: "20px",
-        backgroundColor: "white",
-        borderRadius: "8px",
-      }}
-    >
-      <ResponsiveContainer width="100%" height="100%">
+    <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <h2 className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Monthly savings</h2>
+      <ResponsiveContainer width="100%" height={256}>
         <BarChart
           data={monthlySavings}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 22, right: 8, bottom: 4, left: 0 }}
         >
-          {/* Y-Axis (with amount labels) */}
-          <YAxis
-            tick={{ fontSize: 12 }}
-            tickFormatter={(value) => `${(value / 1000).toFixed(0)}K`}
-            interval={0}
-            tickCount={6}
-          />
-
-          <XAxis dataKey="month" />
+          <CartesianGrid vertical={false} stroke="#e2e8f0" strokeDasharray="3 4" />
+          <YAxis width={48} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 11 }} tickFormatter={(value) => isVisible ? compactNumber.format(value) : "XXX"} />
+          <XAxis dataKey="month" axisLine={false} tickLine={false} tickMargin={8} tick={{ fill: "#475569", fontSize: 11 }} />
           <Tooltip
             formatter={(value) => [
-              `${currency}. ${Number(value).toLocaleString()}`,
+              isVisible ? `${currency} ${Number(value).toLocaleString()}`.trim() : "XXX",
+              "Amount",
             ]}
           />
 
-          <Bar dataKey="amount" fill="#44EEAA">
+          <Bar dataKey="amount" fill="#28786e" radius={[6, 6, 0, 0]} maxBarSize={80}>
             {/* Amount labels at top of each bar */}
-            <LabelList dataKey="amount" position="top" />
+            <LabelList dataKey="amount" position="top" fill="#334155" fontSize={11} formatter={(value) => isVisible ? Number(value).toLocaleString() : "XXX"} />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </section>
   );
 };
 

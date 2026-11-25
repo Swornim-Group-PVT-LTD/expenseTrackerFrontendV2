@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { ArrowRight } from "lucide-react";
 import { toast } from "react-toastify";
 import SearchInput from "@/app/components/SearchInput";
 
@@ -21,9 +22,10 @@ import { maskAmount } from "@/app/utils/maskAmount";
 
 interface InvestmentFormProps {
   onSuccess?: () => void;
+  balanceCard: React.ReactNode;
 }
 
-const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
+const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
   const [amount, setAmount] = useState<number | "">("");
   const [currency, setCurrency] = useState("");
   const [category, setCategory] = useState("");
@@ -138,11 +140,9 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
   };
 
   return (
-    <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
-      <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
-        {/* =====================================================
-            TOTAL INVESTMENT
-        ====================================================== */}
+    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)]">
+      <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-1">
+        {balanceCard}
         <div
           className="
             rounded-2xl
@@ -150,17 +150,16 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
             from-[#FF9F00]
             to-[#FFB52E]
             p-5
-            mb-5
             shadow-sm
           "
         >
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
               <p className="text-sm font-medium text-white/80">
                 Total Investment
               </p>
 
-              <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-white mt-1 break-words tabular-nums">
                 {maskAmount(totalInvestment, isVisible, currency)}
               </p>
             </div>
@@ -169,6 +168,7 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
             <div
               className="
                 w-12
+                shrink-0
                 h-12
                 rounded-xl
                 bg-white/20
@@ -185,14 +185,12 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
           </div>
         </div>
 
-        {/* =====================================================
-            FORM
-        ====================================================== */}
-        <div className="space-y-5">
-          {/* ===================================================
-              AMOUNT + CATEGORY (single row)
-          ==================================================== */}
-          <div className="flex flex-col md:flex-row md:items-end gap-4">
+      </div>
+
+      <section aria-labelledby="add-investment-heading" className="@container min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <h2 id="add-investment-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Add investment</h2>
+        <div className="space-y-4">
+          <div className="flex flex-col gap-4 @min-[34rem]:flex-row @min-[34rem]:flex-wrap @min-[34rem]:items-end">
             {/* AMOUNT */}
             <div className="flex-1 min-w-0">
               <label className="block mb-2 text-sm font-semibold text-[#374151]">
@@ -201,7 +199,7 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
 
               <div
                 className="
-                  flex items-center h-[56px] rounded-xl
+                  flex items-center h-12 rounded-xl
                   border border-gray-200 bg-gray-50 px-4
                   transition-all
                   focus-within:border-[#FFAA00]
@@ -248,7 +246,7 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
                 value={category}
                 onChange={setCategory}
                 placeholder="Search investment category..."
-                className="w-full h-[56px] text-gray-800"
+                className="w-full h-12 text-gray-800"
               />
             </div>
           </div>
@@ -266,10 +264,13 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
             disabled={loading}
             className={`
               w-full
-              h-[56px]
+              h-12
               rounded-xl
-              bg-[#FFAA00]
-              hover:bg-[#E99A00]
+              bg-[#056455]
+              hover:bg-[#034e43]
+              focus-visible:outline-2
+              focus-visible:outline-offset-2
+              focus-visible:outline-[#056455]
               active:scale-[0.98]
               text-white
               font-bold
@@ -288,12 +289,12 @@ const InvestmentForm = ({ onSuccess }: InvestmentFormProps) => {
             ) : (
               <>
                 <span>Add Investment</span>
-                <span className="text-xl">→</span>
+                <ArrowRight className="size-5" aria-hidden="true" />
               </>
             )}
           </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

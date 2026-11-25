@@ -80,27 +80,21 @@ function Investment() {
   }, []);
 
   return (
-    <div className="">
+    <main className="space-y-5">
+      <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">Investments</h1>
 
-      <h1 className="text-2xl font-bold mb-4">Add Investment</h1>
+      <InvestmentForm
+        onSuccess={handleRefresh}
+        balanceCard={<BalanceCard refreshTrigger={refreshTrigger} />}
+      />
 
-      <div className="grid grid-cols-1 items-center lg:grid-cols-4 gap-4">
-        <BalanceCard refreshTrigger={refreshTrigger} />
-        <InvestmentForm onSuccess={handleRefresh} />
-      </div>
+      <section aria-label="Investments charts" className="grid gap-4 xl:grid-cols-2">
+        <InvestmentLineChart refreshTrigger={refreshTrigger} />
+        <InvestmentBarChart refreshTrigger={refreshTrigger} />
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4">
-        <div className="h-80">
-          <InvestmentLineChart refreshTrigger={refreshTrigger} />
-        </div>
-
-        <div className="h-80">
-          <InvestmentBarChart refreshTrigger={refreshTrigger} />
-        </div>
-      </div>
-
-      {/* Added mt-10 here */}
-      <div className="mt-10">
+      <section aria-labelledby="investment-history-heading" className="space-y-3">
+        <h2 id="investment-history-heading" className="text-lg font-bold tracking-tight text-[#082c28] dark:text-white">Investments history</h2>
         <DateFilter
           fetchService={getInvestmentByDateRangeService}
           onFilter={handleFilter}
@@ -151,30 +145,30 @@ function Investment() {
             );
           }}
         />
-      </div>
 
-      {isFilterActive && (
-        <div className="mb-4 flex items-center gap-2">
-          <span className="text-sm text-gray-600">
-            Showing {filteredData.length} filtered results
-          </span>
+        {isFilterActive && (
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-sm text-gray-600">
+              Showing {filteredData.length} filtered results
+            </span>
 
-          <button
-            onClick={clearFilter}
-            className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
-          >
-            Show All
-          </button>
-        </div>
-      )}
+            <button
+              onClick={clearFilter}
+              className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
+            >
+              Show All
+            </button>
+          </div>
+        )}
 
-      <InvestmentTable
-        refreshTrigger={refreshTrigger}
-        filteredData={isFilterActive ? filteredData : null}
-        onSuccess={handleRefresh}
-        onDataLoad={setAllData}
-      />
-    </div>
+        <InvestmentTable
+          refreshTrigger={refreshTrigger}
+          filteredData={isFilterActive ? filteredData : null}
+          onSuccess={handleRefresh}
+          onDataLoad={setAllData}
+        />
+      </section>
+    </main>
   );
 }
 
