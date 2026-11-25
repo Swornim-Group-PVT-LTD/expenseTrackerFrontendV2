@@ -30,10 +30,10 @@ export default function Dashboard() {
             <Link
               key={label}
               href={`/dashboard/${label}`}
-              className="group flex min-w-0 items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-2 text-sm font-semibold text-[#082c28] transition-colors hover:border-teal-200 hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] sm:px-3"
+              className="group flex min-w-0 items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-2 text-base font-semibold text-[#082c28] transition-colors hover:border-teal-200 hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] sm:px-3"
             >
-              <span className="grid size-8 shrink-0 place-items-center rounded-lg" style={{ backgroundColor: `${color}19`, color }}>
-                <Icon className="size-4" aria-hidden="true" />
+              <span className="grid size-9 shrink-0 sm:size-10 place-items-center rounded-lg" style={{ backgroundColor: `${color}19`, color }}>
+                <Icon className="size-5" aria-hidden="true" />
               </span>
               <span className="min-w-0 break-words">{title}</span>
               <ArrowUpRight className="ml-auto hidden size-4 shrink-0 text-slate-400 group-hover:text-[#056455] sm:block" aria-hidden="true" />

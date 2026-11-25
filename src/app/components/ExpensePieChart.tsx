@@ -73,7 +73,7 @@ export default function ExpensesPieChart() {
 
   const total = chartData.reduce((sum, entry) => sum + entry.value, 0);
   const formatAmount = (value: number) =>
-    `${currency} ${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`.trim();
+    isVisible ? `${currency} ${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`.trim() : "XXX";
 
   const renderBreakdown = (expanded = false) => (
     <div className={`grid items-center gap-4 ${expanded ? "sm:grid-cols-2" : "@min-[27rem]:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]"}`}>
@@ -103,7 +103,7 @@ export default function ExpensesPieChart() {
     </div>
   );
 
-  const hasBreakdown = isVisible && status === "ready" && total > 0;
+  const hasBreakdown = status === "ready" && total > 0;
 
   return (
     <div className="@container min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
@@ -137,7 +137,7 @@ export default function ExpensesPieChart() {
         <div className="grid min-h-64 content-center">{renderBreakdown()}</div>
       ) : (
         <p role="status" className="grid h-64 place-items-center text-center text-sm text-slate-600">
-          {!isVisible ? "Amounts are hidden." : status === "loading" ? "Loading expense breakdown…" : status === "error" ? "Expense breakdown is unavailable." : "No expenses for this period."}
+          {status === "loading" ? "Loading expense breakdown…" : status === "error" ? "Expense breakdown is unavailable." : "No expenses for this period."}
         </p>
       )}
 
