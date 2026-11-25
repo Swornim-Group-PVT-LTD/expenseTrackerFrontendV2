@@ -15,7 +15,6 @@ import {
   Eye,
   Pencil,
   Trash2,
-  X,
   Save,
   FileText,
 } from "lucide-react";
@@ -30,7 +29,6 @@ import type {
   InvoiceResponse,
   InvoiceStatus,
 } from "@/app/types/invoiceType";
-import InvoiceTemplate from "../components/viewInvoiceTemplate";
 
 interface ViewInvoiceTableProps {
   filteredData?: InvoiceResponse[] | null;
@@ -39,7 +37,7 @@ interface ViewInvoiceTableProps {
   refreshTrigger?: number;
   onSuccess?: () => void;
   onDataLoad?: (data: InvoiceResponse[]) => void;
-  onViewInvoice?: (invoice: InvoiceResponse) => void;
+  onViewInvoice: (invoice: InvoiceResponse) => void;
 }
 
 const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
@@ -64,9 +62,6 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
   const [selectedStatuses, setSelectedStatuses] = useState<
     Record<string, InvoiceStatus>
   >({});
-  const [selectedInvoice, setSelectedInvoice] =
-    useState<InvoiceResponse | null>(null);
-  const [showInvoiceTemplate, setShowInvoiceTemplate] = useState(false);
 
   const getInvoiceSn = (
     invoice: InvoiceResponse
@@ -292,9 +287,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
     const sn = getInvoiceSn(invoice);
 
     if (sn === null) {
-      setSelectedInvoice(invoice);
-      setShowInvoiceTemplate(true);
-      onViewInvoice?.(invoice);
+      onViewInvoice(invoice);
       return;
     }
 
@@ -325,9 +318,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
           ? (fetchedInvoice as InvoiceResponse)
           : invoice;
 
-      setSelectedInvoice(normalizedInvoice);
-      setShowInvoiceTemplate(true);
-      onViewInvoice?.(normalizedInvoice);
+      onViewInvoice(normalizedInvoice);
     } catch (error) {
       console.error("Failed to load invoice details:", error);
       toast.error("Could not load invoice details.");
@@ -450,38 +441,6 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
     isFilterActive && Array.isArray(filteredData)
       ? filteredData
       : invoices;
-
-  if (showInvoiceTemplate && selectedInvoice) {
-    return (
-      <div className="w-full">
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-lg font-bold text-[#14383F]">
-            Invoice Preview
-          </h2>
-
-          <button
-            type="button"
-            onClick={() => {
-              setShowInvoiceTemplate(false);
-              setSelectedInvoice(null);
-            }}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
-          >
-            <X size={17} />
-            Close Preview
-          </button>
-        </div>
-
-        <InvoiceTemplate
-          invoice={selectedInvoice}
-          onClose={() => {
-            setShowInvoiceTemplate(false);
-            setSelectedInvoice(null);
-          }}
-        />
-      </div>
-    );
-  }
 
   return (
     <div className="w-full space-y-4">

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Download, FileText, Printer, X } from "lucide-react";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
@@ -18,7 +19,6 @@ import type {
 interface InvoiceTemplateProps {
     invoice: InvoiceResponse;
     onClose: () => void;
-    mode?: "modal" | "page";
 }
 
 type CurrencyInfo = {
@@ -121,7 +121,6 @@ const getRowAmount = (item: InvoiceItem): number => {
 export default function InvoiceTemplate({
     invoice,
     onClose,
-    mode = "modal",
 }: InvoiceTemplateProps) {
     const { user } = useAuth();
     const printRef = useRef<HTMLDivElement>(null);
@@ -198,7 +197,9 @@ export default function InvoiceTemplate({
 
     const status = item.status || item.Status || "Pending";
 
-    const handlePrint = () => {
+    const handlePrint = async () => {
+        const logo = printRef.current?.querySelector("img");
+        await Promise.allSettled([document.fonts.ready, logo?.decode()]);
         window.print();
     };
 
@@ -357,26 +358,42 @@ export default function InvoiceTemplate({
         }
     };
 
-    return (
-        <>
+    return createPortal(
+        <div
+            className="invoice-overlay fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-2 backdrop-blur-sm sm:p-5"
+            onClick={(event) => {
+                if (event.target === event.currentTarget) onClose();
+            }}
+        >
             <style jsx global>{`
+                @page {
+                    size: A4;
+                    margin: 12mm;
+                }
+
                 @media print {
-                    body * {
-                        visibility: hidden !important;
+                    body:has(> .invoice-overlay) > :not(.invoice-overlay) {
+                        display: none !important;
                     }
 
-                    .invoice-print-area,
-                    .invoice-print-area * {
-                        visibility: visible !important;
-                    }
-
-                    .invoice-print-area {
-                        position: absolute !important;
-                        left: 0 !important;
-                        top: 0 !important;
-                        width: 100% !important;
-                        max-width: none !important;
+                    html, body {
                         margin: 0 !important;
+                        background: white !important;
+                    }
+
+                    .invoice-overlay,
+                    .invoice-modal-shell,
+                    .invoice-modal-content {
+                        position: static !important;
+                        display: block !important;
+                        width: auto !important;
+                        max-width: none !important;
+                        max-height: none !important;
+                        overflow: visible !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        background: white !important;
+                        backdrop-filter: none !important;
                         box-shadow: none !important;
                     }
 
@@ -384,45 +401,78 @@ export default function InvoiceTemplate({
                         display: none !important;
                     }
 
-                    .invoice-modal-backdrop,
-                    .invoice-modal-shell,
-                    .invoice-modal-content {
-                        position: static !important;
-                        display: block !important;
-                        max-height: none !important;
-                        overflow: visible !important;
+                    .invoice-print-area {
+                        max-width: none !important;
+                        color: #17252b;
+                        font: 11pt/1.4 Arial, Helvetica, sans-serif;
                     }
 
-                    @page {
-                        size: A4;
-                        margin: 12mm;
+                    .invoice-print-header {
+                        break-inside: avoid;
+                        background: white !important;
+                        border-bottom: 1px solid #14383f;
+                        padding: 0 0 5mm !important;
+                    }
+
+                    .invoice-print-header * {
+                        color: #14383f !important;
+                    }
+
+                    .invoice-print-header img {
+                        width: auto;
+                        height: 13mm;
+                        max-width: 50mm;
+                        margin-bottom: 2mm;
+                    }
+
+                    .invoice-print-header h2 {
+                        margin-top: 2mm;
+                        font-size: 20pt;
+                        line-height: 1.2;
+                    }
+
+                    .invoice-print-body {
+                        padding: 5mm 0 0 !important;
+                    }
+
+                    .invoice-print-body > * + * {
+                        margin-top: 5mm;
+                    }
+
+                    .invoice-print-area p,
+                    .invoice-print-area td,
+                    .invoice-print-area th,
+                    .invoice-print-area .invoice-address {
+                        font-size: 10pt;
+                        line-height: 1.4;
+                    }
+
+                    .invoice-print-area th,
+                    .invoice-print-area td {
+                        padding: 2mm 3mm;
+                    }
+
+                    .invoice-print-area thead {
+                        display: table-header-group;
+                    }
+
+                    .invoice-print-area tr,
+                    .invoice-print-keep-together {
+                        break-inside: avoid;
+                    }
+
+                    .invoice-print-table {
+                        overflow: visible !important;
                     }
                 }
             `}</style>
 
             <div
-                className={
-                    mode === "page"
-                        ? "min-h-screen bg-gray-100 p-3 sm:p-6"
-                        : "invoice-modal-backdrop fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-2 backdrop-blur-sm sm:p-5"
-                }
-                onClick={mode === "modal" ? onClose : undefined}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Invoice preview"
+                className="invoice-modal-shell flex max-h-[96vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
             >
-                <div
-                    role={mode === "modal" ? "dialog" : undefined}
-                    aria-modal={mode === "modal" ? true : undefined}
-                    aria-label="Invoice preview"
-                    className={
-                        mode === "page"
-                            ? "mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-sm"
-                            : "invoice-modal-shell flex max-h-[96vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
-                    }
-                    onClick={
-                        mode === "modal"
-                            ? (event) => event.stopPropagation()
-                            : undefined
-                    }
-                >
                     <div className="invoice-modal-toolbar flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3 sm:px-6">
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#14383F]/10">
@@ -472,37 +522,27 @@ export default function InvoiceTemplate({
                             <button
                                 type="button"
                                 onClick={onClose}
-                                aria-label={
-                                    mode === "page"
-                                        ? "Back to invoices"
-                                        : "Close invoice preview"
-                                }
+                                aria-label="Close invoice preview"
                                 className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-[#082c28] hover:bg-teal-50"
                             >
                                 <X size={19} />
 
                                 <span>
-                                    {mode === "page"
-                                        ? "Back to Invoices"
-                                        : "Close"}
+                                    Close
                                 </span>
                             </button>
                         </div>
                     </div>
 
                     <div
-                        className={
-                            mode === "page"
-                                ? "min-h-0 flex-1 bg-gray-100 p-3 sm:p-6"
-                                : "invoice-modal-content min-h-0 flex-1 overflow-y-auto bg-gray-100 p-3 sm:p-6"
-                        }
+                        className="invoice-modal-content min-h-0 flex-1 overflow-y-auto bg-gray-100 p-3 sm:p-6"
                     >
                         <div
                             ref={printRef}
                             className="invoice-print-area mx-auto w-full max-w-4xl bg-white text-gray-800"
                         >
-                            <div className="bg-[#14383F] px-6 py-8 text-white sm:px-10">
-                                <div className="flex flex-col justify-between gap-6 sm:flex-row">
+                            <div className="invoice-print-header bg-[#14383F] px-6 py-8 text-white sm:px-10">
+                                <div className="flex flex-col justify-between gap-6 sm:flex-row print:flex-row">
                                     <div>
                                         <AccountLogo
                                             alt="Account logo"
@@ -525,7 +565,7 @@ export default function InvoiceTemplate({
                                         </p>
                                     </div>
 
-                                    <div className="sm:text-right">
+                                    <div className="sm:text-right print:text-right">
                                         <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase text-[#F4C95D]">
                                             {status}
                                         </span>
@@ -549,14 +589,14 @@ export default function InvoiceTemplate({
                                 </div>
                             </div>
 
-                            <div className="space-y-8 px-6 py-8 sm:px-10 sm:py-10">
-                                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+                            <div className="invoice-print-body space-y-8 px-6 py-8 sm:px-10 sm:py-10 print:space-y-0">
+                                <div className="invoice-print-keep-together grid grid-cols-1 gap-8 sm:grid-cols-2 print:grid-cols-2 print:gap-5">
                                     <div>
                                         <h3 className="mb-3 border-l-4 border-[#F4C95D] pl-3 text-xs font-bold uppercase tracking-wider text-[#14383F]">
                                             From
                                         </h3>
 
-                                        <div className="whitespace-pre-line text-sm leading-7 text-gray-600">
+                                        <div className="invoice-address whitespace-pre-line text-sm leading-7 text-gray-600">
                                             {item.company_details || "Company details"}
                                         </div>
                                     </div>
@@ -566,7 +606,7 @@ export default function InvoiceTemplate({
                                             Bill To
                                         </h3>
 
-                                        <div className="whitespace-pre-line text-sm leading-7 text-gray-600">
+                                        <div className="invoice-address whitespace-pre-line text-sm leading-7 text-gray-600">
                                             {item.bill_to || "Customer details"}
                                         </div>
                                     </div>
@@ -577,7 +617,7 @@ export default function InvoiceTemplate({
                                         Invoice Items
                                     </h3>
 
-                                    <div className="overflow-x-auto rounded-xl border border-slate-200">
+                                    <div className="invoice-print-table overflow-x-auto rounded-xl border border-slate-200">
                                         <table className="ledger-table w-full border-collapse text-left text-sm">
                                             <thead>
                                                 <tr className="bg-slate-50 text-[#082c28]">
@@ -642,7 +682,7 @@ export default function InvoiceTemplate({
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end">
+                                <div className="invoice-print-keep-together flex justify-end">
                                     <div className="w-full max-w-sm space-y-3 text-sm">
                                         <div className="flex justify-between gap-4">
                                             <span className="text-gray-500">
@@ -699,7 +739,7 @@ export default function InvoiceTemplate({
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-6 border-t border-gray-200 pt-6 sm:grid-cols-2">
+                                <div className="invoice-print-keep-together grid grid-cols-1 gap-6 border-t border-gray-200 pt-6 sm:grid-cols-2 print:grid-cols-2 print:gap-5 print:pt-4">
                                     <div>
                                         <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-[#14383F]">
                                             Payment Terms
@@ -723,7 +763,7 @@ export default function InvoiceTemplate({
                                     </div>
                                 </div>
 
-                                <div className="border-t border-gray-200 pt-5 text-center">
+                                <div className="invoice-print-keep-together border-t border-gray-200 pt-5 text-center print:pt-3">
                                     <p className="text-sm font-semibold text-[#14383F]">
                                         Thank you for your business!
                                     </p>
@@ -736,8 +776,8 @@ export default function InvoiceTemplate({
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
-        </>
+        </div>,
+        document.body,
     );
 }
