@@ -8,7 +8,6 @@ const catalogue = { label: "Catalogue", href: "/dashboard/catalogue" };
 const invoices = { label: "Invoices", href: "/dashboard/invoice" };
 
 const pageLabels: Record<string, string> = {
-    "/dashboard": "Dashboard",
     "/dashboard/balance": "Balance",
     "/dashboard/income": "Income",
     "/dashboard/expenses": "Expenses",
@@ -31,7 +30,7 @@ export default function DashboardBreadcrumbs() {
     // The invoice list owns its breadcrumb because Add Invoice is an inline form.
     if (!current) return null;
 
-    const parents = pathname === dashboard.href ? [] : [dashboard];
+    const parents = [dashboard];
     if (isInvoiceEdit) parents.push(invoices);
     if (pathname.startsWith(catalogue.href + "/")) parents.push(catalogue);
 

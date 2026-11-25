@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   ChevronDown,
   ChevronRight,
@@ -40,12 +40,7 @@ export default function StatCard({
   label,
   labelColor,
 }: StatCardProps) {
-  const router = useRouter();
   const { isVisible } = useBalanceVisibility();
-
-  const handleClick = () => {
-    router.push(`/dashboard/${label.toLowerCase()}`);
-  };
 
   const getInitialValue = (label: string): FilterType => {
     switch (label.toLowerCase()) {
@@ -66,49 +61,39 @@ export default function StatCard({
     }
   };
 
-  // IMPORTANT: Keep the setter so the filter can be changed
   const [filterType, setFilterType] = useState<FilterType>(() =>
     getInitialValue(label)
   );
 
   const [value, setValue] = useState<number>(0);
   const [changePercent, setChangePercent] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [currency, setCurrency] = useState("Rs");
 
   useEffect(() => {
-    fetchStat();
-  }, [filterType]);
+    let ignore = false;
 
-  const fetchStat = async () => {
-    setLoading(true);
-
-    try {
-      const res = await getFilteredCardsDataService(
-        filterType,
-        label.toLowerCase(),
-      );
-
-      const total = res[`total_${label.toLowerCase()}`] ?? 0;
-
-      setValue(Number(total));
-      setCurrency(res.currency?.symbol || "Rs");
-
-      // Optional: percentage vs previous period
-      if (typeof res.change_percent === "number") {
-        setChangePercent(res.change_percent);
-      } else {
+    getFilteredCardsDataService(filterType, label)
+      .then((response) => {
+        if (ignore) return;
+        setValue(Number(response[`total_${label}`] ?? 0));
+        setCurrency(response.currency?.symbol || "Rs");
+        setChangePercent(
+          typeof response.change_percent === "number" ? response.change_percent : null,
+        );
+      })
+      .catch((error) => {
+        if (ignore) return;
+        console.error(`Failed to fetch ${label} data:`, error);
+        setValue(0);
         setChangePercent(null);
-      }
-    } catch (error) {
-      console.error(`Failed to fetch ${label} data:`, error);
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false);
+      });
 
-      setValue(0);
-      setChangePercent(null);
-    } finally {
-      setLoading(false);
-    }
-  };
+    return () => { ignore = true; };
+  }, [filterType, label]);
 
   const renderBalanceValue = () => {
     if (loading) {
@@ -121,39 +106,33 @@ export default function StatCard({
   const isPositive = (changePercent ?? 0) >= 0;
 
   return (
-    <div
-      onClick={handleClick}
-      className="bg-white rounded-2xl shadow-sm p-4 flex flex-col gap-3 hover:shadow-md transition-shadow hover:cursor-pointer"
-    >
+    <article className="@container flex min-w-0 flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       {/* Top section */}
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex items-start gap-3 min-w-0">
           {/* Icon */}
           <div
-            className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shrink-0"
+            className="size-11 rounded-xl flex items-center justify-center shrink-0"
             style={{ backgroundColor: `${labelColor}1A` }}
           >
             <img
               src={icon}
-              alt={label}
-              className="w-7 h-7 md:w-8 md:h-8 object-contain"
+              alt=""
+              className="size-6 object-contain"
             />
           </div>
 
           {/* Title + amount */}
           <div className="flex flex-col min-w-0">
-            <span
-              className="text-base font-semibold"
-              style={{ color: labelColor }}
-            >
+            <span className="text-sm font-semibold text-[#082c28]">
               {labelTitle[label]}
             </span>
 
-            <span className="text-2xl font-semibold text-[#07371B] truncate">
+            <span className="break-words text-xl font-bold tracking-tight text-[#07371B] tabular-nums @min-[15rem]:text-2xl">
               {renderBalanceValue()}
             </span>
 
-            <span className="text-sm text-gray-400">
+            <span className="text-xs text-slate-600">
               {periodText[filterType]}
             </span>
           </div>
@@ -178,27 +157,24 @@ export default function StatCard({
               {Math.abs(changePercent)}%
             </div>
 
-            <span className="text-xs text-gray-400 mt-1">
+            <span className="text-xs text-slate-600 mt-1">
               vs last month
             </span>
           </div>
         )}
       </div>
 
-      {/* Filter + View details */}
-      <div
-        className="flex items-center justify-between pt-2 border-t border-gray-100 gap-2"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Filter */}
-        <div className="relative w-32 shrink-0">
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
+        <div className="relative">
           <select
+            aria-label={`${labelTitle[label]} period`}
             value={filterType}
-            onChange={(e) =>
-              setFilterType(e.target.value as FilterType)
-            }
-            onClick={(e) => e.stopPropagation()}
-            className="appearance-none w-full py-1.5 pl-3 pr-8 text-sm font-medium text-[#716A6A] border border-[#574A4A]/30 rounded-lg bg-white cursor-pointer focus:outline-none focus:ring-1"
+            onChange={(event) => {
+              setLoading(true);
+              setChangePercent(null);
+              setFilterType(event.target.value as FilterType);
+            }}
+            className="cursor-pointer appearance-none rounded-lg border border-slate-200 bg-slate-50 py-1.5 pr-8 pl-2.5 text-sm font-medium text-[#082c28] focus-visible:outline-2 focus-visible:outline-[#056455]"
           >
             <option value="yearly">Yearly</option>
             <option value="monthly">Monthly</option>
@@ -206,23 +182,16 @@ export default function StatCard({
             <option value="daily">Daily</option>
             <option value="total">Total</option>
           </select>
-
-          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#716A6A] pointer-events-none" />
+          <ChevronDown className="pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-1/2 text-slate-500" aria-hidden="true" />
         </div>
-
-        {/* View details */}
-        <div className="flex items-center gap-1 min-w-0">
-          <span
-            className="text-sm font-medium truncate"
-            style={{ color: labelColor }}
-          >
-            View {label} details
-          </span>
-
-          <ChevronRight className="w-4 h-4 text-gray-400 shrink-0" />
-        </div>
+        <Link
+          href={`/dashboard/${label}`}
+          aria-label={`View ${labelTitle[label].toLowerCase()} details`}
+          className="inline-flex items-center gap-1 rounded text-sm font-semibold text-[#056455] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
+        >
+          View details <ChevronRight className="size-4" aria-hidden="true" />
+        </Link>
       </div>
-    </div>
+    </article>
   );
 }
-

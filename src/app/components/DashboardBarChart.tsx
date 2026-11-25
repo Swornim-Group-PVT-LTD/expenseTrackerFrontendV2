@@ -1,104 +1,81 @@
+import { useEffect, useState } from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  Cell,
+  Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
-
-import { ChevronDown } from "lucide-react";
-import { useState, useEffect } from "react";
 
 import { dashboardBarChartService } from "../services/chartService";
 import { useCurrency } from "@/app/context/CurrencyContext";
+import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
+import DashboardChartPeriod from "./DashboardChartPeriod";
 
-interface DashboardBarChartProps {
-  name: string;
-  value: number;
-  color: string;
-}
+const categories = [
+  { key: "income", name: "Income", color: "#056455" },
+  { key: "expenses", name: "Expenses", color: "#C14354" },
+  { key: "investment", name: "Investments", color: "#B87918" },
+  { key: "saving", name: "Savings", color: "#28786E" },
+] as const;
+
+const compactNumber = new Intl.NumberFormat(undefined, { notation: "compact" });
 
 export default function DashboardBarChart() {
   const [filterType, setFilterType] = useState("monthly");
-  const [chartData, setChartData] = useState<DashboardBarChartProps[]>([
-    { name: "Income", value: 0, color: "#5EAC24" },
-    { name: "Expenses", value: 0, color: "#FF6384" },
-    { name: "Investment", value: 0, color: "#EE8B44" },
-    { name: "Saving", value: 0, color: "#4EAABB" },
-  ]);
-
+  const [chartData, setChartData] = useState<{ name: string; value: number; color: string }[]>([]);
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const { currency } = useCurrency();
+  const { isVisible } = useBalanceVisibility();
 
   useEffect(() => {
-    const fetchChartData = async () => {
-      try {
-        const response = await dashboardBarChartService(filterType);
-        const transformedData = [
-          { name: "Income", value: Number(response.income), color: "#5EAC24" },
-          {
-            name: "Expenses",
-            value: Number(response.expenses),
-            color: "#FF6384",
-          },
-          {
-            name: "Investment",
-            value: Number(response.investment),
-            color: "#EE8B44",
-          },
-          { name: "Saving", value: Number(response.saving), color: "#4EAABB" },
-        ];
-        setChartData(transformedData);
-      } catch (error) {
+    let ignore = false;
+
+    dashboardBarChartService(filterType)
+      .then((response) => {
+        if (ignore) return;
+        setChartData(categories.map(({ key, name, color }) => ({
+          name,
+          color,
+          value: Number(response[key]) || 0,
+        })));
+        setStatus("ready");
+      })
+      .catch((error) => {
+        if (ignore) return;
         console.error("Error fetching chart data:", error);
-      }
-    };
-    fetchChartData();
+        setStatus("error");
+      });
+
+    return () => { ignore = true; };
   }, [filterType]);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: 400,
-        backgroundColor: "white",
-        borderRadius: "12px",
-        padding: "16px",
-      }}
-    >
-      <div className="relative w-32 mb-4">
-        <select
+    <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-lg font-bold tracking-tight text-[#082c28]">Financial activity</h2>
+        <DashboardChartPeriod
+          label="Financial activity period"
           value={filterType}
-          onChange={(e) => setFilterType(e.target.value)}
-          className="appearance-none w-full  py-1 px-2 text-sm font-medium text-[#716A6A] border border-[#574A4A]/50 rounded-lg bg-white cursor-pointer"
-        >
-          <option value="yearly">Yearly</option>
-          <option value="monthly">Monthly</option>
-          <option value="weekly">Weekly</option>
-          <option value="daily">Daily</option>
-        </select>
-        <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#716A6A] pointer-events-none" />
+          onChange={(value) => {
+            setStatus("loading");
+            setFilterType(value);
+          }}
+        />
       </div>
-      <ResponsiveContainer width="100%" height={320}>
-        <BarChart
-          data={chartData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip formatter={(value) => [`${currency}. ${value}`]} />
-
-          <Bar dataKey="value">
-            {chartData?.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+      {!isVisible || status !== "ready" ? (
+        <p role="status" className="grid h-64 place-items-center text-center text-sm text-slate-600">
+          {!isVisible ? "Amounts are hidden." : status === "loading" ? "Loading financial activity…" : "Financial activity is unavailable."}
+        </p>
+      ) : (
+        <ResponsiveContainer width="100%" height={256}>
+          <BarChart data={chartData} margin={{ top: 8, right: 4, bottom: 4, left: 0 }}>
+            <CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="3 4" />
+            <XAxis dataKey="name" axisLine={false} tickLine={false} tickMargin={8} interval={0} tick={{ fill: "#475569", fontSize: 11 }} />
+            <YAxis width={46} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 11 }} tickFormatter={(value) => compactNumber.format(value)} />
+            <Tooltip cursor={{ fill: "#F1F5F9" }} formatter={(value) => [`${currency} ${Number(value).toLocaleString()}`, "Amount"]} />
+            <Bar dataKey="value" maxBarSize={64} radius={[6, 6, 0, 0]}>
+              {chartData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 }

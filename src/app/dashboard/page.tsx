@@ -1,184 +1,57 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ArrowUp, ArrowDown, PiggyBank, TrendingUp } from "lucide-react";
-import ClipLoader from "react-spinners/ClipLoader";
-import { useRouter } from "next/navigation";
+import { ArrowDown, ArrowUp, ArrowUpRight, PiggyBank, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
-import StatCard from "@/app/components/statcard";
+import BalanceCard from "@/app/components/BalanceCard";
 import MonthlyBarChart from "@/app/components/DashboardBarChart";
 import ExpensesPieChart from "@/app/components/ExpensePieChart";
-import ExpensesLineChart from "@/app/components/ExpensesLineChart";
-import BalanceCard from "@/app/components/BalanceCard";
+import StatCard from "@/app/components/statcard";
 
-import { getBalancesService } from "../services/balanceService";
-import { getTotalExpenseService } from "../services/expenseService";
-import { getTotalSavingService } from "../services/savingService";
-import { getTotalIncomeService } from "../services/incomeService";
-import { getTotalInvestmentService } from "../services/investmentService";
-
-import { BalanceResponse } from "../types/balanceType";
+const sections = [
+  { label: "income", title: "Income", Icon: ArrowUp, color: "#056455", icon: "/income-logo.svg" },
+  { label: "expenses", title: "Expenses", Icon: ArrowDown, color: "#C14354", icon: "/expenses-logo.svg" },
+  { label: "saving", title: "Savings", Icon: PiggyBank, color: "#28786E", icon: "/saving-logo.svg" },
+  { label: "investment", title: "Investments", Icon: TrendingUp, color: "#996308", icon: "/investment-logo.svg" },
+] as const;
 
 export default function Dashboard() {
-  const [balance, setBalance] = useState<number>(0);
-  const [totalExpenses, setTotalExpenses] = useState<number>(0);
-  const [totalSaving, setTotalSaving] = useState<number>(0);
-  const [totalInvestment, setTotalInvestment] = useState<number>(0);
-  const [totalIncome, setTotalIncome] = useState<number>(0);
-  const [loading, setLoading] = useState(true);
-  const [currency, setCurrency] = useState<string>("");
-
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-
-      try {
-        const [
-          balanceResponse,
-          totalExpenses,
-          totalSaving,
-          totalIncome,
-          totalInvestment,
-        ]: [BalanceResponse, number, number, number, number] =
-          await Promise.all([
-            getBalancesService(),
-            getTotalExpenseService(),
-            getTotalSavingService(),
-            getTotalIncomeService(),
-            getTotalInvestmentService(),
-          ]);
-
-        // Balance
-        const bal = balanceResponse?.closing_balance ?? 0;
-        setBalance(Number(bal));
-
-        // Currency
-        const detectedCurrency = balanceResponse?.currency?.symbol;
-        setCurrency(detectedCurrency || "");
-
-        // Totals
-        setTotalExpenses(Number(totalExpenses) || 0);
-        setTotalSaving(Number(totalSaving) || 0);
-        setTotalIncome(Number(totalIncome) || 0);
-        setTotalInvestment(Number(totalInvestment) || 0);
-      } catch (error) {
-        console.error("Dashboard loading error:", error);
-
-        setBalance(0);
-        setTotalExpenses(0);
-        setTotalSaving(0);
-        setTotalIncome(0);
-        setTotalInvestment(0);
-        setCurrency("");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-  const dashboardData = [
-    {
-      title: "Income",
-      value: totalIncome,
-      icon: "/income-logo.svg",
-      labelColor: "#5EAC24",
-      lucideIcon: <ArrowUp className="w-6 h-6" />,
-    },
-    {
-      title: "Expenses",
-      value: totalExpenses,
-      icon: "/expenses-logo.svg",
-      labelColor: "#E63F32",
-      lucideIcon: <ArrowDown className="w-6 h-6" />,
-    },
-    {
-      title: "Saving",
-      value: totalSaving,
-      icon: "/saving-logo.svg",
-      labelColor: "#4EA890",
-      lucideIcon: <PiggyBank className="w-6 h-6" />,
-    },
-    {
-      title: "Investment",
-      value: totalInvestment,
-      icon: "/investment-logo.svg",
-      labelColor: "#FFA726",
-      lucideIcon: <TrendingUp className="w-6 h-6" />,
-    },
-  ];
-
-  const router = useRouter();
-  const handleClick = (label: string) => {
-    router.push(`/dashboard/${label.toLowerCase()}`);
-  };
-
-  // Format displayed currency safely
-  const formatCurrency = (value: number) => {
-    if (!currency) return value.toLocaleString(); // No currency → show only number
-    return `${currency} ${value.toLocaleString()}`;
-  };
-
   return (
-    <main>
+    <main className="space-y-5">
+      <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">
+        Dashboard
+      </h1>
 
-      <div className="space-y-3 md:space-y-4">
-        {/* Header + Add buttons */}
-        <div className="bg-white rounded-2xl shadow-sm p-5">
-          <div className="grid grid-cols-4 gap-3">
-            {dashboardData.map((item, index) => (
-              <button
-                key={index}
-                onClick={() => handleClick(item.title)}
-                className="flex flex-col items-center justify-center gap-2 transition-transform hover:scale-105 cursor-pointer"
-              >
-                <div
-                  className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white shadow-md"
-                  style={{ backgroundColor: item.labelColor }}
-                >
-                  {item.lucideIcon}
-                </div>
-                <span className="text-xs md:text-sm font-semibold text-gray-800">
-                  {item.title}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
+      <div className="grid items-stretch gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        <BalanceCard refreshTrigger={0} />
 
-        {/* Balance + Line Chart */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <div className="lg:col-span-1">
-            <BalanceCard refreshTrigger={refreshTrigger} />
-          </div>
-
-          <div className="lg:col-span-3 rounded-xl">
-            <ExpensesLineChart />
-          </div>
-        </div>
-
-        {/* Four Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {dashboardData.map((item, index) => (
-            <StatCard
-              key={index}
-              icon={item.icon}
-              label={
-                item.title as "income" | "expenses" | "saving" | "investment"
-              }
-              labelColor={item.labelColor}
-            />
+        <nav aria-label="Quick links" className="grid grid-cols-2 gap-2.5 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:gap-3 sm:p-4">
+          {sections.map(({ label, title, Icon, color }) => (
+            <Link
+              key={label}
+              href={`/dashboard/${label}`}
+              className="group flex min-w-0 items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-2.5 py-2 text-sm font-semibold text-[#082c28] transition-colors hover:border-teal-200 hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] sm:px-3"
+            >
+              <span className="grid size-8 shrink-0 place-items-center rounded-lg" style={{ backgroundColor: `${color}19`, color }}>
+                <Icon className="size-4" aria-hidden="true" />
+              </span>
+              <span className="min-w-0 break-words">{title}</span>
+              <ArrowUpRight className="ml-auto hidden size-4 shrink-0 text-slate-400 group-hover:text-[#056455] sm:block" aria-hidden="true" />
+            </Link>
           ))}
-        </div>
-
-        {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <MonthlyBarChart />
-          <ExpensesPieChart />
-        </div>
+        </nav>
       </div>
+
+      <section aria-label="Financial totals" className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+        {sections.map(({ label, icon, color }) => (
+          <StatCard key={label} icon={icon} label={label} labelColor={color} />
+        ))}
+      </section>
+
+      <section aria-label="Financial charts" className="grid gap-4 xl:grid-cols-2">
+        <MonthlyBarChart />
+        <ExpensesPieChart />
+      </section>
     </main>
   );
 }
