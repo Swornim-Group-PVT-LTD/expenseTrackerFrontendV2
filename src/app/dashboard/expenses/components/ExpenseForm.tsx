@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { ArrowRight, FileText, ImagePlus } from "lucide-react";
 import { toast } from "react-toastify";
 import SearchInput from "@/app/components/SearchInput";
 
@@ -18,9 +19,10 @@ import { useCurrency } from "@/app/context/CurrencyContext";
 
 interface ExpenseFormProps {
   onSuccess?: () => void;
+  balanceCard: React.ReactNode;
 }
 
-const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
+const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
   const [amount, setAmount] = useState<number | "">("");
 
   const [remarks, setRemarks] = useState("");
@@ -198,17 +200,15 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
 
   // Shared classes for the two upload tiles (h-14 to match the inputs)
   const uploadTileClass =
-    "flex items-center gap-3 h-14 cursor-pointer rounded-xl border border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 transition px-3";
+    "flex items-center gap-3 h-14 cursor-pointer rounded-xl border border-dashed border-gray-300 bg-gray-50 hover:bg-teal-50 focus-within:ring-2 focus-within:ring-[#056455] transition px-3";
 
   // Shared classes for the label row above each field
   const labelRowClass = "flex items-center justify-between h-5 mb-2";
 
   return (
-    <div className="col-span-full lg:col-span-3 h-fit lg:pb-0">
-      <div className="bg-white rounded-2xl p-4 sm:p-5 w-full shadow-sm">
-        {/* =====================================================
-            TOTAL EXPENSE
-        ====================================================== */}
+    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)]">
+      <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-1">
+        {balanceCard}
         <div
           className="
             rounded-2xl
@@ -216,22 +216,22 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
             from-[#ff4d4d]
             to-[#ff6262]
             p-5
-            mb-5
             shadow-sm
           "
         >
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
               <p className="text-sm font-medium text-white/80">Total Expense</p>
 
-              <p className="text-2xl sm:text-3xl font-bold text-white mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-white mt-1 tabular-nums break-words">
                 {maskAmount(totalExpense, isVisible, currency)}
               </p>
             </div>
 
             <div
               className="
-               w-12
+                w-12
+                shrink-0
                 h-12
                 rounded-xl
                 bg-white/20
@@ -247,19 +247,16 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* =====================================================
-            FORM
-        ====================================================== */}
-        <div className="space-y-5 ">
-          {/* ===================================================
-              FIELDS - single row (stacks on small screens)
-          ==================================================== */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section aria-labelledby="add-expense-heading" className="@container min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <h2 id="add-expense-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Add expense</h2>
+        <div className="space-y-4">
+          <div className="grid gap-4 @min-[27rem]:grid-cols-2 @min-[53rem]:grid-cols-4">
             {/* AMOUNT */}
             <div className="min-w-0">
               <div className={labelRowClass}>
-                <label className="text-sm font-semibold text-[#374151]">
+                <label htmlFor="expense-amount" className="text-sm font-semibold text-[#374151]">
                   Amount
                 </label>
               </div>
@@ -275,10 +272,10 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
                   bg-gray-50
                   px-4
                   transition-all
-                  focus-within:border-[#FFAA00]
+                  focus-within:border-[#056455]
                   focus-within:bg-white
                   focus-within:ring-4
-                  focus-within:ring-[#FFAA00]/10
+                  focus-within:ring-[#056455]/15
                 "
               >
                 <span className="text-lg font-bold text-gray-500 mr-3">
@@ -286,6 +283,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
                 </span>
 
                 <input
+                  id="expense-amount"
                   type="number"
                   placeholder="Enter expense amount"
                   className="
@@ -348,8 +346,8 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
               </div>
 
               <label htmlFor="upload_receipt" className={uploadTileClass}>
-                <div className="w-9 h-9 shrink-0 rounded-lg bg-blue-50 flex items-center justify-center text-lg">
-                  📷
+                <div className="w-9 h-9 shrink-0 rounded-lg bg-teal-100 flex items-center justify-center text-lg">
+                  <ImagePlus className="size-4 text-[#056455]" aria-hidden="true" />
                 </div>
 
                 <div className="min-w-0 flex-1">
@@ -371,7 +369,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
                   type="file"
                   accept="image/*"
                   onChange={handleReceiptChange}
-                  className="hidden"
+                  className="sr-only"
                 />
               </label>
             </div>
@@ -387,8 +385,8 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
               </div>
 
               <label htmlFor="upload_doc" className={uploadTileClass}>
-                <div className="w-9 h-9 shrink-0 rounded-lg bg-green-50 flex items-center justify-center text-lg">
-                  📄
+                <div className="w-9 h-9 shrink-0 rounded-lg bg-teal-100 flex items-center justify-center text-lg">
+                  <FileText className="size-4 text-[#056455]" aria-hidden="true" />
                 </div>
 
                 <div className="min-w-0 flex-1">
@@ -415,7 +413,7 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
                   multiple
                   accept="image/*,.pdf,application/pdf"
                   onChange={handleDocumentsChange}
-                  className="hidden"
+                  className="sr-only"
                 />
               </label>
             </div>
@@ -431,8 +429,11 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
               w-full
               h-[56px]
               rounded-xl
-              bg-[#ff4d4d]
-              hover:bg-[#ff6262]
+              bg-[#056455]
+              hover:bg-[#034e43]
+              focus-visible:outline-2
+              focus-visible:outline-offset-2
+              focus-visible:outline-[#056455]
               active:scale-[0.98]
               text-white
               font-bold
@@ -451,12 +452,12 @@ const ExpenseForm = ({ onSuccess }: ExpenseFormProps) => {
             ) : (
               <>
                 <span>Add Expense</span>
-                <span className="text-xl">→</span>
+                <ArrowRight className="size-5" aria-hidden="true" />
               </>
             )}
           </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 };

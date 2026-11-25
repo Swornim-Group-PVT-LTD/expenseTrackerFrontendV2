@@ -1,10 +1,9 @@
-import React from "react";
-
 import {
   LineChart,
   Line,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
@@ -12,12 +11,16 @@ import {
 import { dailyLineChartService } from "@/app/services/chartService";
 import { useState, useEffect } from "react";
 import { useCurrency } from "@/app/context/CurrencyContext";
+import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
+
+const compactNumber = new Intl.NumberFormat(undefined, { notation: "compact" });
 
 const ExpensesLineChart = ({ refreshTrigger }: { refreshTrigger: number }) => {
   const [chartData, setChartData] = useState<{ day: string; amount: number }[]>(
     [],
   );
   const { currency } = useCurrency();
+  const { isVisible } = useBalanceVisibility();
 
   useEffect(() => {
     const fetchChartData = async () => {
@@ -41,37 +44,23 @@ const ExpensesLineChart = ({ refreshTrigger }: { refreshTrigger: number }) => {
   }, [refreshTrigger]);
 
   return (
-    // <div className='w-full h-64 bg-white rounded-lg my-8 flex justify-center items-center'>
-    //   <h1 className='font-bold text-md'>No Data Found</h1>
-    // </div>
-
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        marginTop: "20px",
-        backgroundColor: "white",
-        borderRadius: "8px",
-      }}
-    >
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData} margin={{ left: 10, right: 20 }}>
-          {/* Y-Axis */}
-          <YAxis tick={{ fontSize: 12 }} />
-
-          {/* X-Axis */}
-          <XAxis
-            dataKey="day"
-            tick={{ fontSize: 12 }}
-            interval={0}
-            angle={-45}
-            textAnchor="end"
-            height={60}
+    <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <h2 className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Daily expenses</h2>
+      <ResponsiveContainer width="100%" height={256}>
+        <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
+          <CartesianGrid vertical={false} stroke="#e2e8f0" strokeDasharray="3 4" />
+          <YAxis
+            width={48}
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: "#475569", fontSize: 11 }}
+            tickFormatter={(value) => isVisible ? compactNumber.format(value) : "XXX"}
           />
-
+          <XAxis dataKey="day" axisLine={false} tickLine={false} tickMargin={8} tick={{ fill: "#475569", fontSize: 11 }} />
           <Tooltip
             formatter={(value) => [
-              `${currency}. ${Number(value).toLocaleString()}`,
+              isVisible ? `${currency} ${Number(value).toLocaleString()}`.trim() : "XXX",
+              "Expense",
             ]}
           />
 
@@ -79,14 +68,14 @@ const ExpensesLineChart = ({ refreshTrigger }: { refreshTrigger: number }) => {
           <Line
             type="monotone"
             dataKey="amount"
-            stroke="#ff4d4d"
+            stroke="#C14354"
             strokeWidth={3}
-            dot={{ r: 4 }} // small dots at points
+            dot={{ r: 2 }}
             activeDot={{ r: 6 }}
           />
         </LineChart>
       </ResponsiveContainer>
-    </div>
+    </section>
   );
 };
 

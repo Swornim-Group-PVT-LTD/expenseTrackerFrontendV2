@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Eye, Plus } from "lucide-react";
 
 
 import ExpenseForm from "./components/ExpenseForm";
@@ -91,41 +92,27 @@ function Expenses() {
   }, []);
 
   return (
-    <div className="">
-
-      <div className="flex items-center gap-3 mb-4">
-        {/* Add Threshold */}
-        <button
-          onClick={() => setIsAddThresholdOpen(true)}
-          className="group inline-flex items-center gap-2 rounded-lg bg-[#FFAA00] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e99b00] hover:shadow-md active:translate-y-0"
-        >
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-base leading-none">
-            +
-          </span>
-          Add Threshold
-        </button>
-
-        {/* View Threshold */}
-        <button
-          onClick={() => setIsViewThresholdOpen(true)}
-          className="group inline-flex items-center gap-2 rounded-lg border border-[#133840]/20 bg-white px-4 py-2.5 text-sm font-semibold text-[#133840] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#133840] hover:bg-[#133840] hover:text-white hover:shadow-md active:translate-y-0"
-        >
-          <svg
-            className="h-4 w-4 transition-transform duration-200 group-hover:scale-110"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
+    <main className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">Expenses</h1>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setIsAddThresholdOpen(true)}
+            className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[#f7bd51] px-4 py-2.5 text-sm font-semibold text-[#12332d] transition-colors hover:bg-[#edaf3c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-            />
-            <circle cx="12" cy="12" r="3" />
-          </svg>
-          View Threshold
-        </button>
+            <Plus className="size-4" aria-hidden="true" />
+            Add Threshold
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsViewThresholdOpen(true)}
+            className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-[#082c28] transition-colors hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
+          >
+            <Eye className="size-4" aria-hidden="true" />
+            View Threshold
+          </button>
+        </div>
       </div>
 
       {/* Threshold Modals */}
@@ -142,30 +129,22 @@ function Expenses() {
         onSuccess={handleThresholdSuccess}
       />
 
-      <div className="grid grid-cols-1 items-center lg:grid-cols-4 gap-4">
-        <BalanceCard refreshTrigger={refreshTrigger} />
-        <ExpenseForm onSuccess={handleRefresh} />
-      </div>
+      <ExpenseForm
+        onSuccess={handleRefresh}
+        balanceCard={<BalanceCard refreshTrigger={refreshTrigger} />}
+      />
 
-      {/* Threshold Comparison Section */}
-      <div className="my-4">
-        <ExpenseThreshold
-          refreshTrigger={refreshTrigger + thresholdRefreshTrigger}
-        />
-      </div>
+      <ExpenseThreshold refreshTrigger={refreshTrigger + thresholdRefreshTrigger} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 my-4">
-        <div className="h-80">
-          <ExpensesLineChart refreshTrigger={refreshTrigger} />
-        </div>
+      <section aria-label="Expense charts" className="grid gap-4 xl:grid-cols-2">
+        <ExpensesLineChart refreshTrigger={refreshTrigger} />
+        <ExpensesBarChart refreshTrigger={refreshTrigger} />
+      </section>
 
-        <div className="h-80">
-          <ExpensesBarChart refreshTrigger={refreshTrigger} />
-        </div>
-      </div>
-
-      {/* Added mt-10 here */}
-      <div className="mt-10">
+      <section aria-labelledby="expense-history-heading" className="space-y-3">
+        <h2 id="expense-history-heading" className="text-lg font-bold tracking-tight text-[#082c28] dark:text-white">
+          Expense history
+        </h2>
         <DateFilter
           initialFrom={
             new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -220,31 +199,31 @@ function Expenses() {
             );
           }}
         />
-      </div>
 
-      {isFilterActive && (
-        <div className="mb-4 flex items-center gap-2">
-          <span className="text-sm text-gray-600">
-            Showing {filteredData.length} filtered results
-          </span>
+        {isFilterActive && (
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-sm text-gray-600">
+              Showing {filteredData.length} filtered results
+            </span>
 
-          <button
-            onClick={clearFilter}
-            className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
-          >
-            Show All
-          </button>
-        </div>
-      )}
+            <button
+              onClick={clearFilter}
+              className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
+            >
+              Show All
+            </button>
+          </div>
+        )}
 
-      <ExpenseTable
-        refreshTrigger={refreshTrigger}
-        filteredData={isFilterActive ? (filteredData ?? undefined) : undefined}
-        onSuccess={handleRefresh}
-        onDataLoad={setAllData}
-        isFilterActive={isFilterActive}
-      />
-    </div>
+        <ExpenseTable
+          refreshTrigger={refreshTrigger}
+          filteredData={isFilterActive ? (filteredData ?? undefined) : undefined}
+          onSuccess={handleRefresh}
+          onDataLoad={setAllData}
+          isFilterActive={isFilterActive}
+        />
+      </section>
+    </main>
   );
 }
 
