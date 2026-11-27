@@ -156,6 +156,7 @@ function Expenses() {
           onFilter={handleFilter}
           categories={categories}
           categoryKey="expense_category"
+          exportColor="#C14354"
           onDownloadPDF={() => {
             const data = isFilterActive ? filteredData : allData;
 

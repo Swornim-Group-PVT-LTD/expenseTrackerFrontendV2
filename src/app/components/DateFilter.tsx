@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import {
   CalendarDays,
   Download,
@@ -20,6 +20,7 @@ interface DateFilterProps {
   onFilter: Function;
   categories: any[];
   categoryKey: string;
+  exportColor: string;
   onDownloadPDF?: () => void;
   onDownloadExcel?: () => void;
   action?: ReactNode;
@@ -27,11 +28,15 @@ interface DateFilterProps {
   initialTo?: Date;
 }
 
+const exportButtonClassName =
+  "flex size-10 cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white text-[color:var(--export-color)] transition-colors hover:border-current hover:bg-[color-mix(in_srgb,var(--export-color)_10%,white)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--export-color)]";
+
 export default function DateFilter({
   fetchService,
   onFilter,
   categories,
   categoryKey,
+  exportColor,
   onDownloadPDF,
   onDownloadExcel,
   action,
@@ -127,7 +132,10 @@ export default function DateFilter({
 
           {/* ================= EXPORT BUTTONS ================= */}
           {(onDownloadExcel || onDownloadPDF) && (
-            <div className="flex items-center gap-2">
+            <div
+              className="flex items-center gap-2"
+              style={{ "--export-color": exportColor } as CSSProperties}
+            >
               <span className="mr-1 hidden text-xs font-medium text-gray-400 sm:block">
                 {t("Export")}
               </span>
@@ -137,12 +145,9 @@ export default function DateFilter({
                   type="button"
                   onClick={onDownloadExcel}
                   title={t("Download Excel")}
-                  className="group flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-300 hover:bg-green-50 hover:shadow-sm"
+                  className={exportButtonClassName}
                 >
-                  <FileSpreadsheet
-                    size={19}
-                    className="text-gray-500 transition-colors group-hover:text-green-600"
-                  />
+                  <FileSpreadsheet size={19} aria-hidden="true" />
                 </button>
               )}
 
@@ -151,12 +156,9 @@ export default function DateFilter({
                   type="button"
                   onClick={onDownloadPDF}
                   title={t("Download PDF")}
-                  className="group flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-red-300 hover:bg-red-50 hover:shadow-sm"
+                  className={exportButtonClassName}
                 >
-                  <FileText
-                    size={19}
-                    className="text-gray-500 transition-colors group-hover:text-red-600"
-                  />
+                  <FileText size={19} aria-hidden="true" />
                 </button>
               )}
             </div>

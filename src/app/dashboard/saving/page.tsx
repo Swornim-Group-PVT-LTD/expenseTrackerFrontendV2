@@ -109,6 +109,7 @@ function Saving() {
               onFilter={handleFilter}
               categories={categories}
               categoryKey="saving_category"
+              exportColor="#28786E"
               onDownloadPDF={() => {
                 const data = isFilterActive ? filteredData : allData;
 

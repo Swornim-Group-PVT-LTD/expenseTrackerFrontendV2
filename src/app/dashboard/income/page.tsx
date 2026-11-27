@@ -113,6 +113,7 @@ function Income() {
           onFilter={handleFilter}
           categories={categories}
           categoryKey="income_category"
+          exportColor="#056455"
           onDownloadPDF={() => {
             const data = isFilterActive ? filteredData : allData;
             if (data.length === 0) {

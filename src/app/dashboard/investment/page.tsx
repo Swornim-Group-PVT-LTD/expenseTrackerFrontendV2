@@ -102,6 +102,7 @@ function Investment() {
           onFilter={handleFilter}
           categories={categories}
           categoryKey="investment_category"
+          exportColor="#996308"
           onDownloadPDF={() => {
             const data = isFilterActive ? filteredData : allData;
 
