@@ -588,5 +588,8 @@
   "Registered first name was not found. Check your login profile storage.": "दर्ता गरिएको पहिलो नाम भेटिएन। प्रोफाइल जाँच गर्नुहोस्।",
   "Unable to load invoice numbers.": "बीजक नम्बर लोड गर्न सकिएन।",
   "Please make payment by the due date.": "कृपया अन्तिम मितिभित्र भुक्तानी गर्नुहोस्।",
-  "Please contact us for payment details.": "भुक्तानी विवरणका लागि हामीलाई सम्पर्क गर्नुहोस्।"
+  "Please contact us for payment details.": "भुक्तानी विवरणका लागि हामीलाई सम्पर्क गर्नुहोस्।",
+  "Add {{amount}} as your opening balance?": "सुरुको मौज्दातमा {{amount}} थप्ने हो?",
+  "Opening balance of {{amount}} added successfully.": "सुरुको मौज्दातमा {{amount}} थपियो।",
+  "Failed to add opening balance. Please try again.": "सुरुको मौज्दात थप्न सकिएन। फेरि प्रयास गर्नुहोस्।"
 }

@@ -3,9 +3,9 @@
 
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
-import { ArrowRight, ChevronDown, Info } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, CircleAlert, Info, Wallet } from "lucide-react";
 import Link from "next/link";
-import Swal from "sweetalert2";
+import ActionDialog from "@/app/components/ActionDialog";
 
 // Services
 import {
@@ -118,6 +118,12 @@ export default function BalanceForm({
   const [currencyId, setCurrencyId] = useState<number | null>(null);
 
   const [loading, setLoading] = useState(false);
+  const [confirmation, setConfirmation] = useState<AddBalancePayload | null>(null);
+  const [notice, setNotice] = useState<{
+    tone: "teal" | "red" | "amber";
+    title: string;
+    description: string;
+  } | null>(null);
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const [checkingBalance, setCheckingBalance] = useState(true);
   const [balanceExists, setBalanceExists] = useState(false);
@@ -212,65 +218,44 @@ export default function BalanceForm({
   // 3. Add opening balance
   // ============================================================
 
-  const handleAddBalance = async () => {
-    if (balanceExists) {
-      await Swal.fire({
-        icon: "info",
-        title: t("Balance Already Added"),
-        text: t("Your opening balance has already been added. Add more through Income."),
-      });
+  const handleAddBalance = () => {
+    if (loading || balanceExists) return;
 
-      return;
-    }
-
-    if (
-      amount === "" ||
-      !Number.isFinite(Number(amount)) ||
-      Number(amount) <= 0
-    ) {
-      await Swal.fire({
-        icon: "warning",
+    if (amount === "" || !Number.isFinite(Number(amount)) || Number(amount) <= 0) {
+      setNotice({
+        tone: "amber",
         title: t("Invalid Amount"),
-        text: t("Please enter a valid opening balance amount."),
+        description: t("Please enter a valid opening balance amount."),
       });
-
       return;
     }
 
     if (currencyId === null) {
-      await Swal.fire({
-        icon: "warning",
+      setNotice({
+        tone: "amber",
         title: t("Select Currency"),
-        text: t("Please select a currency before adding your opening balance."),
+        description: t("Please select a currency before adding your opening balance."),
       });
-
       return;
     }
 
+    setConfirmation({ opening_balance: Number(amount), currency_id: currencyId });
+  };
+
+  const saveOpeningBalance = async (payload: AddBalancePayload) => {
+    const formattedAmount = `${currencySymbol} ${payload.opening_balance.toLocaleString()}`.trim();
+
     try {
       setLoading(true);
-
-      // FIX: Laravel expects "opening_balance".
-      const payload: AddBalancePayload = {
-        opening_balance: Number(amount),
-        currency_id: currencyId,
-      };
-
       await addBalanceService(payload);
-
-      await Swal.fire({
-        icon: "success",
-        title: t("Balance Added!"),
-        text: `Opening balance of ${currencySymbol}${Number(
-          amount,
-        ).toLocaleString()} added successfully.`,
-        timer: 2000,
-        showConfirmButton: false,
-      });
 
       setAmount("");
       setBalanceExists(true);
-
+      setNotice({
+        tone: "teal",
+        title: t("Balance Added!"),
+        description: t("Opening balance of {{amount}} added successfully.", { amount: formattedAmount }),
+      });
       onSuccess?.();
     } catch (error: unknown) {
       console.error("Error adding opening balance:", error);
@@ -300,10 +285,10 @@ export default function BalanceForm({
         message = error.message;
       }
 
-      await Swal.fire({
-        icon: "error",
+      setNotice({
+        tone: "red",
         title: t("Failed to Add Balance"),
-        text: message,
+        description: t(message),
       });
     } finally {
       setLoading(false);
@@ -435,6 +420,7 @@ export default function BalanceForm({
           <button
             type="button"
             onClick={handleAddBalance}
+            aria-haspopup="dialog"
             disabled={
               loading ||
               balanceExists ||
@@ -466,11 +452,33 @@ export default function BalanceForm({
                       : (
                         <>
                           <span>{t("Add Opening Balance")}</span>
-                          <span className="text-xl">→</span>
+                          <ArrowRight className="size-5" aria-hidden="true" />
                         </>
                       )}
           </button>
         </div>
+      )}
+      {confirmation && (
+        <ActionDialog
+          title={t("Add Opening Balance")}
+          description={t("Add {{amount}} as your opening balance?", {
+            amount: `${currencySymbol} ${confirmation.opening_balance.toLocaleString()}`.trim(),
+          })}
+          icon={Wallet}
+          dismissLabel={t("Cancel")}
+          onDismiss={() => setConfirmation(null)}
+          confirmLabel={t("Add")}
+          onConfirm={() => saveOpeningBalance(confirmation)}
+        />
+      )}
+
+      {notice && (
+        <ActionDialog
+          {...notice}
+          icon={notice.tone === "teal" ? Check : CircleAlert}
+          dismissLabel={t("Close")}
+          onDismiss={() => setNotice(null)}
+        />
       )}
     </section>
   );
