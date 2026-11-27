@@ -26,7 +26,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   return (
     <CurrencyProvider>
       <div
-        className={`bg-[#F0F2F5] dark:bg-gray-900 min-h-screen p-4 pb-[calc(7rem+env(safe-area-inset-bottom))] md:p-6 pt-16 md:pt-16 transition-all duration-500 ${
+        className={`bg-[#F0F2F5] dark:bg-gray-900 min-h-screen p-4 pb-[calc(9.25rem+env(safe-area-inset-bottom))] md:p-6 pt-16 md:pt-16 transition-all duration-500 ${
           collapsed ? "md:ml-20" : "md:ml-64"
         }`}
       >
