@@ -189,7 +189,7 @@ export default function Sidebar() {
         className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl bg-[#082c28] pb-[env(safe-area-inset-bottom)] text-white shadow-lg md:hidden"
       >
         {showAddMenu && (
-          <div id="mobile-add-menu" className="absolute inset-x-0 bottom-full rounded-t-2xl border-t border-white/10 bg-[#082c28] px-4 pt-4 pb-18">
+          <div id="mobile-add-menu" className="absolute inset-x-0 bottom-full rounded-t-2xl border-t border-white/10 bg-[#082c28] px-4 pt-4 pb-12">
             <div className="grid grid-cols-2 gap-4">
               {addCategories.map((item) => {
                 const isActive = isCurrentPage(item.href);
@@ -216,17 +216,13 @@ export default function Sidebar() {
 
         <button
           type="button"
+          aria-label={t("Add")}
           aria-expanded={showAddMenu}
           aria-controls={showAddMenu ? "mobile-add-menu" : undefined}
           onClick={() => setShowAddMenu((open) => !open)}
-          className="absolute bottom-[calc(100%-0.5rem)] left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 rounded-full focus-visible:outline-2 focus-visible:outline-amber-300"
+          className="absolute -top-10 left-1/2 grid size-14 -translate-x-1/2 cursor-pointer place-items-center rounded-full border-4 border-[#082c28] bg-green-600 text-white shadow-lg focus-visible:outline-2 focus-visible:outline-amber-300"
         >
-          <span className="grid size-14 place-items-center rounded-full border-4 border-[#082c28] bg-green-600 text-white shadow-lg">
-            <Plus className="size-6" aria-hidden="true" />
-          </span>
-          <span className="rounded-full bg-[#082c28] px-2 text-[10px] font-semibold text-white">
-            {t("Add")}
-          </span>
+          <Plus className="size-6" aria-hidden="true" />
         </button>
 
         <div className="flex h-20 items-center px-1">
