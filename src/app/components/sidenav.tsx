@@ -114,8 +114,9 @@ export default function Sidebar() {
       !["income", "expenses", "savings", "investment"].includes(item.title),
   );
 
-  const leftNavItems = otherNavItems.slice(0, 2);
-  const rightNavItems = otherNavItems.slice(2);
+  const isCurrentPage = (href: string) =>
+    pathname === href ||
+    (href !== "/dashboard" && pathname.startsWith(`${href}/`));
 
   return (
     <>
@@ -149,9 +150,7 @@ export default function Sidebar() {
 
         <nav aria-label={t("Dashboard navigation")} className="flex-1 space-y-1.5 overflow-y-auto px-3 py-4">
           {visibleDashboardData.map((item) => {
-            const isActive = item.href === "/dashboard"
-              ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isActive = isCurrentPage(item.href);
             const label = t(item.title);
 
             return (
@@ -185,38 +184,27 @@ export default function Sidebar() {
       </aside>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-[#082c28] text-white flex justify-around items-center h-20 z-50 shadow-lg rounded-t-3xl">
-        {/* Add Menu Dropdown */}
+      <nav
+        aria-label={t("Dashboard navigation")}
+        className="fixed inset-x-0 bottom-0 z-50 rounded-t-3xl bg-[#082c28] pb-[env(safe-area-inset-bottom)] text-white shadow-lg md:hidden"
+      >
         {showAddMenu && (
-          <div className="absolute bottom-20 left-0 w-full bg-[#082c28] border-t border-white/10 p-4">
+          <div id="mobile-add-menu" className="absolute inset-x-0 bottom-full rounded-t-2xl border-t border-white/10 bg-[#082c28] px-4 pt-4 pb-10">
             <div className="grid grid-cols-2 gap-4">
-              {addCategories.map((item, i) => {
-                const isActive = pathname === item.href;
-
+              {addCategories.map((item) => {
+                const isActive = isCurrentPage(item.href);
                 return (
                   <Link
-                    key={i}
+                    key={item.href}
                     href={item.href}
+                    aria-current={isActive ? "page" : undefined}
                     onClick={() => setShowAddMenu(false)}
-                    className="flex flex-col items-center justify-center text-xs transition-colors p-2"
+                    className="flex flex-col items-center justify-center rounded-lg p-2 text-xs focus-visible:outline-2 focus-visible:outline-amber-300"
                   >
-                    <div
-                      className={`p-2 rounded-lg flex items-center justify-center ${
-                        isActive
-                          ? "border-(--color2) border-2"
-                          : item.color
-                      }`}
-                    >
+                    <span aria-hidden="true" className={`rounded-lg p-2 ${isActive ? "border-2 border-(--color2)" : item.color}`}>
                       {item.icon}
-                    </div>
-
-                    <span
-                      className={`text-[10px] mt-1 capitalize ${
-                        isActive
-                          ? "text-(--color2) font-semibold"
-                          : ""
-                      }`}
-                    >
+                    </span>
+                    <span className={`mt-1 capitalize ${isActive ? "font-semibold text-(--color2)" : ""}`}>
                       {t(item.title)}
                     </span>
                   </Link>
@@ -226,81 +214,36 @@ export default function Sidebar() {
           </div>
         )}
 
-        {/* Left Navigation Items */}
-        {leftNavItems.map((item, i) => {
-          const isActive = pathname === item.href;
-
-          return (
-            <Link
-              key={i}
-              href={item.href}
-              className="flex flex-col items-center justify-center text-xs transition-colors mr-4"
-            >
-              <div
-                className={`flex items-center justify-center transition-colors duration-200 ${
-                  isActive ? "text-(--color2)" : "text-white/80"
-                }`}
-              >
-                {item.icon}
-              </div>
-
-              <span
-                className={`text-[10px] mt-1 capitalize ${
-                  isActive
-                    ? "text-(--color2) font-semibold"
-                    : ""
-                }`}
-              >
-                {t(item.title)}
-              </span>
-            </Link>
-          );
-        })}
-
-        {/* Add Button */}
         <button
-          onClick={() => setShowAddMenu(!showAddMenu)}
-          className="absolute left-1/2 -translate-x-1/2 -top-9 flex flex-col items-center justify-center"
+          type="button"
+          aria-expanded={showAddMenu}
+          aria-controls={showAddMenu ? "mobile-add-menu" : undefined}
+          onClick={() => setShowAddMenu((open) => !open)}
+          className="absolute bottom-[calc(100%-0.5rem)] left-1/2 flex min-h-10 -translate-x-1/2 items-center gap-1.5 rounded-full border-2 border-[#082c28] bg-[#056455] px-4 text-xs font-semibold shadow-lg focus-visible:outline-2 focus-visible:outline-amber-300"
         >
-          <div className="h-14 w-14 rounded-full bg-green-600 border-4 border-[#082c28] flex items-center justify-center shadow-lg">
-            <Plus className="h-6 w-6 text-white" />
-          </div>
-
-          <span className="text-[10px] mt-1 text-white font-semibold">
-            {t("Add")}
-          </span>
+          <Plus className={`size-4 transition-transform ${showAddMenu ? "rotate-45" : ""}`} aria-hidden="true" />
+          {t("Add")}
         </button>
 
-        {/* Right Navigation Items */}
-        {rightNavItems.map((item, i) => {
-          const isActive = pathname === item.href;
-
-          return (
-            <Link
-              key={i}
-              href={item.href}
-              className="flex flex-col items-center justify-center text-xs transition-colors ml-4"
-            >
-              <div
-                className={`flex items-center justify-center transition-colors duration-200 ${
-                  isActive ? "text-(--color2)" : "text-white/80"
-                }`}
+        <div className="flex h-20 items-center px-1">
+          {otherNavItems.map((item) => {
+            const isActive = isCurrentPage(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => setShowAddMenu(false)}
+                className={`flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl py-1 text-center focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-amber-300 [&_svg]:size-5 ${isActive ? "font-semibold text-(--color2)" : "text-white/80"}`}
               >
-                {item.icon}
-              </div>
-
-              <span
-                className={`text-[10px] mt-1 capitalize ${
-                  isActive
-                    ? "text-(--color2) font-semibold"
-                    : ""
-                }`}
-              >
-                {t(item.title)}
-              </span>
-            </Link>
-          );
-        })}
+                <span aria-hidden="true">{item.icon}</span>
+                <span className="max-w-full break-words text-[10px] leading-tight capitalize">
+                  {t(item.title)}
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </nav>
     </>
   );
