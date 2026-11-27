@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import React, { useState, useEffect } from "react";
 import { ClipLoader } from "react-spinners";
@@ -8,6 +11,7 @@ import { deleteExpenseCategoryService, getExpenseCategoriesService, updateExpens
 import { toast } from "react-toastify";
 
 export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigger: number }) {
+  const { t } = useTranslation();
   const [data, setData] = useState<ExpenseCategoryResponse[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,7 +47,7 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
   const handleDelete = async (id: number) => {
     try {
       await deleteExpenseCategoryService(id);
-      toast.success("Expense category deleted successfully");
+      toast.success(t("Expense category deleted successfully"));
       fetchData(); // Refresh data after deletion
     } catch (err: any) {
       toast.error(err);
@@ -76,7 +80,7 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
       });
 
       fetchData(); // Refresh data after update
-      toast.success("Expense category updated successfully");
+      toast.success(t("Expense category updated successfully"));
 
       cancelEdit();
     } catch (err) {
@@ -93,7 +97,7 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search..."
+          placeholder={t("Search...")}
           className="px-3 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-yellow-400"
         />
       </div>
@@ -104,10 +108,10 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
           <thead className="bg-gray-100">
             <tr>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ID</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Added Date</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Static Data</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Expense Category</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Action</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Added Date")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Static Data")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Expense Category")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Action")}</th>
             </tr>
           </thead>
           <tbody className="bg-white">
@@ -149,13 +153,13 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
                               className="text-green-600 mr-2 cursor-pointer hover:underline"
                               onClick={() => saveEdit(item.id)}
                             >
-                              Save
+                              {t("Save")}
                             </button>
                             <button
                               className="text-gray-600 cursor-pointer hover:underline"
                               onClick={cancelEdit}
                             >
-                              Cancel
+                              {t("Cancel")}
                             </button>
                           </>
                         ) : (
@@ -170,7 +174,7 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
             ) : (
               <tr>
                 <td colSpan={5} className="px-4 py-2 text-center text-gray-500">
-                  No records found
+                  {t("No records found")}
                 </td>
               </tr>
             )}
@@ -186,7 +190,7 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
           </div>
         ) : filteredData.length === 0 ? (
           <div className="text-center font-medium text-gray-500">
-            No records found
+            {t("No records found")}
           </div>
         ) : (
           filteredData.map((item) => (
@@ -206,14 +210,14 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
                         onClick={() => saveEdit(item.id)}
                         className="text-green-600 hover:underline"
                       >
-                        Save
+                        {t("Save")}
                       </button>
                       <span className="text-gray-300">/</span>
                       <button
                         onClick={cancelEdit}
                         className="text-gray-500 hover:underline"
                       >
-                        Cancel
+                        {t("Cancel")}
                       </button>
                     </>
                   ) : (
@@ -228,7 +232,7 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
               {/* Row 2: Content */}
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Category:</span>
+                  <span className="text-sm text-gray-500">{t("Category:")}</span>
                   {editingId === item.id ? (
                     <input
                       className="w-32 p-1 text-sm border rounded focus:ring-1 focus:ring-[#FFAA00]"
@@ -246,12 +250,12 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Static Data:</span>
+                  <span className="text-sm text-gray-500">{t("Static Data:")}</span>
                   <span className="font-semibold">{item.sn}</span>
                 </div>
 
                 <div className="flex justify-between items-center text-xs text-gray-400 mt-1">
-                  <span>Created: {item.created_date}</span>
+                  <span>{t("Created:")}{" "} {item.created_date}</span>
                 </div>
               </div>
             </div>

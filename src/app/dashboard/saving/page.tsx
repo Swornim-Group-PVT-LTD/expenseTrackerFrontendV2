@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import SavingForm from "./components/SavingForm";
 import BalanceCard from "@/app/components/BalanceCard";
@@ -16,6 +17,7 @@ import { SavingResponse } from "@/app/types/savingType";
 import { downloadService } from "@/app/services/downloadService";
 
 function Saving() {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<SavingCategoryResponse[]>([]);
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   const [filteredData, setFilteredData] = useState<SavingResponse[]>([]);
@@ -74,7 +76,7 @@ function Saving() {
         const data = await getSavingCategoriesService();
         setCategories(data);
       } catch (err) {
-        toast.error("Failed to fetch income categories");
+        toast.error(t("Failed to fetch income categories"));
       }
     };
 
@@ -83,20 +85,20 @@ function Saving() {
 
   return (
     <main className="space-y-5">
-      <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">Savings</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">{t("Savings")}</h1>
 
       <SavingForm
         onSuccess={handleRefresh}
         balanceCard={<BalanceCard refreshTrigger={refreshTrigger} />}
       />
 
-      <section aria-label="Savings charts" className="grid gap-4 xl:grid-cols-2">
+      <section aria-label={t("Savings charts")} className="grid gap-4 xl:grid-cols-2">
         <SavingLineChart refreshTrigger={refreshTrigger} />
         <SavingBarChart refreshTrigger={refreshTrigger} />
       </section>
 
       <section aria-labelledby="saving-history-heading" className="space-y-3">
-        <h2 id="saving-history-heading" className="text-lg font-bold tracking-tight text-[#082c28] dark:text-white">Savings history</h2>
+        <h2 id="saving-history-heading" className="text-lg font-bold tracking-tight text-[#082c28] dark:text-white">{t("Savings history")}</h2>
         <SavingTransferForm
           selected={selected}
           onSuccess={handleRefresh}
@@ -112,7 +114,7 @@ function Saving() {
 
                 if (data.length === 0) {
                   toast.warning(
-                    "No data to download. Please apply filters or wait for data to load.",
+                    t("No data to download. Please apply filters or wait for data to load."),
                   );
                   return;
                 }
@@ -141,7 +143,7 @@ function Saving() {
 
                 if (data.length === 0) {
                   toast.warning(
-                    "No data to download. Please apply filters or wait for data to load.",
+                    t("No data to download. Please apply filters or wait for data to load."),
                   );
                   return;
                 }
@@ -155,12 +157,12 @@ function Saving() {
                   })),
                   [
                     { header: "ID", field: "id" },
-                    { header: "Saving", field: "add_saving" },
-                    { header: "Transferred to Balance", field: "transferred" },
-                    { header: "Category", field: "saving_category" },
-                    { header: "Remarks", field: "remarks" },
-                    { header: "Total Saving", field: "total_saving" },
-                    { header: "Date", field: "created_date" },
+                    { header: t("Saving"), field: "add_saving" },
+                    { header: t("Transferred to Balance"), field: "transferred" },
+                    { header: t("Category"), field: "saving_category" },
+                    { header: t("Remarks"), field: "remarks" },
+                    { header: t("Total Saving"), field: "total_saving" },
+                    { header: t("Date"), field: "created_date" },
                   ],
                   "Saving_Report",
                 );
@@ -172,14 +174,14 @@ function Saving() {
         {isFilterActive && (
           <div className="mb-4 flex items-center gap-2">
             <span className="text-sm text-gray-600">
-              Showing {filteredData.length} filtered results
+              {t("Showing {{count}} filtered results", { count: filteredData.length })}
             </span>
 
             <button
               onClick={clearFilter}
               className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
             >
-              Show All
+              {t("Show All")}
             </button>
           </div>
         )}

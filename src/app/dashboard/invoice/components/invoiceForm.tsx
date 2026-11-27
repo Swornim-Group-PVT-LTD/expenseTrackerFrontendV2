@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { calculateInvoiceTotals } from "@/app/utils/invoiceTotals";
 import React, { useCallback, useEffect, useState } from "react";
 import { ChevronDown, Info, Plus, Trash2 } from "lucide-react";
@@ -193,6 +194,7 @@ function getNextNumber(
 }
 
 const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
+    const { t } = useTranslation();
     const invoice = edit?.invoice;
     const [invoiceNumber, setInvoiceNumber] = useState(invoice?.invoice_number ?? "");
     const [purchaseOrder, setPurchaseOrder] = useState(invoice?.purchase_order ?? "");
@@ -386,8 +388,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         if (!edit && (numberingError || !invoiceNumber || !purchaseOrder)) {
             await Swal.fire({
                 icon: "warning",
-                title: "Invoice Numbers Not Ready",
-                text: "Please reload the invoice numbers before saving.",
+                title: t("Invoice Numbers Not Ready"),
+                text: t("Please reload the invoice numbers before saving."),
                 confirmButtonColor: GREEN,
             });
             return;
@@ -396,7 +398,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         if (currencyError || currencyId === null || currencyId <= 0) {
             await Swal.fire({
                 icon: "warning",
-                title: "Invoice Currency Required",
+                title: t("Invoice Currency Required"),
                 text:
                     currencyError ||
                     "Please choose a currency for this invoice.",
@@ -408,8 +410,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         if (!edit && (!companyDetails.trim() || !billTo.trim())) {
             await Swal.fire({
                 icon: "warning",
-                title: "Required Fields",
-                text: "Please enter company details and bill-to information.",
+                title: t("Required Fields"),
+                text: t("Please enter company details and bill-to information."),
                 confirmButtonColor: GREEN,
             });
             return;
@@ -418,8 +420,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         if (!invoiceDate || (!edit && !dueDate)) {
             await Swal.fire({
                 icon: "warning",
-                title: "Date Required",
-                text: "Please select both invoice date and due date.",
+                title: t("Date Required"),
+                text: t("Please select both invoice date and due date."),
                 confirmButtonColor: GREEN,
             });
             return;
@@ -428,8 +430,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         if (dueDate && dueDate < invoiceDate) {
             await Swal.fire({
                 icon: "warning",
-                title: "Invalid Due Date",
-                text: "The due date cannot be earlier than the invoice date.",
+                title: t("Invalid Due Date"),
+                text: t("The due date cannot be earlier than the invoice date."),
                 confirmButtonColor: GREEN,
             });
             return;
@@ -445,8 +447,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         ) {
             await Swal.fire({
                 icon: "warning",
-                title: "Invalid Amount",
-                text: "Tax, discount, and shipping must be zero or greater.",
+                title: t("Invalid Amount"),
+                text: t("Tax, discount, and shipping must be zero or greater."),
                 confirmButtonColor: GREEN,
             });
             return;
@@ -455,8 +457,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         if (discountType === "percent" && Number(discountAmount) > 100) {
             await Swal.fire({
                 icon: "warning",
-                title: "Invalid Discount",
-                text: "Percentage discount cannot exceed 100%.",
+                title: t("Invalid Discount"),
+                text: t("Percentage discount cannot exceed 100%."),
                 confirmButtonColor: GREEN,
             });
             return;
@@ -465,8 +467,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         if (discountType === "flat" && Number(discountAmount) > subtotal) {
             await Swal.fire({
                 icon: "warning",
-                title: "Invalid Discount",
-                text: "Flat discount cannot exceed the subtotal.",
+                title: t("Invalid Discount"),
+                text: t("Flat discount cannot exceed the subtotal."),
                 confirmButtonColor: GREEN,
             });
             return;
@@ -484,8 +486,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
         if (invalidItem) {
             await Swal.fire({
                 icon: "warning",
-                title: "Invalid Invoice Items",
-                text: "Every item needs a description, a valid unit cost, and positive quantity.",
+                title: t("Invalid Invoice Items"),
+                text: t("Every item needs a description, a valid unit cost, and positive quantity."),
                 confirmButtonColor: GREEN,
             });
             return;
@@ -533,10 +535,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
             if (edit) {
                 await updateInvoiceService(edit.sn, payload);
-                toast.success("Invoice updated successfully.");
+                toast.success(t("Invoice updated successfully."));
             } else {
                 await addInvoiceService(payload);
-                toast.success(`Invoice ${nextInvoiceNumber} created successfully.`);
+                toast.success(t("Invoice {{number}} created successfully.", { number: nextInvoiceNumber }));
             }
             onSuccess();
         } catch (error: unknown) {
@@ -560,7 +562,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
             await Swal.fire({
                 icon: "error",
-                title: "Unable to Save Invoice",
+                title: t("Unable to Save Invoice"),
                 text:
                     validationMessages ||
                     apiError.response?.data?.message ||
@@ -585,11 +587,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
             <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                 <div className="mb-5">
                     <h2 className="text-lg font-bold tracking-tight text-[#082c28]">
-                        Invoice Information
+                        {t("Invoice Information")}
                     </h2>
                     <p className="mt-1 text-sm text-gray-500">
-                        Invoice and purchase order numbers are generated
-                        from your registered first name.
+                        {t("Invoice and purchase order numbers are generated from your registered first name.")}
                     </p>
                 </div>
 
@@ -597,13 +598,13 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     <div className="mb-4 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
                         <Info size={18} className="mt-0.5 shrink-0" />
                         <div>
-                            <p>{numberingError}</p>
+                            <p>{t(numberingError)}</p>
                             <button
                                 type="button"
                                 onClick={() => void loadInvoiceNumbers()}
                                 className="mt-2 font-semibold underline"
                             >
-                                Retry loading numbers
+                                {t("Retry loading numbers")}
                             </button>
                         </div>
                     </div>
@@ -613,13 +614,13 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     <div className="mb-4 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
                         <Info size={18} className="mt-0.5 shrink-0" />
                         <div className="flex-1">
-                            <p>{currencyError}</p>
+                            <p>{t(currencyError)}</p>
                             <button
                                 type="button"
                                 onClick={() => void loadSavedCurrency()}
                                 className="mt-2 font-semibold underline"
                             >
-                                Retry loading currencies
+                                {t("Retry loading currencies")}
                             </button>
                         </div>
                     </div>
@@ -627,18 +628,18 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div>
-                        <label className={labelClass}>Invoice Number</label>
+                        <label className={labelClass}>{t("Invoice Number")}</label>
                         <input
-                            value={loadingNumbers ? "Loading..." : invoiceNumber}
+                            value={loadingNumbers ? t("Loading...") : invoiceNumber}
                             readOnly
                             className={`${inputClass} bg-gray-50 font-semibold`}
                         />
                     </div>
 
                     <div>
-                        <label className={labelClass}>Purchase Order</label>
+                        <label className={labelClass}>{t("Purchase Order")}</label>
                         <input
-                            value={loadingNumbers ? "Loading..." : purchaseOrder}
+                            value={loadingNumbers ? t("Loading...") : purchaseOrder}
                             readOnly
                             className={`${inputClass} bg-gray-50 font-semibold`}
                         />
@@ -646,14 +647,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
                     <div>
                         <label className={labelClass}>
-                            Company Details {!edit && <span className="text-red-500">*</span>}
+                            {t("Company Details")}{" "} {!edit && <span className="text-red-500">*</span>}
                         </label>
                         <textarea
                             value={companyDetails}
                             onChange={(event) =>
                                 setCompanyDetails(event.target.value)
                             }
-                            placeholder="Enter company name, address, and contact details"
+                            placeholder={t("Enter company name, address, and contact details")}
                             rows={4}
                             required={!edit}
                             className={inputClass}
@@ -662,12 +663,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
                     <div>
                         <label className={labelClass}>
-                            Bill To {!edit && <span className="text-red-500">*</span>}
+                            {t("Bill To")}{" "} {!edit && <span className="text-red-500">*</span>}
                         </label>
                         <textarea
                             value={billTo}
                             onChange={(event) => setBillTo(event.target.value)}
-                            placeholder="Enter customer name, address, and contact details"
+                            placeholder={t("Enter customer name, address, and contact details")}
                             rows={4}
                             required={!edit}
                             className={inputClass}
@@ -677,7 +678,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     {/* Dynamically select the currency for this invoice */}
                     <div>
                         <label className={labelClass}>
-                            Invoice Currency{" "}
+                            {t("Invoice Currency")}{" "}
                             <span className="text-red-500">*</span>
                         </label>
 
@@ -699,10 +700,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                             >
                                 <option value="">
                                     {currencyLoading
-                                        ? "Loading currencies..."
+                                        ? t("Loading currencies...")
                                         : currencies.length === 0
-                                            ? "No currencies available"
-                                            : "Choose invoice currency"}
+                                            ? t("No currencies available")
+                                            : t("Choose invoice currency")}
                                 </option>
 
                                 {currencies.map((currency) => (
@@ -729,7 +730,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     </div>
 
                     <div>
-                        <label className={labelClass}>Invoice Date</label>
+                        <label className={labelClass}>{t("Invoice Date")}</label>
                         <input
                             type="date"
                             value={invoiceDate}
@@ -742,7 +743,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     </div>
 
                     <div>
-                        <label className={labelClass}>Due Date</label>
+                        <label className={labelClass}>{t("Due Date")}</label>
                         <input
                             type="date"
                             value={dueDate}
@@ -759,10 +760,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                 <div className="mb-5 flex items-center justify-between gap-3">
                     <div>
                         <h2 className="text-lg font-bold tracking-tight text-[#082c28]">
-                            Invoice Items
+                            {t("Invoice Items")}
                         </h2>
                         <p className="mt-1 text-sm text-gray-500">
-                            Add the products or services included in this invoice.
+                            {t("Add the products or services included in this invoice.")}
                         </p>
                     </div>
 
@@ -773,7 +774,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                         style={{ backgroundColor: GREEN }}
                     >
                         <Plus size={16} />
-                        Add Item
+                        {t("Add Item")}
                     </button>
                 </div>
 
@@ -785,14 +786,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                         >
                             <div className="mb-3 flex items-center justify-between">
                                 <p className="text-sm font-semibold text-gray-800">
-                                    Item {index + 1}
+                                    {t("Item")}{" "} {index + 1}
                                 </p>
 
                                 <button
                                     type="button"
                                     onClick={() => removeItem(index)}
                                     disabled={items.length === 1}
-                                    title="Remove item"
+                                    title={t("Remove item")}
                                     className="rounded-lg p-2 text-red-500 hover:bg-red-50 disabled:opacity-30"
                                 >
                                     <Trash2 size={17} />
@@ -802,7 +803,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
                                 <div className="md:col-span-6">
                                     <label className={labelClass}>
-                                        Description
+                                        {t("Description")}
                                     </label>
                                     <input
                                         value={item.item_description}
@@ -813,7 +814,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                                                 event.target.value,
                                             )
                                         }
-                                        placeholder="Product or service description"
+                                        placeholder={t("Product or service description")}
                                         required
                                         className={inputClass}
                                     />
@@ -821,7 +822,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
                                 <div className="md:col-span-3">
                                     <label className={labelClass}>
-                                        Unit Cost
+                                        {t("Unit Cost")}
                                     </label>
                                     <input
                                         type="number"
@@ -843,7 +844,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
                                 <div className="md:col-span-3">
                                     <label className={labelClass}>
-                                        Quantity
+                                        {t("Quantity")}
                                     </label>
                                     <input
                                         type="number"
@@ -864,7 +865,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                             </div>
 
                             <div className="mt-3 text-right text-sm text-gray-600">
-                                Item Total:{" "}
+                                {t("Item Total:")}{" "}
                                 <span className="font-semibold text-gray-900">
                                     {selectedCurrency?.symbol ?? ""}
                                     {formatAmount(
@@ -880,12 +881,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
             <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                 <h2 className="mb-5 text-lg font-bold tracking-tight text-[#082c28]">
-                    Tax, Discount and Totals
+                    {t("Tax, Discount and Totals")}
                 </h2>
 
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div>
-                        <label className={labelClass}>Tax (%)</label>
+                        <label className={labelClass}>{t("Tax (%)")}</label>
                         <input
                             type="number"
                             min="0"
@@ -904,7 +905,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     </div>
 
                     <div>
-                        <label className={labelClass}>Discount Type</label>
+                        <label className={labelClass}>{t("Discount Type")}</label>
                         <select
                             value={discountType}
                             onChange={(event) =>
@@ -914,15 +915,15 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                             }
                             className={inputClass}
                         >
-                            <option value="percent">Percentage (%)</option>
-                            <option value="flat">Flat Amount</option>
+                            <option value="percent">{t("Percentage (%)")}</option>
+                            <option value="flat">{t("Flat Amount")}</option>
                         </select>
                     </div>
 
                     <div>
                         <label className={labelClass}>
-                            Discount{" "}
-                            {discountType === "percent" ? "(%)" : "(Amount)"}
+                            {t("Discount")}{" "}
+                            {discountType === "percent" ? "(%)" : t("(Amount)")}
                         </label>
                         <input
                             type="number"
@@ -942,7 +943,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     </div>
 
                     <div>
-                        <label className={labelClass}>Shipping Fee</label>
+                        <label className={labelClass}>{t("Shipping Fee")}</label>
                         <input
                             type="number"
                             min="0"
@@ -964,7 +965,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                 <div className="mt-6 rounded-xl border border-teal-100 bg-teal-50/60 p-4 tabular-nums">
                     <div className="ml-auto max-w-md space-y-3">
                         <div className="flex justify-between gap-4 text-sm text-gray-600">
-                            <span>Subtotal</span>
+                            <span>{t("Subtotal")}</span>
                             <span>
                                 {selectedCurrency?.symbol ?? ""}
                                 {formatAmount(subtotal)}
@@ -972,7 +973,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                         </div>
 
                         <div className="flex justify-between gap-4 text-sm text-gray-600">
-                            <span>Discount{discountType === "percent" ? ` (${Number(discountAmount) || 0}%)` : ""}</span>
+                            <span>{t("Discount")}{discountType === "percent" ? ` (${Number(discountAmount) || 0}%)` : ""}</span>
                             <span>
                                 -{selectedCurrency?.symbol ?? ""}
                                 {formatAmount(calculatedDiscount)}
@@ -980,7 +981,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                         </div>
 
                         <div className="flex justify-between gap-4 text-sm text-gray-600">
-                            <span>Tax ({Number(taxPercentage) || 0}%)</span>
+                            <span>{t("Tax (")}{Number(taxPercentage) || 0}%)</span>
                             <span>
                                 {selectedCurrency?.symbol ?? ""}
                                 {formatAmount(calculatedTax)}
@@ -988,7 +989,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                         </div>
 
                         <div className="flex justify-between gap-4 text-sm text-gray-600">
-                            <span>Shipping Fee</span>
+                            <span>{t("Shipping Fee")}</span>
                             <span>
                                 {selectedCurrency?.symbol ?? ""}
                                 {formatAmount(Number(shippingFee) || 0)}
@@ -997,7 +998,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
                         <div className="border-t border-gray-200 pt-3">
                             <div className="flex justify-between gap-4 text-base font-bold text-gray-900">
-                                <span>Grand Total</span>
+                                <span>{t("Grand Total")}</span>
                                 <span style={{ color: GREEN }}>
                                     {selectedCurrency?.symbol ?? ""}
                                     {formatAmount(grandTotal)}
@@ -1010,20 +1011,20 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
             <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
                 <h2 className="mb-5 text-lg font-bold tracking-tight text-[#082c28]">
-                    Payment Information
+                    {t("Payment Information")}
                 </h2>
 
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                     <div>
                         <label className={labelClass}>
-                            Notes / Payment Terms
+                            {t("Notes / Payment Terms")}
                         </label>
                         <textarea
                             value={notesPaymentTerms}
                             onChange={(event) =>
                                 setNotesPaymentTerms(event.target.value)
                             }
-                            placeholder="Enter payment terms or additional notes"
+                            placeholder={t("Enter payment terms or additional notes")}
                             rows={4}
                             className={inputClass}
                         />
@@ -1031,14 +1032,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
 
                     <div>
                         <label className={labelClass}>
-                            Bank Account Details
+                            {t("Bank Account Details")}
                         </label>
                         <textarea
                             value={bankAccountDetails}
                             onChange={(event) =>
                                 setBankAccountDetails(event.target.value)
                             }
-                            placeholder="Enter bank name, account name, account number, SWIFT code"
+                            placeholder={t("Enter bank name, account name, account number, SWIFT code")}
                             rows={4}
                             className={inputClass}
                         />
@@ -1053,7 +1054,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     disabled={saving}
                     className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                 >
-                    Clear Form
+                    {t("Clear Form")}
                 </button>}
 
                 <button
@@ -1070,10 +1071,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSuccess, edit }) => {
                     style={{ backgroundColor: GREEN }}
                 >
                     {saving
-                        ? "Saving Invoice..."
+                        ? t("Saving Invoice...")
                         : loadingNumbers || currencyLoading
-                            ? "Loading..."
-                            : edit ? "Save Changes" : "Save Invoice"}
+                            ? t("Loading...")
+                            : edit ? t("Save Changes") : t("Save Invoice")}
                 </button>
             </div>
         </form>

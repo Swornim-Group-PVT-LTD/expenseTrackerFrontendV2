@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { CurrencyPayload, CurrencyResponse } from "@/app/types/currencyType";
 import { toast } from "react-toastify";
@@ -10,6 +11,7 @@ export default function CurrencyCatalogueForm({
 }: {
   onSuccess?: () => void;
 }) {
+  const { t } = useTranslation();
   const [country, setCountry] = useState("");
   const [symbol, setSymbol] = useState("");
   const [code, setCode] = useState("");
@@ -50,7 +52,7 @@ export default function CurrencyCatalogueForm({
       await addCurrencyService(payload);
       onSuccess && onSuccess();
 
-      toast.success("Currency added successfully!");
+      toast.success(t("Currency added successfully!"));
 
       // Clear form
       setCountry("");
@@ -58,8 +60,8 @@ export default function CurrencyCatalogueForm({
       setCode("");
       setErrors({});
     } catch (err: any) {
-      setErrors({ form: err.message || "Failed to add currency" });
-      toast.error(err.message || "Failed to add currency");
+      setErrors({ form: err.message || t("Failed to add currency") });
+      toast.error(err.message || t("Failed to add currency"));
     } finally {
       setLoading(false);
     }
@@ -72,13 +74,13 @@ export default function CurrencyCatalogueForm({
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       {errors.form && (
-        <p className="text-red-500 mb-2 font-medium">{errors.form}</p>
+        <p className="text-red-500 mb-2 font-medium">{t(errors.form)}</p>
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {/* Catalogue */}
         <div className="lg:col-span-1">
-          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Catalogue</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">{t("Catalogue")}</label>
           <input
             type="text"
             value="CURRENCY"
@@ -89,46 +91,46 @@ export default function CurrencyCatalogueForm({
 
         {/* Country*/}
         <div className="lg:col-span-1">
-          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Country</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">{t("Country")}</label>
           <input
             type="text"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            placeholder="e.g., USA"
+            placeholder={t("e.g., USA")}
             className={inputClass("country")}
           />
           {errors.country && (
-            <p className="text-red-500 text-sm mt-1">{errors.country}</p>
+            <p className="text-red-500 text-sm mt-1">{t(errors.country)}</p>
           )}
         </div>
 
         {/* Symbol */}
         <div className="lg:col-span-1">
-          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Symbol</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">{t("Symbol")}</label>
           <input
             type="text"
             value={symbol}
             onChange={(e) => setSymbol(e.target.value)}
-            placeholder="e.g., $"
+            placeholder={t("e.g., $")}
             className={inputClass("symbol")}
           />
           {errors.symbol && (
-            <p className="text-red-500 text-sm mt-1">{errors.symbol}</p>
+            <p className="text-red-500 text-sm mt-1">{t(errors.symbol)}</p>
           )}
         </div>
 
         {/* Code */}
         <div className="lg:col-span-1">
-          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Code</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">{t("Code")}</label>
           <input
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="e.g., USD"
+            placeholder={t("e.g., USD")}
             className={inputClass("code")}
           />
           {errors.code && (
-            <p className="text-red-500 text-sm mt-1">{errors.code}</p>
+            <p className="text-red-500 text-sm mt-1">{t(errors.code)}</p>
           )}
         </div>
 
@@ -140,7 +142,7 @@ export default function CurrencyCatalogueForm({
             className={`h-11 w-full cursor-pointer rounded-lg bg-[#056455] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#034e43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] ${loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
           >
-            {loading ? "Adding..." : "Add"}
+            {loading ? t("Adding...") : t("Add")}
           </button>
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
 import { type FormEvent, useEffect, useState } from "react";
 import AccountLogo from "@/app/components/AccountLogo";
@@ -40,6 +41,7 @@ function errorMessage(error: unknown, fallback: string) {
 }
 
 export default function AccountDetailsForm() {
+  const { t } = useTranslation();
   const { login } = useAuth();
   const [profile, setProfile] = useState<User>();
   const [editing, setEditing] = useState(false);
@@ -103,7 +105,7 @@ export default function AccountDetailsForm() {
   return (
     <section className="rounded-xl border border-gray-200 bg-white p-6 text-gray-900 shadow-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold">Account details</h2>
+        <h2 className="text-lg font-semibold">{t("Account details")}</h2>
         {profile && !editing && (
           <button
             type="button"
@@ -113,21 +115,21 @@ export default function AccountDetailsForm() {
               setEditing(true);
             }}
           >
-            Edit profile
+            {t("Edit profile")}
           </button>
         )}
       </div>
       {error && <p role="alert" className="mb-4 text-sm text-red-700">{error}</p>}
       {message && <p role="status" className="mb-4 text-sm text-green-700">{message}</p>}
-      {!profile && !error && <p role="status">Loading account details…</p>}
+      {!profile && !error && <p role="status">{t("Loading account details…")}</p>}
       {profile && !editing && (
         <dl className="grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <dt className="text-sm font-medium text-gray-600">Account logo</dt>
+            <dt className="text-sm font-medium text-gray-600">{t("Account logo")}</dt>
             <dd className="mt-1">
               <AccountLogo
                 logoPath={profile.logo_uploads}
-                alt="Current account logo"
+                alt={t("Current account logo")}
                 fallback="/user.svg"
                 className="h-24 w-24 rounded-lg border border-gray-200 object-contain"
               />
@@ -140,9 +142,9 @@ export default function AccountDetailsForm() {
             </div>
           ))}
           <div>
-            <dt className="text-sm font-medium text-gray-600">Account type</dt>
+            <dt className="text-sm font-medium text-gray-600">{t("Account type")}</dt>
             <dd className="mt-1">
-              {profile.user_type === "I" ? "Individual" : profile.user_type === "C" ? "Company" : profile.user_type || "—"}
+              {profile.user_type === "I" ? t("Individual") : profile.user_type === "C" ? t("Company") : profile.user_type || "—"}
             </dd>
           </div>
         </dl>
@@ -152,7 +154,7 @@ export default function AccountDetailsForm() {
           <fieldset disabled={saving} className="grid gap-4 sm:grid-cols-2">
             {fields.map((field) => (
               <label key={field.name} className="text-sm font-medium">
-                {field.label}
+                {t(field.label)}
                 <input
                   name={field.name}
                   defaultValue={profile[field.name] ?? ""}
@@ -164,24 +166,24 @@ export default function AccountDetailsForm() {
               </label>
             ))}
             <label className="text-sm font-medium">
-              Account type
+              {t("Account type")}
               <select name="user_type" defaultValue={profile.user_type ?? ""} className={inputClass}>
-                <option value="" disabled>Select account type</option>
+                <option value="" disabled>{t("Select account type")}</option>
                 {profile.user_type && !["I", "C"].includes(profile.user_type) && (
                   <option value={profile.user_type}>{profile.user_type}</option>
                 )}
-                <option value="I">Individual</option>
-                <option value="C">Company</option>
+                <option value="I">{t("Individual")}</option>
+                <option value="C">{t("Company")}</option>
               </select>
             </label>
             <div className="sm:col-span-2">
               <AccountLogo
                 logoPath={profile.logo_uploads}
-                alt="Current account logo"
+                alt={t("Current account logo")}
                 className="mb-3 h-24 w-24 rounded-lg border border-gray-200 object-contain"
               />
               <label className="block text-sm font-medium">
-                {profile.logo_uploads ? "Replace logo" : "Upload logo"}
+                {profile.logo_uploads ? t("Replace logo") : t("Upload logo")}
                 <input
                   name="logo_uploads"
                   type="file"
@@ -191,27 +193,27 @@ export default function AccountDetailsForm() {
                 />
               </label>
               <p id="logo-help" className="mt-1 text-sm text-gray-600">
-                JPEG, PNG, GIF, or WebP, up to 2 MB.
+                {t("JPEG, PNG, GIF, or WebP, up to 2 MB.")}
               </p>
             </div>
             <p className="text-sm text-gray-600 sm:col-span-2">
-              Enter your current password to change your email or password.
+              {t("Enter your current password to change your email or password.")}
             </p>
             <label className="text-sm font-medium">
-              Current password
+              {t("Current password")}
               <input name="current_password" type="password" autoComplete="current-password" className={inputClass} />
             </label>
             <label className="text-sm font-medium">
-              New password
+              {t("New password")}
               <input name="password" type="password" autoComplete="new-password" minLength={6} maxLength={72} className={inputClass} />
             </label>
             <label className="text-sm font-medium">
-              Confirm new password
+              {t("Confirm new password")}
               <input name="password_confirmation" type="password" autoComplete="new-password" className={inputClass} />
             </label>
             <div className="flex flex-wrap gap-3 sm:col-span-2">
               <button type="submit" className="rounded-lg bg-[#082c28] px-4 py-2 font-medium text-white disabled:opacity-60">
-                {saving ? "Saving…" : "Save account details"}
+                {saving ? t("Saving…") : t("Save account details")}
               </button>
               <button
                 type="button"
@@ -221,7 +223,7 @@ export default function AccountDetailsForm() {
                   setEditing(false);
                 }}
               >
-                Cancel
+                {t("Cancel")}
               </button>
             </div>
           </fieldset>

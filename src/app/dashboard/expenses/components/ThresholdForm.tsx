@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { X, AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
@@ -13,6 +14,7 @@ interface ThresholdFormProps {
 }
 
 const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
+  const { t } = useTranslation();
     const [amount, setAmount] = useState<number | "">("");
     const [frequency, setFrequency] = useState<"Monthly" | "Yearly">("Monthly");
     const [isEnabled, setIsEnabled] = useState(false);
@@ -52,13 +54,13 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
     const handleSubmit = async () => {
         // Validation
         if (!amount || amount <= 0) {
-            toast.error("Please enter a valid threshold amount");
+            toast.error(t("Please enter a valid threshold amount"));
             return;
         }
 
         // Check if trying to enable when another threshold of the same frequency is already enabled
         if (isEnabled && hasEnabledThreshold) {
-            toast.error(`Cannot enable this ${frequency.toLowerCase()} threshold. Another ${frequency.toLowerCase()} threshold is already enabled. Please disable it first.`);
+            toast.error(t("Disable the existing {{period}} threshold first.", { period: t(frequency) }));
             return;
         }
 
@@ -73,7 +75,7 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
 
             await addThresholdService(payload);
 
-            toast.success(`Threshold of ${amount} added successfully.`);
+            toast.success(t("Threshold of {{amount}} added successfully.", { amount }));
 
             // Reset form
             setAmount("");
@@ -84,7 +86,7 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
             onSuccess && onSuccess();
             onClose();
         } catch (error: any) {
-            toast.error(error.message || "Failed to add threshold");
+            toast.error(error.message || t("Failed to add threshold"));
         } finally {
             setLoading(false);
         }
@@ -110,7 +112,7 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
             <div className="bg-white rounded-lg shadow-xl w-full max-w-5xl">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b">
-                    <h2 className="text-xl font-bold text-gray-800">Add Expense Threshold</h2>
+                    <h2 className="text-xl font-bold text-gray-800">{t("Add Expense Threshold")}</h2>
                     <button
                         onClick={handleClose}
                         className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
@@ -127,10 +129,10 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
                             <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                             <div className="flex-1">
                                 <h4 className="text-sm font-semibold text-amber-800 mb-1">
-                                    Enabled {frequency} Threshold Already Exists
+                                    {t("Enabled")}{" "} {frequency} {t("Threshold Already Exists")}
                                 </h4>
                                 <p className="text-sm text-amber-700">
-                                    Only one {frequency.toLowerCase()} threshold can be enabled at a time. To enable this threshold, please disable the existing {frequency.toLowerCase()} threshold first from the View Thresholds section. Note: You can have one monthly and one yearly threshold enabled simultaneously.
+                                    {t("Only one active threshold per period is allowed. Disable the existing {{period}} threshold in View Thresholds before adding another.", { period: t(frequency) })}
                                 </p>
                             </div>
                         </div>
@@ -140,7 +142,7 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
                         {/* Threshold Amount */}
                         <div className="flex-1 min-w-0">
                             <label className="block text-sm font-semibold text-gray-700 mb-2 whitespace-nowrap">
-                                Expense Threshold Amount
+                                {t("Expense Threshold Amount")}
                             </label>
                             <input
                                 type="number"
@@ -162,7 +164,7 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
                         {/* Frequency */}
                         <div className="flex-1 min-w-0">
                             <label className="block text-sm font-semibold text-gray-700 mb-2 whitespace-nowrap">
-                                Frequency
+                                {t("Frequency")}
                             </label>
                             <select
                                 className="w-full h-12 px-3 text-md font-bold text-[#716A6A] 
@@ -171,15 +173,15 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
                                 value={frequency}
                                 onChange={(e) => setFrequency(e.target.value as "Monthly" | "Yearly")}
                             >
-                                <option value="Monthly">Monthly</option>
-                                <option value="Yearly">Yearly</option>
+                                <option value="Monthly">{t("Monthly")}</option>
+                                <option value="Yearly">{t("Yearly")}</option>
                             </select>
                         </div>
 
                         {/* Enable/Disable Checkbox */}
                         <div className="flex-1 min-w-0">
                             <label className="block text-sm font-semibold text-gray-700 mb-2 whitespace-nowrap">
-                                Enable Threshold
+                                {t("Enable Threshold")}
                             </label>
                             <div className="flex items-center h-12">
                                 <label className={`flex items-center gap-2 ${hasEnabledThreshold ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}>
@@ -191,7 +193,7 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
                                         disabled={hasEnabledThreshold}
                                     />
                                     <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                                        {isEnabled ? "Enabled" : "Disabled"}
+                                        {isEnabled ? t("Enabled") : t("Disabled")}
                                     </span>
                                 </label>
                             </div>
@@ -200,7 +202,7 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
                         {/* Add Button */}
                         <div className="shrink-0 w-full lg:w-auto">
                             <label className="block text-sm font-semibold text-gray-700 mb-2 invisible whitespace-nowrap">
-                                Action
+                                {t("Action")}
                             </label>
                             <button
                                 onClick={handleSubmit}
@@ -210,7 +212,7 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
                         cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : ""
                                     }`}
                             >
-                                {loading ? "Adding..." : "Add"}
+                                {loading ? t("Adding...") : t("Add")}
                             </button>
                         </div>
                     </div>

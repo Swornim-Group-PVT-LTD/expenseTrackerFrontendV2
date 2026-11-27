@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import {
   LineChart,
   Line,
@@ -19,6 +22,7 @@ const InvestmentLineChart = ({
 }: {
   refreshTrigger: number;
 }) => {
+  const { t } = useTranslation();
   const [chartData, setChartData] = useState<{ day: string; amount: number }[]>(
     [],
   );
@@ -48,7 +52,7 @@ const InvestmentLineChart = ({
 
   return (
     <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-      <h2 className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Daily investments</h2>
+      <h2 className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">{t("Daily investments")}</h2>
       <ResponsiveContainer width="100%" height={256}>
         <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
           <CartesianGrid vertical={false} stroke="#e2e8f0" strokeDasharray="3 4" />
@@ -57,7 +61,7 @@ const InvestmentLineChart = ({
           <Tooltip
             formatter={(value) => [
               isVisible ? `${currency} ${Number(value).toLocaleString()}`.trim() : "XXX",
-              "Amount",
+              t("Amount"),
             ]}
           />
 

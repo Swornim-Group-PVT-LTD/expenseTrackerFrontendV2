@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -14,6 +15,7 @@ import {
 import { downloadService } from "@/app/services/downloadService";
 
 function StatementOfAccount() {
+  const { t } = useTranslation();
   const [statementData, setStatementData] = useState<StatementEntry[]>([]);
   const [currency, setCurrency] = useState<CurrencyInfo>({
     country: "Nepal",
@@ -53,7 +55,7 @@ function StatementOfAccount() {
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold tracking-tight text-[#082c28] sm:text-3xl">
-        Statement of Account
+        {t("Statement of Account")}
       </h1>
 
       <SimpleDateFilter
@@ -66,7 +68,7 @@ function StatementOfAccount() {
         onDownloadPDF={() => {
           if (statementData.length === 0) {
             toast.warning(
-              "No data to download. Please apply filters or wait for data to load.",
+              t("No data to download. Please apply filters or wait for data to load."),
             );
             return;
           }
@@ -87,7 +89,7 @@ function StatementOfAccount() {
         onDownloadExcel={() => {
           if (statementData.length === 0) {
             toast.warning(
-              "No data to download. Please apply filters or wait for data to load.",
+              t("No data to download. Please apply filters or wait for data to load."),
             );
             return;
           }
@@ -95,12 +97,12 @@ function StatementOfAccount() {
           downloadService.downloadExcel(
             downloadData,
             [
-              { header: "Date", field: "date" },
-              { header: "Description", field: "description" },
-              { header: "Type", field: "type" },
-              { header: "Credit", field: "credit" },
-              { header: "Debit", field: "debit" },
-              { header: "Balance", field: "balance" },
+              { header: t("Date"), field: "date" },
+              { header: t("Description"), field: "description" },
+              { header: t("Type"), field: "type" },
+              { header: t("Credit"), field: "credit" },
+              { header: t("Debit"), field: "debit" },
+              { header: t("Balance"), field: "balance" },
             ],
             "Statement_of_Account",
           );

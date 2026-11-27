@@ -1,6 +1,7 @@
 "use client";
 
 
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 
 import IncomeForm from "./components/IncomeForm";
@@ -19,6 +20,7 @@ import { IncomeResponse } from "@/app/types/incomeType";
 import { downloadService } from "@/app/services/downloadService";
 
 function Income() {
+  const { t } = useTranslation();
   const [filteredData, setFilteredData] = useState<IncomeResponse[]>([]);
   const [allData, setAllData] = useState<IncomeResponse[]>([]);
   const [isFilterActive, setIsFilterActive] = useState(true);
@@ -72,7 +74,7 @@ function Income() {
         const data = await getIncomeCategoriesService();
         setCategories(data);
       } catch (err) {
-        toast.error("Failed to fetch income categories");
+        toast.error(t("Failed to fetch income categories"));
       }
     };
 
@@ -82,7 +84,7 @@ function Income() {
   return (
     <div className="">
 
-      <h1 className="text-2xl font-bold mb-4">Add Income</h1>
+      <h1 className="text-2xl font-bold mb-4">{t("Add Income")}</h1>
 
       <div className="grid grid-cols-1 items-center lg:grid-cols-4 gap-4">
         <BalanceCard refreshTrigger={refreshTrigger} />
@@ -115,7 +117,7 @@ function Income() {
             const data = isFilterActive ? filteredData : allData;
             if (data.length === 0) {
               toast.warning(
-                "No data to download. Please apply filters or wait for data to load.",
+                t("No data to download. Please apply filters or wait for data to load."),
               );
               return;
             }
@@ -135,7 +137,7 @@ function Income() {
             const data = isFilterActive ? filteredData : allData;
             if (data.length === 0) {
               toast.warning(
-                "No data to download. Please apply filters or wait for data to load.",
+                t("No data to download. Please apply filters or wait for data to load."),
               );
               return;
             }
@@ -143,10 +145,10 @@ function Income() {
               data,
               [
                 { header: "ID", field: "id" },
-                { header: "Income", field: "add_income" },
-                { header: "Category", field: "income_category" },
-                { header: "Total Income", field: "total_income" },
-                { header: "Date", field: "created_date" },
+                { header: t("Income"), field: "add_income" },
+                { header: t("Category"), field: "income_category" },
+                { header: t("Total Income"), field: "total_income" },
+                { header: t("Date"), field: "created_date" },
               ],
               "Income_Report",
             );
@@ -157,13 +159,13 @@ function Income() {
       {isFilterActive && (
         <div className="mb-4 flex items-center gap-2">
           <span className="text-sm text-gray-600">
-            Showing {filteredData.length} filtered results
+            {t("Showing {{count}} filtered results", { count: filteredData.length })}
           </span>
           <button
             onClick={clearFilter}
             className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
           >
-            Show All
+            {t("Show All")}
           </button>
         </div>
       )}

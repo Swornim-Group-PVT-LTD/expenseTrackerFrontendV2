@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import { ArrowDown, ArrowUp, ArrowUpRight, Coins, PiggyBank, TrendingUp } from "lucide-react";
 
@@ -10,16 +13,17 @@ const catalogues = [
 ];
 
 export default function CataloguePage() {
+  const { t } = useTranslation();
   return (
     <main className="space-y-5">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">Catalogue</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">{t("Catalogue")}</h1>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-          Manage the categories and currencies available in your forms.
+          {t("Manage the categories and currencies available in your forms.")}
         </p>
       </div>
 
-      <nav aria-label="Catalogue sections" className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <nav aria-label={t("Catalogue sections")} className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {catalogues.map(({ title, path, Icon, accent }) => (
           <Link
             key={path}
@@ -29,7 +33,7 @@ export default function CataloguePage() {
             <span className={`grid size-11 shrink-0 place-items-center rounded-xl ${accent}`}>
               <Icon className="size-5" aria-hidden="true" />
             </span>
-            <span>{title}</span>
+            <span>{t(title)}</span>
             <ArrowUpRight className="ml-auto size-4 shrink-0 text-slate-500 group-hover:text-[#056455]" aria-hidden="true" />
           </Link>
         ))}

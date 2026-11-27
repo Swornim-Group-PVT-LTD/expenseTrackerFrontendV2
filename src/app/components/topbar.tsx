@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import {
   ChevronDown,
   Bell,
@@ -19,6 +20,7 @@ import { useBalanceVisibility } from "../context/BalanceHideShowContext";
 import AccountLogo from "./AccountLogo";
 
 export default function TopNav() {
+  const { t } = useTranslation();
   const { collapsed } = useSidebar();
   const router = useRouter();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -55,7 +57,7 @@ export default function TopNav() {
     >
       <Link
         href="/dashboard"
-        aria-label="Expense Tracker dashboard"
+        aria-label={t("Expense Tracker dashboard")}
         className="mr-2 flex w-24 shrink-0 items-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300 md:hidden"
       >
         <img src="/app-logo.png" alt="" className="h-9 max-w-full object-contain" />
@@ -68,7 +70,7 @@ export default function TopNav() {
         >
           <AccountLogo
             fallback="/app-logo.png"
-            alt="Expense Tracker"
+            alt={t("Expense Tracker")}
             className="h-10 max-w-40 object-contain"
           />
         </Link>
@@ -78,7 +80,7 @@ export default function TopNav() {
         <div ref={dropdownRef} className="relative min-w-0">
           <button
             type="button"
-            aria-label="Account options"
+            aria-label={t("Account options")}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
             onKeyDown={(event) => {
@@ -88,7 +90,7 @@ export default function TopNav() {
           >
             {user?.first_name && (
               <span className="min-w-0 truncate text-sm font-semibold">
-                <span className="hidden text-teal-100/75 lg:inline">Welcome back, </span>
+                <span className="hidden text-teal-100/75 lg:inline">{t("Welcome back,")}{" "} </span>
                 {user.first_name}
               </span>
             )}
@@ -111,7 +113,7 @@ export default function TopNav() {
                 onClick={() => setOpen(false)}
               >
                 <UserRound className="h-4 w-4 mr-2" aria-hidden="true" />
-                Profile
+                {t("Profile")}
               </Link>
               <button
                 className="flex items-center w-full px-4 py-2 text-sm rounded-lg text-white hover:bg-white/10"
@@ -121,7 +123,7 @@ export default function TopNav() {
                 }}
               >
                 <Settings className="h-4 w-4 mr-2" />
-                Settings
+                {t("Settings")}
               </button>
 
               <button
@@ -129,7 +131,7 @@ export default function TopNav() {
                 onClick={() => setOpen(false)}
               >
                 <HelpCircle className="h-4 w-4 mr-2" />
-                Help & Support
+                {t("Help & Support")}
               </button>
 
               <button
@@ -137,7 +139,7 @@ export default function TopNav() {
                 className="flex items-center w-full px-4 py-2 text-sm rounded-lg text-white hover:bg-white/10"
               >
                 <LogOut className="h-4 w-4 mr-2" />
-                Logout
+                {t("Logout")}
               </button>
             </div>
           )}
@@ -159,8 +161,8 @@ export default function TopNav() {
         {/* Balance visibility toggle */}
         <button
           onClick={toggleVisibility}
-          aria-label={isVisible ? "Hide balances" : "Show balances"}
-          title={isVisible ? "Hide balances" : "Show balances"}
+          aria-label={isVisible ? t("Hide balances") : t("Show balances")}
+          title={isVisible ? t("Hide balances") : t("Show balances")}
           className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-amber-300 md:size-10"
         >
           {isVisible ? (

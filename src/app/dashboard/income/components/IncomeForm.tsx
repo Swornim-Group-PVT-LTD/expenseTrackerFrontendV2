@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import SearchInput from "@/app/components/SearchInput";
@@ -23,6 +24,7 @@ interface IncomeFormProps {
 }
 
 const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState<number | "">("");
   const [currency, setCurrency] = useState("");
   const [remarks, setRemarks] = useState("");
@@ -64,7 +66,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
         setCategories(data);
       } catch (err) {
         console.error("Failed to fetch income categories:", err);
-        toast.error("Failed to fetch income categories");
+        toast.error(t("Failed to fetch income categories"));
       }
     };
 
@@ -94,7 +96,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
   const handleAddIncome = async () => {
     // Validate amount
     if (amount === "" || Number(amount) <= 0) {
-      toast.error("Please enter a valid income amount");
+      toast.error(t("Please enter a valid income amount"));
       return;
     }
 
@@ -104,7 +106,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
     );
 
     if (!categoryExists) {
-      toast.error("Please select a valid category from the list");
+      toast.error(t("Please select a valid category from the list"));
       return;
     }
 
@@ -118,7 +120,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
 
       await addIncomeService(payload);
 
-      toast.success(`Income of ${currency}${amount} added successfully.`);
+      toast.success(t("Income of {{amount}} added successfully.", { amount: `${currency}${amount}` }));
 
       // Reset
       setAmount("");
@@ -128,7 +130,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
 
       loadTotalIncome();
     } catch (error: any) {
-      toast.error(error.message || "Failed to add income");
+      toast.error(error.message || t("Failed to add income"));
     } finally {
       setLoading(false);
     }
@@ -153,7 +155,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[#11554b]">Total Income</p>
+              <p className="text-sm font-medium text-[#11554b]">{t("Total Income")}</p>
 
               <p className="text-2xl sm:text-3xl font-bold text-[#082c28] mt-1">
                 {maskAmount(totalIncome, isVisible, currency)}
@@ -187,7 +189,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
           {/* AMOUNT */}
           <div>
             <label className="block mb-2 text-sm font-semibold text-[#374151]">
-              Amount
+              {t("Amount")}
             </label>
 
             <div
@@ -207,7 +209,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
 
               <input
                 type="number"
-                placeholder="Enter income amount"
+                placeholder={t("Enter income amount")}
                 className="
           flex-1 min-w-0 h-full bg-transparent outline-none border-none
           text-base font-semibold text-gray-800 placeholder:text-gray-400
@@ -226,7 +228,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
           {/* INCOME CATEGORY */}
           <div>
             <label className="block mb-2 text-sm font-semibold text-[#374151]">
-              Income Category
+              {t("Income Category")}
             </label>
 
             <SearchInput
@@ -236,7 +238,7 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
               }))}
               value={remarks}
               onChange={setRemarks}
-              placeholder="Search income category..."
+              placeholder={t("Search income category...")}
               className="w-full h-[56px] text-gray-800"
             />
           </div>
@@ -266,10 +268,10 @@ const IncomeForm = ({ onSuccess }: IncomeFormProps) => {
             `}
           >
             {loading ? (
-              "Saving..."
+              t("Saving...")
             ) : (
               <>
-                <span>Add Income</span>
+                <span>{t("Add Income")}</span>
                 <span className="text-xl">→</span>
               </>
             )}

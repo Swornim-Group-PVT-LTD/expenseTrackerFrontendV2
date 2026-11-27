@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import { calculateInvoiceTotals } from "@/app/utils/invoiceTotals";
 import React, { useCallback, useEffect, useState } from "react";
@@ -48,6 +49,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
   onDataLoad,
   onViewInvoice,
 }) => {
+    const { t } = useTranslation();
   const [invoices, setInvoices] = useState<InvoiceResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingSn, setDeletingSn] = useState<string | number | null>(null);
@@ -125,7 +127,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
       onDataLoad?.(invoiceData);
     } catch (error) {
       console.error("Failed to load invoices:", error);
-      toast.error("Failed to load invoices.");
+      toast.error(t("Failed to load invoices."));
     } finally {
       setLoading(false);
     }
@@ -201,7 +203,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
     const sn = getInvoiceSn(invoice);
 
     if (sn === null) {
-      toast.error("Invoice ID is missing.");
+      toast.error(t("Invoice ID is missing."));
       return;
     }
 
@@ -230,12 +232,12 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
         return updated;
       });
 
-      toast.success("Invoice status updated successfully.");
+      toast.success(t("Invoice status updated successfully."));
       onDataChange?.();
       onSuccess?.();
     } catch (error) {
       console.error("Failed to update invoice status:", error);
-      toast.error("Failed to update invoice status.");
+      toast.error(t("Failed to update invoice status."));
     } finally {
       setUpdatingStatusSn(null);
     }
@@ -247,7 +249,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
     const sn = getInvoiceSn(invoice);
 
     if (sn === null) {
-      toast.error("Invoice ID is missing.");
+      toast.error(t("Invoice ID is missing."));
       return;
     }
 
@@ -262,12 +264,12 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
         )
       );
 
-      toast.success("Invoice deleted successfully.");
+      toast.success(t("Invoice deleted successfully."));
       onDataChange?.();
       onSuccess?.();
     } catch (error) {
       console.error("Failed to delete invoice:", error);
-      toast.error("Failed to delete invoice.");
+      toast.error(t("Failed to delete invoice."));
     } finally {
       setDeletingSn(null);
     }
@@ -313,7 +315,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
       onViewInvoice(normalizedInvoice);
     } catch (error) {
       console.error("Failed to load invoice details:", error);
-      toast.error("Could not load invoice details.");
+      toast.error(t("Could not load invoice details."));
     } finally {
       setViewLoadingSn(null);
     }
@@ -329,8 +331,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
 
     return (
       <select
-        aria-label={`Status for invoice ${invoice.invoice_number || sn || ""
-          }`}
+        aria-label={t("Status for invoice {{number}}", { number: invoice.invoice_number || sn || "" })}
         value={selectedStatus}
         disabled={sn === null || updatingStatusSn !== null}
         onChange={(event) => {
@@ -345,9 +346,9 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
           selectedStatus
         )}`}
       >
-        <option value="Active">Active</option>
-        <option value="Completed">Completed</option>
-        <option value="Rejected">Rejected</option>
+        <option value="Active">{t("Active")}</option>
+        <option value="Completed">{t("Completed")}</option>
+        <option value="Rejected">{t("Rejected")}</option>
       </select>
     );
   };
@@ -368,8 +369,8 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
             type="button"
             onClick={() => void handleUpdateStatus(invoice)}
             disabled={sn === null || updatingStatusSn !== null}
-            title="Save Status"
-            aria-label="Save Status"
+            title={t("Save Status")}
+            aria-label={t("Save Status")}
             className="rounded-md p-1 text-green-600 transition hover:bg-green-50 hover:text-green-800 disabled:opacity-50"
           >
             {updatingStatusSn === sn ? (
@@ -384,8 +385,8 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
           type="button"
           onClick={() => void handleViewInvoice(invoice)}
           disabled={viewLoadingSn === sn}
-          title="View Invoice"
-          aria-label="View Invoice"
+          title={t("View Invoice")}
+          aria-label={t("View Invoice")}
           className="rounded-md p-1 text-[#14383F] hover:bg-gray-100 disabled:opacity-50"
         >
           {viewLoadingSn === sn ? (
@@ -398,7 +399,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
         {sn !== null && getStatus(invoice) === "Active" && (
           <TableActionButton
             action="edit"
-            label="Edit Invoice"
+            label={t("Edit Invoice")}
             onClick={() => {
               window.location.href = `/dashboard/invoice/edit/${encodeURIComponent(
                 String(sn)
@@ -409,7 +410,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
 
         <TableActionButton
           action="delete"
-          label="Delete Invoice"
+          label={t("Delete Invoice")}
           onClick={() => handleDeleteInvoice(invoice)}
           disabled={deletingSn !== null}
           busy={deletingSn === sn}
@@ -427,7 +428,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
     <div className="w-full space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm text-gray-600">
-          Total invoices:{" "}
+          {t("Total invoices:")}{" "}
           <span className="font-bold text-[#14383F]">
             {displayInvoices.length}
           </span>
@@ -443,12 +444,12 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
           <div className="flex min-h-[220px] flex-col items-center justify-center px-4 text-center">
             <FileText size={38} className="mb-3 text-gray-300" />
             <h3 className="text-base font-semibold text-gray-700">
-              No invoices found
+              {t("No invoices found")}
             </h3>
             <p className="mt-1 text-sm text-gray-500">
               {isFilterActive
-                ? "Try changing your filters to find invoices."
-                : "Your invoices will appear here once they have been created."}
+                ? t("Try changing your filters to find invoices.")
+                : t("Your invoices will appear here once they have been created.")}
             </p>
           </div>
         ) : (
@@ -458,15 +459,15 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
                 <TableHead>
                   <TableRow>
                     <TableHeadCell>S.N.</TableHeadCell>
-                    <TableHeadCell>Invoice Number</TableHeadCell>
-                    <TableHeadCell>Purchase Order</TableHeadCell>
-                    <TableHeadCell>Bill To</TableHeadCell>
-                    <TableHeadCell>Total</TableHeadCell>
-                    <TableHeadCell>Invoice Date</TableHeadCell>
-                    <TableHeadCell>Due Date</TableHeadCell>
-                    <TableHeadCell>Status</TableHeadCell>
+                    <TableHeadCell>{t("Invoice Number")}</TableHeadCell>
+                    <TableHeadCell>{t("Purchase Order")}</TableHeadCell>
+                    <TableHeadCell>{t("Bill To")}</TableHeadCell>
+                    <TableHeadCell>{t("Total")}</TableHeadCell>
+                    <TableHeadCell>{t("Invoice Date")}</TableHeadCell>
+                    <TableHeadCell>{t("Due Date")}</TableHeadCell>
+                    <TableHeadCell>{t("Status")}</TableHeadCell>
                     <TableHeadCell className="text-center">
-                      Action
+                      {t("Action")}
                     </TableHeadCell>
                   </TableRow>
                 </TableHead>
@@ -534,18 +535,18 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
                         <p className="text-xs uppercase tracking-wide text-gray-500">
-                          Invoice {index + 1}
+                          {t("Invoice")}{" "} {index + 1}
                         </p>
                         <h3 className="mt-1 break-words font-bold text-[#14383F]">
                           {invoice.invoice_number || "—"}
                         </h3>
                         <p className="mt-1 break-words text-sm text-gray-500">
-                          PO: {invoice.purchase_order || "—"}
+                          {t("PO:")}{" "} {invoice.purchase_order || "—"}
                         </p>
                       </div>
 
                       <div className="shrink-0 text-right">
-                        <p className="text-xs text-gray-500">Total</p>
+                        <p className="text-xs text-gray-500">{t("Total")}</p>
                         <p className="mt-1 font-bold text-[#14383F]">
                           {formatCurrency(
                             getInvoiceTotal(invoice),
@@ -557,25 +558,25 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
 
                     <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
                       <div>
-                        <p className="text-xs text-gray-500">Bill To</p>
+                        <p className="text-xs text-gray-500">{t("Bill To")}</p>
                         <p className="mt-1 break-words font-medium">
                           {invoice.bill_to || "—"}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Invoice Date</p>
+                        <p className="text-xs text-gray-500">{t("Invoice Date")}</p>
                         <p className="mt-1 font-medium">
                           {invoice.invoice_date || "—"}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Due Date</p>
+                        <p className="text-xs text-gray-500">{t("Due Date")}</p>
                         <p className="mt-1 font-medium">
                           {invoice.due_date || "—"}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Status</p>
+                        <p className="text-xs text-gray-500">{t("Status")}</p>
                         <div className="mt-1">
                           {renderStatusEditor(invoice)}
                         </div>
@@ -590,8 +591,8 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
                           disabled={
                             sn === null || updatingStatusSn !== null
                           }
-                          title="Save Status"
-                          aria-label="Save Status"
+                          title={t("Save Status")}
+                          aria-label={t("Save Status")}
                           className="inline-flex items-center gap-1.5 text-sm font-medium text-green-600 disabled:opacity-50"
                         >
                           {updatingStatusSn === sn ? (
@@ -599,7 +600,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
                           ) : (
                             <Save size={17} />
                           )}
-                          Save
+                          {t("Save")}
                         </button>
                       )}
 
@@ -614,13 +615,13 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
                         ) : (
                           <Eye size={17} />
                         )}
-                        View
+                        {t("View")}
                       </button>
 
                       {sn !== null && getStatus(invoice) === "Active" && (
                         <TableActionButton
                           action="edit"
-                          label="Edit Invoice"
+                          label={t("Edit Invoice")}
                           onClick={() => {
                             window.location.href = `/dashboard/invoice/edit/${encodeURIComponent(
                               String(sn)
@@ -631,7 +632,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
 
                       <TableActionButton
                         action="delete"
-                        label="Delete Invoice"
+                        label={t("Delete Invoice")}
                         onClick={() => handleDeleteInvoice(invoice)}
                         disabled={deletingSn !== null}
                         busy={deletingSn === sn}

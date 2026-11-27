@@ -1,6 +1,9 @@
+"use client";
+
 // components/investmentCatalogueTable.tsx
 "use client";
 
+import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import { ClipLoader } from "react-spinners";
 import React, { useState, useEffect } from "react";
@@ -10,6 +13,7 @@ import { deleteInvestmentCategoryService, getInvestmentCategoriesService, update
 import { toast } from 'react-toastify'
 
 export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTrigger: number }) {
+  const { t } = useTranslation();
   const [data, setData] = useState<InvestmentCategoryResponse[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,10 +38,10 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
   const handleDelete = async (id: number) => {
     try {
       await deleteInvestmentCategoryService(id);
-      toast.success('Investment category deleted successfully');
+      toast.success(t("Investment category deleted successfully"));
       fetchData();
     } catch (error) {
-      toast.error('Failed to delete investment category');
+      toast.error(t("Failed to delete investment category"));
     }
   };
 
@@ -66,7 +70,7 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
       });
 
       fetchData(); // Refresh data after update
-      toast.success("Investment category updated successfully");
+      toast.success(t("Investment category updated successfully"));
 
       cancelEdit();
     } catch (err) {
@@ -78,7 +82,7 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
   return (
     <>
       <div className="flex justify-end mb-2">
-        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search..." className="px-3 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("Search...")} className="px-3 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
       </div>
 
       {/* Desktop Table View */}
@@ -87,10 +91,10 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
           <thead className="bg-gray-100">
             <tr>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ID</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Added Date</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Static Data</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Investment Category</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Action</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Added Date")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Static Data")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Investment Category")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Action")}</th>
             </tr>
           </thead>
           <tbody className="bg-white">
@@ -130,13 +134,13 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
                               className="text-green-600 mr-2 cursor-pointer hover:underline"
                               onClick={() => saveEdit(item.id)}
                             >
-                              Save
+                              {t("Save")}
                             </button>
                             <button
                               className="text-gray-600 cursor-pointer hover:underline"
                               onClick={cancelEdit}
                             >
-                              Cancel
+                              {t("Cancel")}
                             </button>
                           </>
                         ) : (
@@ -147,7 +151,7 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
                     </div>
                   </td>
                 </tr>
-              )) : <tr><td colSpan={5} className="px-4 py-2 text-center text-gray-500">No records found</td></tr>}
+              )) : <tr><td colSpan={5} className="px-4 py-2 text-center text-gray-500">{t("No records found")}</td></tr>}
           </tbody>
         </table>
       </div>
@@ -159,7 +163,7 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
             <ClipLoader size={22} color="#000000" />
           </div>
         ) : filteredData.length === 0 ? (
-          <div className="text-center font-medium text-gray-500">No records found</div>
+          <div className="text-center font-medium text-gray-500">{t("No records found")}</div>
         ) : (
           filteredData.map((item) => (
             <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 border border-gray-100 flex flex-col gap-3">
@@ -168,9 +172,9 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
                 <div className="flex gap-2 text-xs font-bold">
                   {editingId === item.id ? (
                     <>
-                      <button onClick={() => saveEdit(item.id)} className="text-green-600 hover:underline">Save</button>
+                      <button onClick={() => saveEdit(item.id)} className="text-green-600 hover:underline">{t("Save")}</button>
                       <span className="text-gray-300">/</span>
-                      <button onClick={cancelEdit} className="text-gray-500 hover:underline">Cancel</button>
+                      <button onClick={cancelEdit} className="text-gray-500 hover:underline">{t("Cancel")}</button>
                     </>
                   ) : (
                     <>
@@ -182,7 +186,7 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Category:</span>
+                  <span className="text-sm text-gray-500">{t("Category:")}</span>
                   {editingId === item.id ? (
                     <input
                       className="w-32 p-1 text-sm border rounded focus:ring-1 focus:ring-[#FFAA00]"
@@ -199,11 +203,11 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
                   )}
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Static Data:</span>
+                  <span className="text-sm text-gray-500">{t("Static Data:")}</span>
                   <span className="font-semibold">{item.sn}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs text-gray-400 mt-1">
-                  <span>Created: {item.created_date}</span>
+                  <span>{t("Created:")}{" "} {item.created_date}</span>
                 </div>
               </div>
             </div>

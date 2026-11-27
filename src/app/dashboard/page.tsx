@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { ArrowDown, ArrowUp, ArrowUpRight, PiggyBank, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
@@ -16,16 +17,17 @@ const sections = [
 ] as const;
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   return (
     <main className="space-y-5">
       <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">
-        Dashboard
+        {t("Dashboard")}
       </h1>
 
       <div className="grid items-stretch gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
         <BalanceCard refreshTrigger={0} />
 
-        <nav aria-label="Quick links" className="grid grid-cols-2 gap-2.5 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:gap-3 sm:p-4">
+        <nav aria-label={t("Quick links")} className="grid grid-cols-2 gap-2.5 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:gap-3 sm:p-4">
           {sections.map(({ label, title, Icon, color }) => (
             <Link
               key={label}
@@ -35,20 +37,20 @@ export default function Dashboard() {
               <span className="grid size-9 shrink-0 sm:size-10 place-items-center rounded-lg" style={{ backgroundColor: `${color}19`, color }}>
                 <Icon className="size-5" aria-hidden="true" />
               </span>
-              <span className="min-w-0 break-words">{title}</span>
+              <span className="min-w-0 break-words">{t(title)}</span>
               <ArrowUpRight className="ml-auto hidden size-4 shrink-0 text-slate-400 group-hover:text-[#056455] sm:block" aria-hidden="true" />
             </Link>
           ))}
         </nav>
       </div>
 
-      <section aria-label="Financial totals" className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
+      <section aria-label={t("Financial totals")} className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-4">
         {sections.map(({ label, icon, color }) => (
           <StatCard key={label} icon={icon} label={label} labelColor={color} />
         ))}
       </section>
 
-      <section aria-label="Financial charts" className="grid gap-4 xl:grid-cols-2">
+      <section aria-label={t("Financial charts")} className="grid gap-4 xl:grid-cols-2">
         <MonthlyBarChart />
         <ExpensesPieChart />
       </section>

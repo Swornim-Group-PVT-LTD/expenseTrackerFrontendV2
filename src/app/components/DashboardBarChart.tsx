@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import {
   Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis,
@@ -18,6 +21,7 @@ const categories = [
 const compactNumber = new Intl.NumberFormat(undefined, { notation: "compact" });
 
 export default function DashboardBarChart() {
+  const { t } = useTranslation();
   const [filterType, setFilterType] = useState("monthly");
   const [chartData, setChartData] = useState<{ name: string; value: number; color: string }[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -49,9 +53,9 @@ export default function DashboardBarChart() {
   return (
     <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-bold tracking-tight text-[#082c28]">Financial activity</h2>
+        <h2 className="text-lg font-bold tracking-tight text-[#082c28]">{t("Financial activity")}</h2>
         <DashboardChartPeriod
-          label="Financial activity period"
+          label={t("Financial activity period")}
           value={filterType}
           onChange={(value) => {
             setStatus("loading");
@@ -61,15 +65,15 @@ export default function DashboardBarChart() {
       </div>
       {status !== "ready" ? (
         <p role="status" className="grid h-64 place-items-center text-center text-sm text-slate-600">
-          {status === "loading" ? "Loading financial activity…" : "Financial activity is unavailable."}
+          {status === "loading" ? t("Loading financial activity…") : t("Financial activity is unavailable.")}
         </p>
       ) : (
         <ResponsiveContainer width="100%" height={256}>
           <BarChart data={chartData} margin={{ top: 8, right: 4, bottom: 4, left: 0 }}>
             <CartesianGrid vertical={false} stroke="#E2E8F0" strokeDasharray="3 4" />
-            <XAxis dataKey="name" axisLine={false} tickLine={false} tickMargin={8} interval={0} tick={{ fill: "#475569", fontSize: 11 }} />
+            <XAxis tickFormatter={(name) => t(name)} dataKey="name" axisLine={false} tickLine={false} tickMargin={8} interval={0} tick={{ fill: "#475569", fontSize: 11 }} />
             <YAxis width={46} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 11 }} tickFormatter={(value) => isVisible ? compactNumber.format(value) : "XXX"} />
-            <Tooltip cursor={{ fill: "#F1F5F9" }} formatter={(value) => [isVisible ? `${currency} ${Number(value).toLocaleString()}` : "XXX", "Amount"]} />
+            <Tooltip cursor={{ fill: "#F1F5F9" }} formatter={(value) => [isVisible ? `${currency} ${Number(value).toLocaleString()}` : "XXX", t("Amount")]} />
             <Bar dataKey="value" maxBarSize={64} radius={[6, 6, 0, 0]}>
               {chartData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}
             </Bar>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import {
@@ -22,6 +23,7 @@ export default function BalanceTable({
 }: {
   refreshTrigger?: number;
 }) {
+  const { t } = useTranslation();
   const [balances, setBalances] = useState<BalanceResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const { isVisible } = useBalanceVisibility();
@@ -55,10 +57,10 @@ export default function BalanceTable({
           <TableHead className="bg-gray-100 dark:bg-gray-700">
             <TableRow>
               <TableHeadCell>ID</TableHeadCell>
-              <TableHeadCell>Master Opening Balance</TableHeadCell>
-              <TableHeadCell>Opening Balance</TableHeadCell>
-              <TableHeadCell>Closing Balance</TableHeadCell>
-              <TableHeadCell>Date</TableHeadCell>
+              <TableHeadCell>{t("Master Opening Balance")}</TableHeadCell>
+              <TableHeadCell>{t("Opening Balance")}</TableHeadCell>
+              <TableHeadCell>{t("Closing Balance")}</TableHeadCell>
+              <TableHeadCell>{t("Date")}</TableHeadCell>
             </TableRow>
           </TableHead>
 
@@ -78,7 +80,7 @@ export default function BalanceTable({
                   colSpan={5}
                   className="text-center font-medium text-gray-500"
                 >
-                  No balances found
+                  {t("No balances found")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -131,7 +133,7 @@ export default function BalanceTable({
           </div>
         ) : balances.length === 0 ? (
           <div className="text-center font-medium text-gray-500">
-            No balances found
+            {t("No balances found")}
           </div>
         ) : (
           balances.map((row) => (
@@ -147,7 +149,7 @@ export default function BalanceTable({
               {/* Row 2: Date */}
               <div className="flex justify-between items-center border-b border-gray-100 pb-2">
                 <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Date
+                  {t("Date")}
                 </span>
                 <span className="text-sm font-medium text-gray-700">
                   {row.date}
@@ -157,7 +159,7 @@ export default function BalanceTable({
               {/* Row 3: Master Opening Balance */}
               <div className="flex justify-between items-center">
                 <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Master Opening
+                  {t("Master Opening")}
                 </span>
                 <span className="text-sm font-bold text-gray-700">
                   {maskAmount(
@@ -171,7 +173,7 @@ export default function BalanceTable({
               {/* Row 4: Opening Balance */}
               <div className="flex justify-between items-center">
                 <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Opening Balance
+                  {t("Opening Balance")}
                 </span>
                 <span className="text-sm font-bold text-gray-800">
                   {maskAmount(Number(row.opening_balance), isVisible, currency)}
@@ -181,7 +183,7 @@ export default function BalanceTable({
               {/* Row 5: Closing Balance */}
               <div className="flex justify-between items-center pt-2 border-t border-gray-100">
                 <span className="text-xs font-semibold text-gray-500 uppercase">
-                  Closing Balance
+                  {t("Closing Balance")}
                 </span>
                 <span className="text-sm font-bold text-[#FFAA00]">
                   {maskAmount(Number(row.closing_balance), isVisible, currency)}

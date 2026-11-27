@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 
@@ -11,6 +12,7 @@ import InvoiceTemplate from "../invoice/components/viewInvoiceTemplate";
 import type { InvoiceResponse } from "@/app/types/invoiceType";
 
 export default function Page() {
+    const { t } = useTranslation();
     const [showForm, setShowForm] = useState(false);
     const [selectedInvoice, setSelectedInvoice] =
         useState<InvoiceResponse | null>(null);
@@ -45,21 +47,21 @@ export default function Page() {
         <main className="mt-4 space-y-5">
             <Breadcrumbs
                 parents={[
-                    { label: "Dashboard", href: "/dashboard" },
+                    { label: t("Dashboard"), href: "/dashboard" },
                     ...(showForm ? [{
-                        label: "Invoices",
+                        label: t("Invoices"),
                         href: "/dashboard/invoice",
                         onNavigate: () => setShowForm(false),
                     }] : []),
                 ]}
-                current={showForm ? "Add Invoice" : "Invoices"}
+                current={showForm ? t("Add Invoice") : t("Invoices")}
             />
 
             {/* Page Header */}
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">
-                        {showForm ? "New invoice" : "Invoices"}
+                        {showForm ? t("New invoice") : t("Invoices")}
                     </h1>
 
                 </div>
@@ -70,7 +72,7 @@ export default function Page() {
                         onClick={() => setShowForm(true)}
                         className="inline-flex items-center gap-2 rounded-xl bg-[#056455] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#034e43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
                     >
-                        <Plus className="size-4" aria-hidden="true" /> Add Invoice
+                        <Plus className="size-4" aria-hidden="true" /> {t("Add Invoice")}
                     </button>
                 )}
             </div>
@@ -80,7 +82,7 @@ export default function Page() {
                 <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-lg font-semibold text-[#14383F]">
-                            Add Invoice
+                            {t("Add Invoice")}
                         </h2>
 
                         <button
@@ -88,7 +90,7 @@ export default function Page() {
                             onClick={() => setShowForm(false)}
                             className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm text-gray-600 transition hover:bg-gray-50"
                         >
-                            Cancel
+                            {t("Cancel")}
                         </button>
                     </div>
 

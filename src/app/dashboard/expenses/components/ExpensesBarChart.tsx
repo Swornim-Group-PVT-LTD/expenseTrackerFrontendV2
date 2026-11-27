@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import { monthlyBarChartService } from "@/app/services/chartService";
 import {
@@ -20,6 +23,7 @@ const MonthlyExpenseChart = ({
 }: {
   refreshTrigger: number;
 }) => {
+  const { t } = useTranslation();
   const [monthlyExpenses, setMonthlyExpenses] = useState<
     { month: string; amount: number }[]
   >([]);
@@ -50,7 +54,7 @@ const MonthlyExpenseChart = ({
 
   return (
     <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-      <h2 className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Monthly expenses</h2>
+      <h2 className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">{t("Monthly expenses")}</h2>
       <ResponsiveContainer width="100%" height={256}>
         <BarChart
           data={monthlyExpenses}
@@ -68,7 +72,7 @@ const MonthlyExpenseChart = ({
           <Tooltip
             formatter={(value) => [
               isVisible ? `${currency} ${Number(value).toLocaleString()}`.trim() : "XXX",
-              "Expense",
+              t("Expense"),
             ]}
           />
 

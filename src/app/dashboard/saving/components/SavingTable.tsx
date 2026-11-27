@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
@@ -41,6 +42,7 @@ export default function SavingTable({
   selectedIds: number[];
   onSelect: (row: SavingResponse, checked: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const [saving, setSaving] = useState<SavingResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -62,7 +64,7 @@ export default function SavingTable({
       setCategories(data);
     } catch (err) {
       console.error("Failed to fetch saving categories:", err);
-      toast.error("Failed to fetch saving categories");
+      toast.error(t("Failed to fetch saving categories"));
     }
   };
 
@@ -120,7 +122,7 @@ export default function SavingTable({
     );
 
     if (!categoryExists) {
-      toast.error("Please select a valid category from the list");
+      toast.error(t("Please select a valid category from the list"));
       return;
     }
 
@@ -132,7 +134,7 @@ export default function SavingTable({
       });
 
       onSuccess && onSuccess();
-      toast.success("Saving updated successfully");
+      toast.success(t("Saving updated successfully"));
       setSaving((prev) =>
         prev.map((item) =>
           item.sn === sn
@@ -147,7 +149,7 @@ export default function SavingTable({
 
       cancelEdit();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to update saving.");
+      toast.error(err instanceof Error ? err.message : t("Failed to update saving."));
     }
   };
 
@@ -155,10 +157,10 @@ export default function SavingTable({
     try {
       await deleteSavingService(sn);
       onSuccess && onSuccess();
-      toast.success("saving deleted successfully");
+      toast.success(t("saving deleted successfully"));
       setSaving(saving.filter((saving) => saving.sn !== sn));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to delete saving.");
+      toast.error(error instanceof Error ? error.message : t("Failed to delete saving."));
     }
   };
 
@@ -169,7 +171,7 @@ export default function SavingTable({
         checked={selectedIds.includes(row.id)}
         disabled={selectedIds.length >= 100 && !selectedIds.includes(row.id)}
         onChange={(event) => onSelect(row, event.target.checked)}
-        aria-label={`Select saving ${row.id} from ${row.saving_category}`}
+        aria-label={t("Select saving {{id}} from {{category}}", { id: row.id, category: row.saving_category })}
         className="mr-2 rounded border-gray-300"
       />
     ) : null;
@@ -185,12 +187,12 @@ export default function SavingTable({
               <TableHead className="text-lg">
                 <TableRow>
                   <TableHeadCell>ID</TableHeadCell>
-                  <TableHeadCell>Saving</TableHeadCell>
-                  <TableHeadCell>Deduct from balance</TableHeadCell>
-                  <TableHeadCell>Remarks</TableHeadCell>
-                  <TableHeadCell>Total Saving</TableHeadCell>
-                  <TableHeadCell>Created Date</TableHeadCell>
-                  <TableHeadCell>Action</TableHeadCell>
+                  <TableHeadCell>{t("Saving")}</TableHeadCell>
+                  <TableHeadCell>{t("Deduct from balance")}</TableHeadCell>
+                  <TableHeadCell>{t("Remarks")}</TableHeadCell>
+                  <TableHeadCell>{t("Total Saving")}</TableHeadCell>
+                  <TableHeadCell>{t("Created Date")}</TableHeadCell>
+                  <TableHeadCell>{t("Action")}</TableHeadCell>
                 </TableRow>
               </TableHead>
 
@@ -211,7 +213,7 @@ export default function SavingTable({
                       colSpan={7}
                       className="text-center font-medium text-gray-500"
                     >
-                      No Saving found
+                      {t("No Saving found")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -260,7 +262,7 @@ export default function SavingTable({
                           />
                         ) : (
                           <span>
-                            {row.is_transfer ? `Credited ${maskAmount(row.add_saving, isVisible, currency)}` : row.want_to_deduct_from_balance ? "Yes" : "No"}
+                            {row.is_transfer ? `Credited ${maskAmount(row.add_saving, isVisible, currency)}` : row.want_to_deduct_from_balance ? t("Yes") : t("No")}
                           </span>
                         )}
                       </TableCell>
@@ -279,7 +281,7 @@ export default function SavingTable({
                                 saving_category: value,
                               }))
                             }
-                            placeholder="Type saving category..."
+                            placeholder={t("Type saving category...")}
                             className="w-full sm:w-80"
                           />
                         ) : (
@@ -300,13 +302,13 @@ export default function SavingTable({
                               className="text-green-600 mr-2 cursor-pointer"
                               onClick={() => saveEdit(row.sn)}
                             >
-                              Save
+                              {t("Save")}
                             </button>
                             <button
                               className="text-gray-600 cursor-pointer"
                               onClick={cancelEdit}
                             >
-                              Cancel
+                              {t("Cancel")}
                             </button>
                           </>
                         ) : row.is_transfer ? null : (
@@ -328,7 +330,7 @@ export default function SavingTable({
                         className="flex justify-between items-center p-4 text-white font-semibold rounded-lg shadow mt-2"
                         style={{ backgroundColor: "#44eeaa" }}
                       >
-                        <span>Total Saving</span>
+                        <span>{t("Total Saving")}</span>
                         <span>
                           {maskAmount(
                             saving[saving.length - 1].total_saving,
@@ -354,7 +356,7 @@ export default function SavingTable({
           </div>
         ) : saving.length === 0 ? (
           <div className="text-center font-medium text-gray-500">
-            No Saving found
+            {t("No Saving found")}
           </div>
         ) : (
           saving.map((row) => (
@@ -375,14 +377,14 @@ export default function SavingTable({
                         onClick={() => saveEdit(row.sn)}
                         className="text-green-600 hover:underline"
                       >
-                        Save
+                        {t("Save")}
                       </button>
                       <span className="text-gray-300">/</span>
                       <button
                         onClick={() => cancelEdit()}
                         className="text-gray-500 hover:underline"
                       >
-                        Cancel
+                        {t("Cancel")}
                       </button>
                     </>
                   ) : row.is_transfer ? null : (
@@ -411,7 +413,7 @@ export default function SavingTable({
                             saving_category: value,
                           }))
                         }
-                        placeholder="Category..."
+                        placeholder={t("Category...")}
                         className="w-full text-xs"
                       />
                       <label className="flex items-center gap-1.5 cursor-pointer">
@@ -427,7 +429,7 @@ export default function SavingTable({
                           }
                         />
                         <span className="text-[10px] text-gray-500 font-medium leading-none">
-                          Deduct from balance
+                          {t("Deduct from balance")}
                         </span>
                       </label>
                     </>
@@ -436,7 +438,7 @@ export default function SavingTable({
                       {row.is_transfer ? row.remarks : row.saving_category}
                       {row.want_to_deduct_from_balance && (
                         <span className="text-[10px] ml-1 text-blue-500 font-medium">
-                          (Deducted)
+                          {t("(Deducted)")}
                         </span>
                       )}
                     </span>
@@ -462,7 +464,7 @@ export default function SavingTable({
                     </div>
                   ) : (
                     <span className="text-sm font-bold text-gray-800">
-                      {row.is_transfer ? "Transferred to balance" : "Saving"} {maskAmount(row.add_saving, isVisible, currency)}
+                      {row.is_transfer ? t("Transferred to balance") : t("Saving")} {maskAmount(row.add_saving, isVisible, currency)}
                     </span>
                   )}
                 </div>
@@ -474,7 +476,7 @@ export default function SavingTable({
                   {row.created_date}
                 </span>
                 <span className="text-xs font-bold text-gray-700">
-                  Total Saving{" "}
+                  {t("Total Saving")}{" "}
                   {maskAmount(row.total_saving, isVisible, currency)}
                 </span>
               </div>
@@ -489,7 +491,7 @@ export default function SavingTable({
             style={{ backgroundColor: "#44eeaa" }}
           >
             <div className="flex justify-between items-center">
-              <span>Total Saving</span>
+              <span>{t("Total Saving")}</span>
               <span>
                 {maskAmount(
                   saving[saving.length - 1].total_saving,

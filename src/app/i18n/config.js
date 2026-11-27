@@ -12,11 +12,11 @@ if (!i18n.isInitialized) {
       en: { translation: en },
       np: { translation: np }
     },
-    lng:
-      typeof window !== "undefined"
-        ? localStorage.getItem("lang") || "en"
-        : "en",
+    lng: "en",
     fallbackLng: "en",
+    supportedLngs: ["en", "np"],
+    keySeparator: false,
+    nsSeparator: false,
     interpolation: {
       escapeValue: false
     }

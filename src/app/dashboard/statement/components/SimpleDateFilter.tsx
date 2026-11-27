@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import { Calendar, Download, FileDown, Search } from "lucide-react";
 import { toast } from "react-toastify";
@@ -25,6 +26,7 @@ export default function SimpleDateFilter({
   onDownloadPDF,
   onDownloadExcel,
 }: SimpleDateFilterProps) {
+  const { t } = useTranslation();
   const formatDateForInput = (date: Date): string => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -57,12 +59,12 @@ export default function SimpleDateFilter({
     endDate: string = toDate,
   ) => {
     if (!startDate || !endDate) {
-      toast.warning("Please select both dates");
+      toast.warning(t("Please select both dates"));
       return;
     }
 
     if (new Date(startDate) > new Date(endDate)) {
-      toast.error("From date cannot be later than To date");
+      toast.error(t("From date cannot be later than To date"));
       return;
     }
 
@@ -72,7 +74,7 @@ export default function SimpleDateFilter({
       const data = await fetchService(startDate, endDate);
       await onFilter(data, startDate, endDate);
     } catch (error: any) {
-      toast.error(error.message || "Failed to fetch statement");
+      toast.error(error.message || t("Failed to fetch statement"));
       console.error("Error fetching statement:", error);
     } finally {
       setIsLoading(false);
@@ -97,7 +99,7 @@ export default function SimpleDateFilter({
               htmlFor="fromDate"
               className="text-sm font-semibold text-gray-700 mb-2"
             >
-              From Date
+              {t("From Date")}
             </label>
 
             <div className="relative">
@@ -119,7 +121,7 @@ export default function SimpleDateFilter({
               htmlFor="toDate"
               className="text-sm font-semibold text-gray-700 mb-2"
             >
-              To Date
+              {t("To Date")}
             </label>
 
             <div className="relative">
@@ -146,12 +148,12 @@ export default function SimpleDateFilter({
             {isLoading ? (
               <>
                 <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                Loading...
+                {t("Loading...")}
               </>
             ) : (
               <>
                 <Search className="size-4" aria-hidden="true" />
-                Search
+                {t("Search")}
               </>
             )}
           </button>
@@ -160,7 +162,7 @@ export default function SimpleDateFilter({
             onClick={handleToday}
             className="h-11 flex-1 rounded-lg border border-slate-200 bg-white px-5 text-sm font-semibold text-[#082c28] transition-colors hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
           >
-            Today
+            {t("Today")}
           </button>
         </div>
       </div>
@@ -175,7 +177,7 @@ export default function SimpleDateFilter({
                 className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-[#082c28] transition-colors hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
               >
                 <FileDown className="w-4 h-4" />
-                Download PDF
+                {t("Download PDF")}
               </button>
             )}
 
@@ -185,7 +187,7 @@ export default function SimpleDateFilter({
                 className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-[#082c28] transition-colors hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
               >
                 <Download className="w-4 h-4" />
-                Download Excel
+                {t("Download Excel")}
               </button>
             )}
           </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
@@ -38,6 +39,7 @@ export default function InvestmentTable({
   onSuccess: () => void;
   onDataLoad?: (data: InvestmentResponse[]) => void;
 }) {
+  const { t } = useTranslation();
   const [investment, setInvestment] = useState<InvestmentResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -109,7 +111,7 @@ export default function InvestmentTable({
     );
 
     if (!categoryExists) {
-      toast.error("Please select a valid category from the list");
+      toast.error(t("Please select a valid category from the list"));
       return;
     }
 
@@ -120,7 +122,7 @@ export default function InvestmentTable({
       });
 
       onSuccess && onSuccess();
-      toast.success("Investment updated successfully");
+      toast.success(t("Investment updated successfully"));
 
       setInvestment((prev) =>
         prev.map((item) =>
@@ -145,10 +147,10 @@ export default function InvestmentTable({
     try {
       await deleteInvestmentService(sn);
       onSuccess && onSuccess();
-      toast.success("investment deleted successfully");
+      toast.success(t("investment deleted successfully"));
       setInvestment(investment.filter((investment) => investment.sn !== sn));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to delete investment.");
+      toast.error(error instanceof Error ? error.message : t("Failed to delete investment."));
     }
   };
 
@@ -163,11 +165,11 @@ export default function InvestmentTable({
               <TableHead className="text-lg">
                 <TableRow>
                   <TableHeadCell>ID</TableHeadCell>
-                  <TableHeadCell>Investment</TableHeadCell>
-                  <TableHeadCell>Remarks</TableHeadCell>
-                  <TableHeadCell>Total Investment</TableHeadCell>
-                  <TableHeadCell>Created Date</TableHeadCell>
-                  <TableHeadCell>Action</TableHeadCell>
+                  <TableHeadCell>{t("Investment")}</TableHeadCell>
+                  <TableHeadCell>{t("Remarks")}</TableHeadCell>
+                  <TableHeadCell>{t("Total Investment")}</TableHeadCell>
+                  <TableHeadCell>{t("Created Date")}</TableHeadCell>
+                  <TableHeadCell>{t("Action")}</TableHeadCell>
                 </TableRow>
               </TableHead>
 
@@ -188,7 +190,7 @@ export default function InvestmentTable({
                       colSpan={6}
                       className="text-center font-medium text-gray-500"
                     >
-                      No Investment found
+                      {t("No Investment found")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -233,7 +235,7 @@ export default function InvestmentTable({
                                 investment_category: value,
                               }))
                             }
-                            placeholder="Type investment category..."
+                            placeholder={t("Type investment category...")}
                             className="w-full sm:w-80"
                           />
                         ) : (
@@ -251,13 +253,13 @@ export default function InvestmentTable({
                               className="text-green-600 mr-2 cursor-pointer"
                               onClick={() => saveEdit(row.sn)}
                             >
-                              Save
+                              {t("Save")}
                             </button>
                             <button
                               className="text-gray-600 cursor-pointer"
                               onClick={cancelEdit}
                             >
-                              Cancel
+                              {t("Cancel")}
                             </button>
                           </>
                         ) : (
@@ -277,7 +279,7 @@ export default function InvestmentTable({
                         className="flex justify-between items-center p-4 text-white font-semibold rounded-lg shadow mt-2"
                         style={{ backgroundColor: "#ffa726" }}
                       >
-                        <span>Total Investment</span>
+                        <span>{t("Total Investment")}</span>
                         <span>
                           {maskAmount(
                             investment[investment.length - 1].total_investment,
@@ -303,7 +305,7 @@ export default function InvestmentTable({
           </div>
         ) : investment.length === 0 ? (
           <div className="text-center font-medium text-gray-500">
-            No Investment found
+            {t("No Investment found")}
           </div>
         ) : (
           investment.map((row) => (
@@ -323,14 +325,14 @@ export default function InvestmentTable({
                         onClick={() => saveEdit(row.sn)}
                         className="text-green-600 hover:underline"
                       >
-                        Save
+                        {t("Save")}
                       </button>
                       <span className="text-gray-300">/</span>
                       <button
                         onClick={() => cancelEdit()}
                         className="text-gray-500 hover:underline"
                       >
-                        Cancel
+                        {t("Cancel")}
                       </button>
                     </>
                   ) : (
@@ -358,7 +360,7 @@ export default function InvestmentTable({
                           investment_category: value,
                         }))
                       }
-                      placeholder="Category..."
+                      placeholder={t("Category...")}
                       className="w-full text-xs"
                     />
                   ) : (
@@ -385,7 +387,7 @@ export default function InvestmentTable({
                     </div>
                   ) : (
                     <span className="text-sm font-bold text-gray-800">
-                      Investment{" "}
+                      {t("Investment")}{" "}
                       {maskAmount(row.add_investment, isVisible, currency)}
                     </span>
                   )}
@@ -398,7 +400,7 @@ export default function InvestmentTable({
                   {row.created_date}
                 </span>
                 <span className="text-xs font-bold text-gray-700">
-                  Total Investment{" "}
+                  {t("Total Investment")}{" "}
                   {maskAmount(row.total_investment, isVisible, currency)}
                 </span>
               </div>
@@ -413,7 +415,7 @@ export default function InvestmentTable({
             style={{ backgroundColor: "#ffa726" }}
           >
             <div className="flex justify-between items-center">
-              <span>Total Investment</span>
+              <span>{t("Total Investment")}</span>
               <span>
                 {maskAmount(
                   investment[investment.length - 1].total_investment,

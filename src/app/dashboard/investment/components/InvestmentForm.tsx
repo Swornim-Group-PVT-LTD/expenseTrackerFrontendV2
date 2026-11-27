@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { toast } from "react-toastify";
@@ -26,6 +27,7 @@ interface InvestmentFormProps {
 }
 
 const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState<number | "">("");
   const [currency, setCurrency] = useState("");
   const [category, setCategory] = useState("");
@@ -69,7 +71,7 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
         setCategories(data);
       } catch (err) {
         console.error("Failed to fetch investment categories:", err);
-        toast.error("Failed to fetch investment categories");
+        toast.error(t("Failed to fetch investment categories"));
       }
     };
 
@@ -99,7 +101,7 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
   const handleAddInvestment = async () => {
     // Validate amount
     if (amount === "" || Number(amount) <= 0) {
-      toast.error("Please enter a valid investment amount");
+      toast.error(t("Please enter a valid investment amount"));
       return;
     }
 
@@ -109,7 +111,7 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
     );
 
     if (!categoryExists) {
-      toast.error("Please select a valid category from the list");
+      toast.error(t("Please select a valid category from the list"));
       return;
     }
 
@@ -133,7 +135,7 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
 
       loadTotalInvestment();
     } catch (error: any) {
-      toast.error(error.message || "Failed to add investment");
+      toast.error(error.message || t("Failed to add investment"));
     } finally {
       setLoading(false);
     }
@@ -156,7 +158,7 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <p className="text-sm font-medium text-white/80">
-                Total Investment
+                {t("Total Investment")}
               </p>
 
               <p className="text-2xl sm:text-3xl font-bold text-white mt-1 break-words tabular-nums">
@@ -188,13 +190,13 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
       </div>
 
       <section aria-labelledby="add-investment-heading" className="@container min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <h2 id="add-investment-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Add investment</h2>
+        <h2 id="add-investment-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">{t("Add investment")}</h2>
         <div className="space-y-4">
           <div className="flex flex-col gap-4 @min-[34rem]:flex-row @min-[34rem]:flex-wrap @min-[34rem]:items-end">
             {/* AMOUNT */}
             <div className="flex-1 min-w-0">
               <label className="block mb-2 text-sm font-semibold text-[#374151]">
-                Amount
+                {t("Amount")}
               </label>
 
               <div
@@ -214,7 +216,7 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
 
                 <input
                   type="number"
-                  placeholder="Enter investment amount"
+                  placeholder={t("Enter investment amount")}
                   className="
                     flex-1 min-w-0 h-full bg-transparent outline-none border-none
                     text-base font-semibold text-gray-800 placeholder:text-gray-400
@@ -235,7 +237,7 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
             {/* INVESTMENT CATEGORY */}
             <div className="flex-1 min-w-0">
               <label className="block mb-2 text-sm font-semibold text-[#374151]">
-                Investment Category
+                {t("Investment Category")}
               </label>
 
               <SearchInput
@@ -245,7 +247,7 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
                 }))}
                 value={category}
                 onChange={setCategory}
-                placeholder="Search investment category..."
+                placeholder={t("Search investment category...")}
                 className="w-full h-12 text-gray-800"
               />
             </div>
@@ -285,10 +287,10 @@ const InvestmentForm = ({ onSuccess, balanceCard }: InvestmentFormProps) => {
             `}
           >
             {loading ? (
-              "Saving..."
+              t("Saving...")
             ) : (
               <>
-                <span>Add Investment</span>
+                <span>{t("Add Investment")}</span>
                 <ArrowRight className="size-5" aria-hidden="true" />
               </>
             )}

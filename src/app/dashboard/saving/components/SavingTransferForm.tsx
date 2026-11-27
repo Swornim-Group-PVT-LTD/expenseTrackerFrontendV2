@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 import { useCurrency } from "@/app/context/CurrencyContext";
@@ -18,6 +19,7 @@ export default function SavingTransferForm({
   selected: SavingResponse[];
   renderFilters: (action: ReactNode) => ReactNode;
 }) {
+  const { t } = useTranslation();
   const [showSelected, setShowSelected] = useState(false);
   const [options, setOptions] = useState<SavingTransferOption[] | null>(null);
   const [category, setCategory] = useState("");
@@ -57,7 +59,7 @@ export default function SavingTransferForm({
       setRemarks("");
       transferKey.current = null;
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not load available savings.");
+      toast.error(error instanceof Error ? error.message : t("Could not load available savings."));
     } finally {
       setLoading(false);
     }
@@ -84,10 +86,10 @@ export default function SavingTransferForm({
       } : { ...common, saving_category: category, amount });
       setShowSelected(false);
       setOptions(null);
-      toast.success("Savings transferred to your balance.");
+      toast.success(t("Savings transferred to your balance."));
       await onSuccess();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not transfer savings.");
+      toast.error(error instanceof Error ? error.message : t("Could not transfer savings."));
     } finally {
       setSubmitting(false);
     }
@@ -110,7 +112,7 @@ export default function SavingTransferForm({
           ) : (
             <ArrowRightLeft aria-hidden="true" size={17} className="shrink-0 motion-safe:transition-transform motion-safe:group-enabled:group-hover:translate-x-0.5" />
           )}
-          {loading ? "Loading savings…" : bulk ? `Transfer selected (${selected.length})` : "Transfer saving"}
+          {loading ? t("Loading savings…") : bulk ? t("Transfer selected ({{count}})", { count: selected.length }) : t("Transfer saving")}
         </button>,
       )}
       {formOpen && (
@@ -118,7 +120,7 @@ export default function SavingTransferForm({
           {showSelected ? (
             <fieldset disabled={submitting} className="space-y-3">
               <p className="text-sm font-medium">
-                Transfer {selected.length} selected savings entries · {maskAmount(total, isVisible, currency)}
+                {t("Transfer {{count}} selected savings entries · {{amount}}", { count: selected.length, amount: maskAmount(total, isVisible, currency) })}
               </p>
               <ul className="max-h-44 overflow-y-auto text-sm text-gray-700">
                 {selected.map((row) => (
@@ -128,11 +130,11 @@ export default function SavingTransferForm({
                 ))}
               </ul>
               <label className="block text-sm font-medium">
-                Remarks
+                {t("Remarks")}
                 <input
                   value={remarks}
                   onChange={(event) => setRemarks(event.target.value)}
-                  placeholder="Optional"
+                  placeholder={t("Optional")}
                   maxLength={255}
                   className="mt-1 block w-full rounded-lg border-gray-300"
                 />
@@ -141,7 +143,7 @@ export default function SavingTransferForm({
           ) : options?.length ? (
             <fieldset disabled={submitting} className="grid gap-3 sm:grid-cols-3">
               <label className="text-sm font-medium">
-                Saving category
+                {t("Saving category")}
                 <select
                   value={category}
                   onChange={(event) => setCategory(event.target.value)}
@@ -156,7 +158,7 @@ export default function SavingTransferForm({
                 </select>
               </label>
               <label className="text-sm font-medium">
-                Amount
+                {t("Amount")}
                 <input
                   type="number"
                   min="0.01"
@@ -168,11 +170,11 @@ export default function SavingTransferForm({
                   required
                 />
                 <span className="mt-1 block text-xs text-gray-600">
-                  Available {maskAmount(Number(availableAmount ?? 0), isVisible, currency)}
+                  {t("Available")}{" "} {maskAmount(Number(availableAmount ?? 0), isVisible, currency)}
                 </span>
               </label>
               <label className="text-sm font-medium">
-                Remarks
+                {t("Remarks")}
                 <input
                   value={remarks}
                   onChange={(event) => setRemarks(event.target.value)}
@@ -183,15 +185,15 @@ export default function SavingTransferForm({
               </label>
             </fieldset>
           ) : (
-            <p className="text-sm text-gray-600">No savings are available to transfer.</p>
+            <p className="text-sm text-gray-600">{t("No savings are available to transfer.")}</p>
           )}
           <div className="mt-3 flex justify-end gap-2">
             <button type="button" onClick={() => { setOptions(null); setShowSelected(false); }} disabled={submitting} className="rounded-lg border px-4 py-2 text-sm">
-              Cancel
+              {t("Cancel")}
             </button>
             {(showSelected || Boolean(options?.length)) && (
               <button type="submit" disabled={submitting} className="rounded-lg bg-[#056455] px-4 py-2 text-sm font-semibold text-white hover:bg-[#034e43] disabled:opacity-50">
-                {submitting ? "Transferring…" : "Transfer to balance"}
+                {submitting ? t("Transferring…") : t("Transfer to balance")}
               </button>
             )}
           </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { Eye, Plus } from "lucide-react";
 
@@ -23,6 +24,7 @@ import { ExpenseResponse } from "@/app/types/expenseType";
 import { downloadService } from "@/app/services/downloadService";
 
 function Expenses() {
+  const { t } = useTranslation();
   const [categories, setCategories] = useState<ExpenseCategoryResponse[]>([]);
   const [filteredData, setFilteredData] = useState<ExpenseResponse[]>([]);
   const [allData, setAllData] = useState<ExpenseResponse[]>([]);
@@ -84,7 +86,7 @@ function Expenses() {
         const data = await getExpenseCategoriesService();
         setCategories(data);
       } catch (err) {
-        toast.error("Failed to fetch expense categories");
+        toast.error(t("Failed to fetch expense categories"));
       }
     };
 
@@ -94,7 +96,7 @@ function Expenses() {
   return (
     <main className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">Expenses</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">{t("Expenses")}</h1>
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -102,7 +104,7 @@ function Expenses() {
             className="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-[#f7bd51] px-4 py-2.5 text-sm font-semibold text-[#12332d] transition-colors hover:bg-[#edaf3c] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
           >
             <Plus className="size-4" aria-hidden="true" />
-            Add Threshold
+            {t("Add Threshold")}
           </button>
           <button
             type="button"
@@ -110,7 +112,7 @@ function Expenses() {
             className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-[#082c28] transition-colors hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
           >
             <Eye className="size-4" aria-hidden="true" />
-            View Threshold
+            {t("View Threshold")}
           </button>
         </div>
       </div>
@@ -136,14 +138,14 @@ function Expenses() {
 
       <ExpenseThreshold refreshTrigger={refreshTrigger + thresholdRefreshTrigger} />
 
-      <section aria-label="Expense charts" className="grid gap-4 xl:grid-cols-2">
+      <section aria-label={t("Expense charts")} className="grid gap-4 xl:grid-cols-2">
         <ExpensesLineChart refreshTrigger={refreshTrigger} />
         <ExpensesBarChart refreshTrigger={refreshTrigger} />
       </section>
 
       <section aria-labelledby="expense-history-heading" className="space-y-3">
         <h2 id="expense-history-heading" className="text-lg font-bold tracking-tight text-[#082c28] dark:text-white">
-          Expense history
+          {t("Expense history")}
         </h2>
         <DateFilter
           initialFrom={
@@ -159,7 +161,7 @@ function Expenses() {
 
             if (data.length === 0) {
               toast.warning(
-                "No data to download. Please apply filters or wait for data to load.",
+                t("No data to download. Please apply filters or wait for data to load."),
               );
               return;
             }
@@ -181,7 +183,7 @@ function Expenses() {
 
             if (data.length === 0) {
               toast.warning(
-                "No data to download. Please apply filters or wait for data to load.",
+                t("No data to download. Please apply filters or wait for data to load."),
               );
               return;
             }
@@ -190,10 +192,10 @@ function Expenses() {
               data,
               [
                 { header: "ID", field: "id" },
-                { header: "Expense", field: "add_expenses" },
-                { header: "Category", field: "expense_category" },
-                { header: "Total Expenses", field: "total_expenses" },
-                { header: "Date", field: "created_date" },
+                { header: t("Expense"), field: "add_expenses" },
+                { header: t("Category"), field: "expense_category" },
+                { header: t("Total Expenses"), field: "total_expenses" },
+                { header: t("Date"), field: "created_date" },
               ],
               "Expense_Report",
             );
@@ -203,14 +205,14 @@ function Expenses() {
         {isFilterActive && (
           <div className="mb-4 flex items-center gap-2">
             <span className="text-sm text-gray-600">
-              Showing {filteredData.length} filtered results
+              {t("Showing {{count}} filtered results", { count: filteredData.length })}
             </span>
 
             <button
               onClick={clearFilter}
               className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
             >
-              Show All
+              {t("Show All")}
             </button>
           </div>
         )}

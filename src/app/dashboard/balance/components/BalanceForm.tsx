@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import { ArrowRight, ChevronDown, Info } from "lucide-react";
 import Link from "next/link";
@@ -109,6 +110,7 @@ export default function BalanceForm({
 }: {
   onSuccess?: () => void;
 }) {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState<number | "">(40000);
 
   const [currencyList, setCurrencyList] = useState<CurrencyResponse[]>([]);
@@ -214,8 +216,8 @@ export default function BalanceForm({
     if (balanceExists) {
       await Swal.fire({
         icon: "info",
-        title: "Balance Already Added",
-        text: "Your opening balance has already been added. Add more through Income.",
+        title: t("Balance Already Added"),
+        text: t("Your opening balance has already been added. Add more through Income."),
       });
 
       return;
@@ -228,8 +230,8 @@ export default function BalanceForm({
     ) {
       await Swal.fire({
         icon: "warning",
-        title: "Invalid Amount",
-        text: "Please enter a valid opening balance amount.",
+        title: t("Invalid Amount"),
+        text: t("Please enter a valid opening balance amount."),
       });
 
       return;
@@ -238,8 +240,8 @@ export default function BalanceForm({
     if (currencyId === null) {
       await Swal.fire({
         icon: "warning",
-        title: "Select Currency",
-        text: "Please select a currency before adding your opening balance.",
+        title: t("Select Currency"),
+        text: t("Please select a currency before adding your opening balance."),
       });
 
       return;
@@ -258,7 +260,7 @@ export default function BalanceForm({
 
       await Swal.fire({
         icon: "success",
-        title: "Balance Added!",
+        title: t("Balance Added!"),
         text: `Opening balance of ${currencySymbol}${Number(
           amount,
         ).toLocaleString()} added successfully.`,
@@ -300,7 +302,7 @@ export default function BalanceForm({
 
       await Swal.fire({
         icon: "error",
-        title: "Failed to Add Balance",
+        title: t("Failed to Add Balance"),
         text: message,
       });
     } finally {
@@ -315,13 +317,13 @@ export default function BalanceForm({
   return (
     <section aria-labelledby="opening-balance-heading" className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <h2 id="opening-balance-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">
-        Opening balance
+        {t("Opening balance")}
       </h2>
       {balanceExists ? (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-teal-100 bg-teal-50 px-4 py-3">
-          <p className="text-sm font-medium text-[#082c28]">Your opening balance is already set.</p>
+          <p className="text-sm font-medium text-[#082c28]">{t("Your opening balance is already set.")}</p>
           <Link href="/dashboard/income" className="inline-flex items-center gap-1.5 rounded text-sm font-semibold text-[#056455] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]">
-            Add income <ArrowRight className="size-4" aria-hidden="true" />
+            {t("Add income")}{" "} <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
       ) : (
@@ -332,7 +334,7 @@ export default function BalanceForm({
               htmlFor="balance-currency"
               className="mb-2 block text-sm font-semibold text-[#374151]"
             >
-              Select Currency
+              {t("Select Currency")}
             </label>
 
             <div className="relative">
@@ -352,10 +354,10 @@ export default function BalanceForm({
               >
                 <option value="" disabled>
                   {loadingCurrencies
-                    ? "Loading currencies..."
+                    ? t("Loading currencies...")
                     : currencyList.length === 0
-                      ? "No currencies available"
-                      : "Select Currency"}
+                      ? t("No currencies available")
+                      : t("Select Currency")}
                 </option>
 
                 {currencyList.map((item) => (
@@ -370,7 +372,7 @@ export default function BalanceForm({
 
             {!loadingCurrencies && currencyList.length === 0 && (
               <p className="mt-2 text-xs text-red-500">
-                Unable to load currencies. Please check the currency service.
+                {t("Unable to load currencies. Please check the currency service.")}
               </p>
             )}
           </div>
@@ -381,7 +383,7 @@ export default function BalanceForm({
               htmlFor="opening-balance-amount"
               className="mb-2 block text-sm font-semibold text-[#374151]"
             >
-              Amount
+              {t("Amount")}
             </label>
 
             <div className="flex h-12 items-center rounded-xl border border-gray-200 bg-gray-50 px-4 transition-all focus-within:border-[#056455] focus-within:bg-white focus-within:ring-4 focus-within:ring-[#056455]/10">
@@ -394,7 +396,7 @@ export default function BalanceForm({
                 type="number"
                 min="0"
                 step="any"
-                placeholder="Enter opening balance"
+                placeholder={t("Enter opening balance")}
                 className="h-full min-w-0 flex-1 border-none bg-transparent text-base font-semibold text-gray-800 outline-none placeholder:text-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 value={amount}
                 onChange={(event) =>
@@ -420,11 +422,11 @@ export default function BalanceForm({
 
             <div>
               <p className="text-sm font-semibold text-[#374151]">
-                Opening Balance
+                {t("Opening Balance")}
               </p>
 
               <p className="mt-0.5 text-xs leading-relaxed text-gray-500">
-                This amount will be added to your total balance.
+                {t("This amount will be added to your total balance.")}
               </p>
             </div>
           </div>
@@ -452,18 +454,18 @@ export default function BalanceForm({
               }`}
           >
             {loading
-              ? "Saving..."
+              ? t("Saving...")
               : checkingBalance
-                ? "Checking Balance..."
+                ? t("Checking Balance...")
                 : loadingCurrencies
-                  ? "Loading currencies..."
+                  ? t("Loading currencies...")
                   : balanceExists
-                    ? "Balance Already Added"
+                    ? t("Balance Already Added")
                     : currencyList.length === 0 || currencyId === null
-                      ? "Currencies Unavailable"
+                      ? t("Currencies Unavailable")
                       : (
                         <>
-                          <span>Add Opening Balance</span>
+                          <span>{t("Add Opening Balance")}</span>
                           <span className="text-xl">→</span>
                         </>
                       )}

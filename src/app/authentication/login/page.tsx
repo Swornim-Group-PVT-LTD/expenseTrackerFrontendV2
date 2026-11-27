@@ -1,13 +1,16 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { useId, useRef, useState } from "react";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import Link from "next/link";
+import LanguageSelector from "@/app/components/LanguageSelector";
 import { useRouter } from "next/navigation";
 import { loginService } from "@/app/services/loginService";
 
 import { useAuth } from "@/context/AuthContext";
 
 const Login = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +41,7 @@ const Login = () => {
     } catch (error) {
       loginInProgress.current = false;
       setIsSubmitting(false);
-      setMessage(error instanceof Error ? error.message : "Login failed");
+      setMessage(error instanceof Error ? error.message : t("Login failed"));
     }
   };
 
@@ -53,18 +56,21 @@ const Login = () => {
             aria-hidden="true"
             className="pointer-events-none absolute -right-12 -bottom-36 -z-10 size-64 rounded-full border border-white/15 bg-white/5 ring-24 ring-white/5"
           />
-          <img src="/app-logo.png" alt="Expense Tracker" className="h-14 max-w-full object-contain sm:h-16" />
+          <img src="/app-logo.png" alt={t("Expense Tracker")} className="h-14 max-w-full object-contain sm:h-16" />
         </div>
 
         <div className="px-6 py-7 sm:px-9 sm:py-8">
-          <h1 id={`${formId}-title`} className="text-2xl font-bold tracking-tight text-[#082c28] sm:text-3xl">
-            Sign in
-          </h1>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h1 id={`${formId}-title`} className="text-2xl font-bold tracking-tight text-[#082c28] sm:text-3xl">
+            {t("Sign in")}
+            </h1>
+            <LanguageSelector />
+          </div>
 
           <form onSubmit={handleLogin} className="mt-6 space-y-4" aria-busy={isSubmitting}>
             <div>
               <label htmlFor={`${formId}-email`} className="mb-1.5 block text-sm font-semibold text-[#082c28]">
-                Email
+                {t("Email")}
               </label>
               <div className="relative">
                 <Mail className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-[#056455]" aria-hidden="true" />
@@ -83,7 +89,7 @@ const Login = () => {
 
             <div>
               <label htmlFor={`${formId}-password`} className="mb-1.5 block text-sm font-semibold text-[#082c28]">
-                Password
+                {t("Password")}
               </label>
               <div className="relative">
                 <LockKeyhole className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-[#056455]" aria-hidden="true" />
@@ -100,7 +106,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword((visible) => !visible)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPassword ? t("Hide password") : t("Show password")}
                   className="absolute inset-y-0 right-0.5 grid w-11 cursor-pointer place-items-center rounded-lg text-[#056455] hover:bg-teal-50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#056455]"
                 >
                   {showPassword ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />}
@@ -119,15 +125,15 @@ const Login = () => {
               disabled={isSubmitting}
               className="bg-[#f7bd51] text-[#12332d] enabled:hover:bg-[#edaf3c] flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {isSubmitting ? "Signing in…" : "Sign in"}
+              {isSubmitting ? t("Signing in…") : t("Sign in")}
               {!isSubmitting && <ArrowRight className="size-4" aria-hidden="true" />}
             </button>
           </form>
 
           <p className="mt-6 border-t border-slate-200 pt-5 text-center text-sm text-slate-600">
-            Don’t have an account?{" "}
+            {t("Don’t have an account?")}{" "}
             <Link href="/authentication/register" className="rounded font-semibold text-[#056455] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]">
-              Register
+              {t("Register")}
             </Link>
           </p>
         </div>

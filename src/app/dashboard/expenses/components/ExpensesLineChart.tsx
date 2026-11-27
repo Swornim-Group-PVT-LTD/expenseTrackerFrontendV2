@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import {
   LineChart,
   Line,
@@ -16,6 +19,7 @@ import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 const compactNumber = new Intl.NumberFormat(undefined, { notation: "compact" });
 
 const ExpensesLineChart = ({ refreshTrigger }: { refreshTrigger: number }) => {
+  const { t } = useTranslation();
   const [chartData, setChartData] = useState<{ day: string; amount: number }[]>(
     [],
   );
@@ -45,7 +49,7 @@ const ExpensesLineChart = ({ refreshTrigger }: { refreshTrigger: number }) => {
 
   return (
     <section className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-      <h2 className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Daily expenses</h2>
+      <h2 className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">{t("Daily expenses")}</h2>
       <ResponsiveContainer width="100%" height={256}>
         <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 4, left: 0 }}>
           <CartesianGrid vertical={false} stroke="#e2e8f0" strokeDasharray="3 4" />
@@ -60,7 +64,7 @@ const ExpensesLineChart = ({ refreshTrigger }: { refreshTrigger: number }) => {
           <Tooltip
             formatter={(value) => [
               isVisible ? `${currency} ${Number(value).toLocaleString()}`.trim() : "XXX",
-              "Expense",
+              t("Expense"),
             ]}
           />
 

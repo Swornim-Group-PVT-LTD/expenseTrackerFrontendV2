@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 import { getCurrencyService } from "@/app/services/catalogueServices/currencyCatalogueService";
@@ -10,6 +13,7 @@ export default function CurrencyCatalogueTable({
 }: {
   refreshTrigger: number;
 }) {
+  const { t } = useTranslation();
   const [data, setData] = useState<CurrencyResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -45,7 +49,7 @@ export default function CurrencyCatalogueTable({
         <input
           type="text"
           className="px-3 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-          placeholder="Search..."
+          placeholder={t("Search...")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -57,11 +61,11 @@ export default function CurrencyCatalogueTable({
           <thead className="bg-gray-100">
             <tr>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">ID</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Country</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Currency</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Symbol</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Created Date</th>
-              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Updated Date</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Country")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Currency")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Symbol")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Created Date")}</th>
+              <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">{t("Updated Date")}</th>
             </tr>
           </thead>
 
@@ -86,7 +90,7 @@ export default function CurrencyCatalogueTable({
             ) : (
               <tr>
                 <td colSpan={6} className="px-4 py-3 text-center text-gray-500">
-                  No records found
+                  {t("No records found")}
                 </td>
               </tr>
             )}
@@ -101,7 +105,7 @@ export default function CurrencyCatalogueTable({
             <ClipLoader size={22} color="#000" />
           </div>
         ) : filteredData.length === 0 ? (
-          <div className="text-center font-medium text-gray-500">No records found</div>
+          <div className="text-center font-medium text-gray-500">{t("No records found")}</div>
         ) : (
           filteredData.map((item) => (
             <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 border border-gray-100 flex flex-col gap-2">
@@ -110,22 +114,22 @@ export default function CurrencyCatalogueTable({
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Country:</span>
+                  <span className="text-sm text-gray-500">{t("Country:")}</span>
                   <span className="font-semibold">{item.country_name}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Currency:</span>
+                  <span className="text-sm text-gray-500">{t("Currency:")}</span>
                   <span className="font-semibold">{item.currency}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Symbol:</span>
+                  <span className="text-sm text-gray-500">{t("Symbol:")}</span>
                   <span className="font-semibold text-lg">{item.symbol}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs text-gray-400 mt-1 pt-2 border-t">
-                  <span>Created: {item.created_at}</span>
+                  <span>{t("Created:")}{" "} {item.created_at}</span>
                 </div>
                 <div className="flex justify-between items-center text-xs text-gray-400">
-                  <span>Updated: {item.updated_at}</span>
+                  <span>{t("Updated:")}{" "} {item.updated_at}</span>
                 </div>
               </div>
             </div>

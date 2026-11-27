@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -74,6 +75,7 @@ const ExpensesTable = ({
   onSuccess,
   onDataLoad,
 }: ExpensesTableProps) => {
+  const { t } = useTranslation();
   const { isVisible } = useBalanceVisibility();
 
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([]);
@@ -123,7 +125,7 @@ const ExpensesTable = ({
       onDataLoad?.(data);
     } catch (error: any) {
       console.error("Failed to fetch expenses:", error);
-      toast.error(error?.message || "Failed to fetch expenses");
+      toast.error(error?.message || t("Failed to fetch expenses"));
     } finally {
       setFetching(false);
     }
@@ -136,7 +138,7 @@ const ExpensesTable = ({
       setCategories(data);
     } catch (error: any) {
       console.error("Failed to fetch expense categories:", error);
-      toast.error(error?.message || "Failed to load expense categories");
+      toast.error(error?.message || t("Failed to load expense categories"));
     }
   }, []);
 
@@ -234,7 +236,7 @@ const ExpensesTable = ({
       setPreviewFile(file);
     } catch {
       if (!request.signal.aborted) {
-        toast.error("Unable to load the attachment.");
+        toast.error(t("Unable to load the attachment."));
       }
     } finally {
       if (previewRequestRef.current === request) {
@@ -284,7 +286,7 @@ const ExpensesTable = ({
     }
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Receipt must be an image file.");
+      toast.error(t("Receipt must be an image file."));
       event.target.value = "";
       setEditReceipt(null);
       return;
@@ -305,7 +307,7 @@ const ExpensesTable = ({
     );
 
     if (invalidFiles.length > 0) {
-      toast.error("Only image and PDF files are allowed.");
+      toast.error(t("Only image and PDF files are allowed."));
       event.target.value = "";
       setEditDocuments([]);
       return;
@@ -321,7 +323,7 @@ const ExpensesTable = ({
       !Number.isFinite(Number(editAmount)) ||
       Number(editAmount) <= 0
     ) {
-      toast.error("Please enter a valid expense amount.");
+      toast.error(t("Please enter a valid expense amount."));
       return;
     }
 
@@ -332,7 +334,7 @@ const ExpensesTable = ({
     );
 
     if (!categoryExists) {
-      toast.error("Please select a valid expense category.");
+      toast.error(t("Please select a valid expense category."));
       return;
     }
 
@@ -353,7 +355,7 @@ const ExpensesTable = ({
 
       await updateExpenseService(sn, formData);
 
-      toast.success("Expense updated successfully.");
+      toast.success(t("Expense updated successfully."));
       cancelEdit();
 
       if (isFilterActive) {
@@ -365,7 +367,7 @@ const ExpensesTable = ({
       onSuccess?.();
     } catch (error: any) {
       console.error("Failed to update expense:", error);
-      toast.error(error?.message || "Failed to update expense");
+      toast.error(error?.message || t("Failed to update expense"));
     } finally {
       setLoading(false);
     }
@@ -377,7 +379,7 @@ const ExpensesTable = ({
       setLoading(true);
 
       await deleteExpenseService(sn);
-      toast.success("Expense deleted successfully.");
+      toast.success(t("Expense deleted successfully."));
 
       if (isFilterActive) {
         onDataChange?.();
@@ -388,7 +390,7 @@ const ExpensesTable = ({
       onSuccess?.();
     } catch (error: any) {
       console.error("Failed to delete expense:", error);
-      toast.error(error?.message || "Failed to delete expense");
+      toast.error(error?.message || t("Failed to delete expense"));
     } finally {
       setLoading(false);
     }
@@ -421,7 +423,7 @@ const ExpensesTable = ({
         }}
       >
         <span className="text-sm font-semibold">
-          Total Expenses
+          {t("Total Expenses")}
         </span>
 
         <span className="whitespace-nowrap text-sm font-bold tabular-nums">
@@ -455,14 +457,14 @@ const ExpensesTable = ({
           className="inline-flex items-center gap-1 rounded-md border border-orange-200 bg-orange-50 px-2.5 py-1 text-[11px] font-medium text-orange-600 transition hover:bg-orange-100"
         >
           <ReceiptText className="h-3 w-3" />
-          Receipt
+          {t("Receipt")}
         </button>
 
         {openAttachment === key && (
           <>
             <button
               type="button"
-              aria-label="Close receipt menu"
+              aria-label={t("Close receipt menu")}
               className="fixed inset-0 z-[90] bg-black/30 lg:hidden"
               onClick={() => setOpenAttachment(null)}
             />
@@ -470,7 +472,7 @@ const ExpensesTable = ({
             <div className="fixed inset-x-3 bottom-3 z-[100] rounded-xl border border-gray-200 bg-white p-4 shadow-xl lg:absolute lg:inset-x-auto lg:bottom-auto lg:right-0 lg:top-full lg:mt-2 lg:w-64 lg:rounded-lg lg:p-3">
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-sm font-semibold text-gray-700">
-                  Receipt
+                  {t("Receipt")}
                 </span>
 
                 <button
@@ -500,7 +502,7 @@ const ExpensesTable = ({
                   }
                   className="rounded-md bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-200"
                 >
-                  View
+                  {t("View")}
                 </button>
               </div>
             </div>
@@ -534,14 +536,14 @@ const ExpensesTable = ({
         >
           <Paperclip className="h-3 w-3" />
           {documents.length}{" "}
-          {documents.length === 1 ? "Document" : "Documents"}
+          {documents.length === 1 ? t("Document") : t("Documents")}
         </button>
 
         {openAttachment === key && (
           <>
             <button
               type="button"
-              aria-label="Close documents menu"
+              aria-label={t("Close documents menu")}
               className="fixed inset-0 z-[90] bg-black/30 lg:hidden"
               onClick={() => setOpenAttachment(null)}
             />
@@ -549,7 +551,7 @@ const ExpensesTable = ({
             <div className="fixed inset-x-3 bottom-3 z-[100] max-h-[70vh] overflow-y-auto rounded-xl border border-gray-200 bg-white p-4 shadow-xl lg:absolute lg:inset-x-auto lg:bottom-auto lg:right-0 lg:top-full lg:mt-2 lg:w-80 lg:rounded-lg lg:p-3">
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-sm font-semibold text-gray-700">
-                  Documents ({documents.length})
+                  {t("Documents ({{count}})", { count: documents.length })}
                 </span>
 
                 <button
@@ -596,7 +598,7 @@ const ExpensesTable = ({
                         }
                         className="rounded-md bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-200"
                       >
-                        View
+                        {t("View")}
                       </button>
                     </div>
                   );
@@ -617,7 +619,7 @@ const ExpensesTable = ({
           htmlFor="edit_upload_receipt"
           className="mb-1.5 block text-xs font-semibold text-gray-600"
         >
-          Replace Receipt
+          {t("Replace Receipt")}
         </label>
 
         <input
@@ -632,7 +634,7 @@ const ExpensesTable = ({
         <p className="mt-1 truncate text-[11px] text-gray-400">
           {editReceipt
             ? `Selected: ${editReceipt.name}`
-            : "Leave empty to keep the existing receipt."}
+            : t("Leave empty to keep the existing receipt.")}
         </p>
       </div>
 
@@ -641,7 +643,7 @@ const ExpensesTable = ({
           htmlFor="edit_upload_doc"
           className="mb-1.5 block text-xs font-semibold text-gray-600"
         >
-          Add Documents
+          {t("Add Documents")}
         </label>
 
         <input
@@ -657,7 +659,7 @@ const ExpensesTable = ({
         <p className="mt-1 text-[11px] text-gray-400">
           {editDocuments.length > 0
             ? `${editDocuments.length} file(s) selected`
-            : "Leave empty to keep existing documents."}
+            : t("Leave empty to keep existing documents.")}
         </p>
       </div>
     </div>
@@ -676,7 +678,7 @@ const ExpensesTable = ({
             disabled={loading}
             className="text-emerald-700 hover:underline disabled:opacity-50"
           >
-            Save
+            {t("Save")}
           </button>
 
           <button
@@ -685,7 +687,7 @@ const ExpensesTable = ({
             disabled={loading}
             className="text-gray-500 hover:underline disabled:opacity-50"
           >
-            Cancel
+            {t("Cancel")}
           </button>
         </div>
       );
@@ -723,25 +725,25 @@ const ExpensesTable = ({
                 <TableRow>
                   <TableHeadCell>ID</TableHeadCell>
                   <TableHeadCell>
-                    Expenses
+                    {t("Expenses")}
                   </TableHeadCell>
                   <TableHeadCell>
-                    Remarks
+                    {t("Remarks")}
                   </TableHeadCell>
                   <TableHeadCell>
-                    Total Expenses
+                    {t("Total Expenses")}
                   </TableHeadCell>
                   <TableHeadCell>
-                    Receipt
+                    {t("Receipt")}
                   </TableHeadCell>
                   <TableHeadCell>
-                    Documents
+                    {t("Documents")}
                   </TableHeadCell>
                   <TableHeadCell>
-                    Added Date
+                    {t("Added Date")}
                   </TableHeadCell>
                   <TableHeadCell>
-                    Action
+                    {t("Action")}
                   </TableHeadCell>
                 </TableRow>
               </TableHead>
@@ -759,7 +761,7 @@ const ExpensesTable = ({
                       colSpan={8}
                       className="py-10 text-center text-gray-500"
                     >
-                      No expenses found.
+                      {t("No expenses found.")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -810,7 +812,7 @@ const ExpensesTable = ({
                                 }))}
                                 value={editCategory}
                                 onChange={setEditCategory}
-                                placeholder="Select category..."
+                                placeholder={t("Select category...")}
                                 className="w-full min-w-40"
                               />
                             ) : (
@@ -830,7 +832,7 @@ const ExpensesTable = ({
                           <TableCell>
                             {isEditing ? (
                               <span className="text-xs text-gray-400">
-                                Edit below
+                                {t("Edit below")}
                               </span>
                             ) : (
                               renderReceipt(expense)
@@ -840,7 +842,7 @@ const ExpensesTable = ({
                           <TableCell>
                             {isEditing ? (
                               <span className="text-xs text-gray-400">
-                                Edit below
+                                {t("Edit below")}
                               </span>
                             ) : (
                               renderDocuments(expense)
@@ -860,7 +862,7 @@ const ExpensesTable = ({
                               <div className="rounded-lg border border-gray-200 bg-white p-4">
                                 <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                                   <Paperclip className="h-4 w-4" />
-                                  Update Attachments
+                                  {t("Update Attachments")}
                                 </div>
 
                                 {renderEditAttachments()}
@@ -894,7 +896,7 @@ const ExpensesTable = ({
           </div>
         ) : dataToDisplay.length === 0 ? (
           <div className="rounded-lg border border-gray-200 bg-white py-10 text-center text-sm text-gray-500">
-            No expenses found.
+            {t("No expenses found.")}
           </div>
         ) : (
           dataToDisplay.map((expense) => {
@@ -907,7 +909,7 @@ const ExpensesTable = ({
               >
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-sm font-semibold text-gray-800">
-                    Expense #{expense.id}
+                    {t("Expense #")}{expense.id}
                   </span>
 
                   {renderActions(expense)}
@@ -923,7 +925,7 @@ const ExpensesTable = ({
                         }))}
                         value={editCategory}
                         onChange={setEditCategory}
-                        placeholder="Select category..."
+                        placeholder={t("Select category...")}
                         className="w-full"
                       />
                     ) : (
@@ -973,7 +975,7 @@ const ExpensesTable = ({
                   <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
                     <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-700">
                       <Paperclip className="h-4 w-4" />
-                      Update Attachments
+                      {t("Update Attachments")}
                     </div>
 
                     {renderEditAttachments()}
@@ -986,7 +988,7 @@ const ExpensesTable = ({
                   </span>
 
                   <span className="text-right text-xs font-semibold tabular-nums text-gray-700">
-                    Total: {renderCurrencySymbol(expense.symbol)}
+                    {t("Total:")}{" "} {renderCurrencySymbol(expense.symbol)}
                     {displayAmount(expense.total_expenses)}
                   </span>
                 </div>
@@ -1034,7 +1036,7 @@ const ExpensesTable = ({
                     type="button"
                     onClick={() => setFullScreen(!fullScreen)}
                     className="rounded-md p-2 text-gray-600 hover:bg-gray-100"
-                    title={fullScreen ? "Exit full view" : "View full"}
+                    title={fullScreen ? t("Exit full view") : t("View full")}
                   >
                     {fullScreen ? (
                       <Minimize2 className="h-5 w-5" />
@@ -1048,7 +1050,7 @@ const ExpensesTable = ({
                   type="button"
                   onClick={closePreview}
                   className="rounded-md p-2 text-gray-600 hover:bg-gray-100"
-                  title="Close"
+                  title={t("Close")}
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -1073,7 +1075,7 @@ const ExpensesTable = ({
                         : "max-h-[78vh] max-w-full"
                     }`}
                     onError={() =>
-                      toast.error("Unable to load the image.")
+                      toast.error(t("Unable to load the image."))
                     }
                   />
                 </div>
@@ -1092,7 +1094,7 @@ const ExpensesTable = ({
                   <div className="p-8 text-center">
                     <FileText className="mx-auto mb-3 h-12 w-12 text-gray-400" />
                     <p className="text-sm text-gray-600">
-                      Preview is not available for this file type.
+                      {t("Preview is not available for this file type.")}
                     </p>
                   </div>
                 )}

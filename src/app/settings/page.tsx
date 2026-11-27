@@ -12,7 +12,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="mb-4">
-          <Breadcrumbs parents={[{ label: "Dashboard", href: "/dashboard" }]} current={t("settings")} />
+          <Breadcrumbs parents={[{ label: t("Dashboard"), href: "/dashboard" }]} current={t("settings")} />
         </div>
         {/* Header */}
         <div className="mb-8">
@@ -20,7 +20,7 @@ export default function SettingsPage() {
             <Settings className="w-8 h-8 text-blue-600" />
             <h1 className="text-3xl font-bold text-gray-900">{t("settings")}</h1>
           </div>
-          <p className="text-gray-600">Manage your account preferences and application settings</p>
+          <p className="text-gray-600">{t("Manage your account preferences and application settings")}</p>
         </div>
 
         {/* Settings Grid */}
@@ -34,7 +34,7 @@ export default function SettingsPage() {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">{t("language")}</h3>
-                <p className="text-sm text-gray-500">Choose your preferred language</p>
+                <p className="text-sm text-gray-500">{t("Choose your preferred language")}</p>
               </div>
             </div>
             <LanguageSelector />
@@ -49,13 +49,13 @@ export default function SettingsPage() {
                 <Shield className="w-5 h-5 text-red-600" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900">Security</h3>
-                <p className="text-sm text-gray-500">Manage your account security</p>
+                <h3 className="text-lg font-semibold text-gray-900">{t("Security")}</h3>
+                <p className="text-sm text-gray-500">{t("Manage your account security")}</p>
               </div>
             </div>
             <div className="space-y-2">
               <button className="w-full text-left text-sm text-gray-700 hover:text-gray-900 py-2 px-3 hover:bg-gray-50 rounded-lg transition-colors">
-                Change Password
+                {t("Change Password")}
               </button>
 
             </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { toast } from "react-toastify";
@@ -26,6 +27,7 @@ interface SavingFormProps {
 }
 
 const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState<number | "">("");
   const [currency, setCurrency] = useState("");
   const [remarks, setRemarks] = useState("");
@@ -67,7 +69,7 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
         setCategories(data);
       } catch (err) {
         console.error("Failed to fetch saving categories:", err);
-        toast.error("Failed to fetch saving categories");
+        toast.error(t("Failed to fetch saving categories"));
       }
     };
 
@@ -97,7 +99,7 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
   const handleAddSaving = async () => {
     // Validate amount
     if (amount === "" || Number(amount) <= 0) {
-      toast.error("Please enter a valid saving amount");
+      toast.error(t("Please enter a valid saving amount"));
       return;
     }
 
@@ -107,7 +109,7 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
     );
 
     if (!categoryExists) {
-      toast.error("Please select a valid category from the list");
+      toast.error(t("Please select a valid category from the list"));
       return;
     }
 
@@ -136,7 +138,7 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
 
       loadTotalSaving();
     } catch (error: any) {
-      toast.error(error.message || "Failed to add saving");
+      toast.error(error.message || t("Failed to add saving"));
     } finally {
       setLoading(false);
     }
@@ -158,7 +160,7 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
         >
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-sm font-medium text-white/80">Total Saving</p>
+              <p className="text-sm font-medium text-white/80">{t("Total Saving")}</p>
 
               <p className="text-2xl sm:text-3xl font-bold text-white mt-1 break-words tabular-nums">
                 {maskAmount(totalSaving, isVisible, currency)}
@@ -189,13 +191,13 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
       </div>
 
       <section aria-labelledby="add-saving-heading" className="@container min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <h2 id="add-saving-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Add saving</h2>
+        <h2 id="add-saving-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">{t("Add saving")}</h2>
         <div className="space-y-4">
           <div className="flex flex-col gap-4 @min-[34rem]:flex-row @min-[34rem]:flex-wrap @min-[34rem]:items-end">
             {/* AMOUNT */}
             <div className="flex-1 min-w-0">
               <label className="block mb-2 text-sm font-semibold text-[#374151]">
-                Amount
+                {t("Amount")}
               </label>
 
               <div
@@ -215,7 +217,7 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
 
                 <input
                   type="number"
-                  placeholder="Enter saving amount"
+                  placeholder={t("Enter saving amount")}
                   className="
                     flex-1 min-w-0 h-full bg-transparent outline-none border-none
                     text-base font-semibold text-gray-800 placeholder:text-gray-400
@@ -236,7 +238,7 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
             {/* SAVING CATEGORY */}
             <div className="flex-1 min-w-0">
               <label className="block mb-2 text-sm font-semibold text-[#374151]">
-                Saving Category
+                {t("Saving Category")}
               </label>
 
               <SearchInput
@@ -246,7 +248,7 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
                 }))}
                 value={remarks}
                 onChange={setRemarks}
-                placeholder="Search saving category..."
+                placeholder={t("Search saving category...")}
                 className="w-full h-12 text-gray-800"
               />
             </div>
@@ -261,7 +263,7 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
                 "
               >
                 <span className="text-sm font-semibold text-[#374151] whitespace-nowrap">
-                  Deduct From Balance
+                  {t("Deduct From Balance")}
                 </span>
 
                 <div className="relative inline-flex items-center">
@@ -320,10 +322,10 @@ const SavingForm = ({ onSuccess, balanceCard }: SavingFormProps) => {
             `}
           >
             {loading ? (
-              "Saving..."
+              t("Saving...")
             ) : (
               <>
-                <span>Add Saving</span>
+                <span>{t("Add Saving")}</span>
                 <ArrowRight className="size-5" aria-hidden="true" />
               </>
             )}

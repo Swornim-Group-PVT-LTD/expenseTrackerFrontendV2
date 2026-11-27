@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import { useEffect, useRef, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Maximize2, X } from "lucide-react";
@@ -38,6 +41,7 @@ const getDateRange = (filterType: string) => {
 };
 
 export default function ExpensesPieChart() {
+  const { t } = useTranslation();
   const [filterType, setFilterType] = useState("monthly");
   const [chartData, setChartData] = useState<{ name: string; value: number; color: string }[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
@@ -88,10 +92,10 @@ export default function ExpensesPieChart() {
         </ResponsiveContainer>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
           <span className="max-w-[58%] break-words text-sm font-bold text-[#082c28] tabular-nums">{formatAmount(total)}</span>
-          <span className="text-xs text-slate-600">Total expenses</span>
+          <span className="text-xs text-slate-600">{t("Total expenses")}</span>
         </div>
       </div>
-      <ul className={`divide-y divide-slate-100 overflow-y-auto ${expanded ? "max-h-80" : "max-h-48"}`} aria-label="Expense categories">
+      <ul className={`divide-y divide-slate-100 overflow-y-auto ${expanded ? "max-h-80" : "max-h-48"}`} aria-label={t("Expense categories")}>
         {chartData.map((entry) => (
           <li key={entry.name} className="flex items-start gap-2 py-2 pr-2 text-sm">
             <span className="mt-1.5 size-2.5 shrink-0 rounded-full" style={{ backgroundColor: entry.color }} aria-hidden="true" />
@@ -108,10 +112,10 @@ export default function ExpensesPieChart() {
   return (
     <div className="@container min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-bold tracking-tight text-[#082c28]">Expense breakdown</h2>
+        <h2 className="text-lg font-bold tracking-tight text-[#082c28]">{t("Expense breakdown")}</h2>
         <div className="flex items-center gap-2">
           <DashboardChartPeriod
-            label="Expense breakdown period"
+            label={t("Expense breakdown period")}
             value={filterType}
             onChange={(value) => {
               setStatus("loading");
@@ -125,7 +129,7 @@ export default function ExpensesPieChart() {
               setExpanded(true);
             }}
             disabled={!hasBreakdown}
-            aria-label="Expand expense breakdown"
+            aria-label={t("Expand expense breakdown")}
             className="grid size-9 cursor-pointer place-items-center rounded-lg border border-slate-200 text-[#056455] hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-[#056455] disabled:cursor-default disabled:opacity-40"
           >
             <Maximize2 className="size-4" aria-hidden="true" />
@@ -137,17 +141,17 @@ export default function ExpensesPieChart() {
         <div className="grid min-h-64 content-center">{renderBreakdown()}</div>
       ) : (
         <p role="status" className="grid h-64 place-items-center text-center text-sm text-slate-600">
-          {status === "loading" ? "Loading expense breakdown…" : status === "error" ? "Expense breakdown is unavailable." : "No expenses for this period."}
+          {status === "loading" ? t("Loading expense breakdown…") : status === "error" ? t("Expense breakdown is unavailable.") : t("No expenses for this period.")}
         </p>
       )}
 
       <dialog ref={dialogRef} onClose={() => setExpanded(false)} aria-labelledby="expanded-expense-title" className="fixed inset-0 m-auto max-h-[90vh] w-[calc(100%-2rem)] max-w-3xl overflow-auto rounded-2xl bg-white p-5 shadow-xl backdrop:bg-slate-900/60 sm:p-6">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 id="expanded-expense-title" className="text-xl font-bold text-[#082c28]">Expense breakdown</h2>
+          <h2 id="expanded-expense-title" className="text-xl font-bold text-[#082c28]">{t("Expense breakdown")}</h2>
           <button
             type="button"
             onClick={() => dialogRef.current?.close()}
-            aria-label="Close expense breakdown"
+            aria-label={t("Close expense breakdown")}
             className="grid size-9 cursor-pointer place-items-center rounded-lg text-[#056455] hover:bg-teal-50 focus-visible:outline-2 focus-visible:outline-[#056455]"
           >
             <X className="size-5" aria-hidden="true" />

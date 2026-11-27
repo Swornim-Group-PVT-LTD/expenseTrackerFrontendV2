@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useEffect, useState, type ReactNode } from "react";
 import {
   CalendarDays,
@@ -37,6 +38,7 @@ export default function DateFilter({
   initialFrom,
   initialTo,
 }: DateFilterProps) {
+  const { t } = useTranslation();
   const [from, setFrom] = useState<Date | undefined>(initialFrom || new Date());
 
   const [to, setTo] = useState<Date | undefined>(initialTo || new Date());
@@ -59,7 +61,7 @@ export default function DateFilter({
 
     // Validate date range
     if (!useDateRange && from && to && from > to) {
-      setError("'From' date cannot be later than 'To' date.");
+      setError(t("'From' date cannot be later than 'To' date."));
       return;
     }
 
@@ -71,7 +73,7 @@ export default function DateFilter({
       );
 
       if (!categoryExists) {
-        toast.error("Please select a valid category from the list");
+        toast.error(t("Please select a valid category from the list"));
         return;
       }
     }
@@ -114,11 +116,11 @@ export default function DateFilter({
 
             <div>
               <h2 className="text-base font-bold text-[#2D2D2D]">
-                Filter Records
+                {t("Filter Records")}
               </h2>
 
               <p className="text-xs text-gray-500 sm:text-sm">
-                Refine your data using date and category
+                {t("Refine your data using date and category")}
               </p>
             </div>
           </div>
@@ -127,14 +129,14 @@ export default function DateFilter({
           {(onDownloadExcel || onDownloadPDF) && (
             <div className="flex items-center gap-2">
               <span className="mr-1 hidden text-xs font-medium text-gray-400 sm:block">
-                Export
+                {t("Export")}
               </span>
 
               {onDownloadExcel && (
                 <button
                   type="button"
                   onClick={onDownloadExcel}
-                  title="Download Excel"
+                  title={t("Download Excel")}
                   className="group flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-green-300 hover:bg-green-50 hover:shadow-sm"
                 >
                   <FileSpreadsheet
@@ -148,7 +150,7 @@ export default function DateFilter({
                 <button
                   type="button"
                   onClick={onDownloadPDF}
-                  title="Download PDF"
+                  title={t("Download PDF")}
                   className="group flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white transition-all hover:border-red-300 hover:bg-red-50 hover:shadow-sm"
                 >
                   <FileText
@@ -179,13 +181,13 @@ export default function DateFilter({
 
             <div>
               <p className="text-sm font-semibold text-gray-700">
-                Filter without date range
+                {t("Filter without date range")}
               </p>
 
               <p className="text-xs text-gray-400">
                 {!useDateRange
-                  ? "Date filtering is enabled"
-                  : "Search without date restrictions"}
+                  ? t("Date filtering is enabled")
+                  : t("Search without date restrictions")}
               </p>
             </div>
           </div>
@@ -214,7 +216,7 @@ export default function DateFilter({
           <div className="min-w-0">
             <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-[#716A6A]">
               <CalendarDays size={15} />
-              From
+              {t("From")}
             </label>
 
             <div
@@ -236,7 +238,7 @@ export default function DateFilter({
           <div className="min-w-0">
             <label className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-[#716A6A]">
               <CalendarDays size={15} />
-              To
+              {t("To")}
             </label>
 
             <div
@@ -257,7 +259,7 @@ export default function DateFilter({
           {/* CATEGORY */}
           <div className="min-w-0">
             <label className="mb-1.5 block text-sm font-semibold text-[#716A6A]">
-              Category
+              {t("Category")}
             </label>
 
             <SearchInput
@@ -269,7 +271,7 @@ export default function DateFilter({
               }
               value={selectedCategory}
               onChange={setSelectedCategory}
-              placeholder="All Categories"
+              placeholder={t("All Categories")}
               className="w-full"
             />
           </div>
@@ -282,7 +284,7 @@ export default function DateFilter({
               className={`flex h-[46px] w-full items-center justify-center gap-2 rounded-lg search-button text-base font-bold shadow-sm transition-all hover:shadow-md active:scale-[0.98] ${action ? "px-3 sm:px-5" : "px-6 xl:px-8"}`}
             >
               <Search size={19} strokeWidth={2.5} />
-              Search
+              {t("Search")}
             </button>
             {action}
           </div>

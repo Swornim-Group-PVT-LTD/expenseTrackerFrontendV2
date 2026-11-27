@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useRef } from "react";
 import Swal from "sweetalert2";
 import { LoaderCircle, Pencil, Trash2 } from "lucide-react";
@@ -19,6 +20,7 @@ export default function TableActionButton({
   disabled,
   busy,
 }: TableActionButtonProps) {
+  const { t } = useTranslation();
   const active = useRef(false);
   const isDelete = action === "delete";
 
@@ -28,14 +30,14 @@ export default function TableActionButton({
     active.current = true;
     try {
       const result = await Swal.fire({
-        title: isDelete ? "Delete this record?" : "Edit this record?",
-        text: isDelete ? "This action cannot be undone." : undefined,
+        title: isDelete ? t("Delete this record?") : t("Edit this record?"),
+        text: isDelete ? t("This action cannot be undone.") : undefined,
         icon: isDelete ? "warning" : "question",
         showCancelButton: true,
         focusCancel: true,
         reverseButtons: true,
-        confirmButtonText: isDelete ? "Delete" : "Edit",
-        cancelButtonText: "Cancel",
+        confirmButtonText: isDelete ? t("Delete") : t("Edit"),
+        cancelButtonText: t("Cancel"),
         confirmButtonColor: isDelete ? "#b91c1c" : "#056455",
       });
 
@@ -53,8 +55,8 @@ export default function TableActionButton({
   return (
     <button
       type="button"
-      title={label}
-      aria-label={label}
+      title={t(label)}
+      aria-label={t(label)}
       aria-busy={busy || undefined}
       disabled={disabled || busy}
       onClick={confirmAction}

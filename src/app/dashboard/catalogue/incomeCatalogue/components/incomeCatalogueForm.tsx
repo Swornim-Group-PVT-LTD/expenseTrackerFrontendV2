@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { addIncomeCategoryService } from "../../../../services/catalogueServices/incomeCatalogueService";
 import { AddIncomeCategoryPayload } from "../../../../types/catalolgueType/incomeCatalogueType";
@@ -11,6 +12,7 @@ interface IncomeCatalogueFormProps {
 }
 
 export default function IncomeCatalogueForm({ onSuccess }: IncomeCatalogueFormProps) {
+  const { t } = useTranslation();
   const [category, setCategory] = useState("");
   const [additional1, setAdditional1] = useState("");
   const [additional2, setAdditional2] = useState("");
@@ -56,7 +58,7 @@ export default function IncomeCatalogueForm({ onSuccess }: IncomeCatalogueFormPr
 
       await addIncomeCategoryService(payload);
       onSuccess && onSuccess();
-      toast.success("Income category added successfully!");
+      toast.success(t("Income category added successfully!"));
 
       // Clear form
       setCategory("");
@@ -66,8 +68,8 @@ export default function IncomeCatalogueForm({ onSuccess }: IncomeCatalogueFormPr
       setAdditional4("");
       setErrors({});
     } catch (err: any) {
-      setErrors({ form: err.message || "Failed to add income category" });
-      toast.error(err.message || "Failed to add income category");
+      setErrors({ form: err.message || t("Failed to add income category") });
+      toast.error(err.message || t("Failed to add income category"));
     } finally {
       setLoading(false);
     }
@@ -80,13 +82,13 @@ export default function IncomeCatalogueForm({ onSuccess }: IncomeCatalogueFormPr
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       {errors.form && (
-        <p className="text-red-500 mb-2 font-medium">{errors.form}</p>
+        <p className="text-red-500 mb-2 font-medium">{t(errors.form)}</p>
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-7">
         {/* Catalogue */}
         <div className="lg:col-span-1">
-          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Catalogue</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">{t("Catalogue")}</label>
           <input
             type="text"
             value="INCOME"
@@ -97,16 +99,16 @@ export default function IncomeCatalogueForm({ onSuccess }: IncomeCatalogueFormPr
 
         {/* Income Category */}
         <div className="lg:col-span-1">
-          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">Income Category</label>
+          <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">{t("Income Category")}</label>
           <input
             type="text"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            placeholder="e.g., Salary"
+            placeholder={t("e.g., Salary")}
             className={inputClass("category")}
           />
           {errors.category && (
-            <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+            <p className="text-red-500 text-sm mt-1">{t(errors.category)}</p>
           )}
         </div>
 
@@ -114,7 +116,7 @@ export default function IncomeCatalogueForm({ onSuccess }: IncomeCatalogueFormPr
         {[additional1, additional2, additional3, additional4].map((val, idx) => (
           <div className="lg:col-span-1" key={idx}>
             <label className="mb-1.5 block text-sm font-semibold text-[#082c28]">
-              Additional {idx + 1}
+              {t("Additional")}{" "} {idx + 1}
             </label>
             <input
               type="text"
@@ -127,7 +129,7 @@ export default function IncomeCatalogueForm({ onSuccess }: IncomeCatalogueFormPr
             />
             {errors[`additional${idx + 1}`] && (
               <p className="text-red-500 text-sm mt-1">
-                {errors[`additional${idx + 1}`]}
+                {t(errors[`additional${idx + 1}`])}
               </p>
             )}
           </div>
@@ -141,7 +143,7 @@ export default function IncomeCatalogueForm({ onSuccess }: IncomeCatalogueFormPr
             className={`h-11 w-full cursor-pointer rounded-lg bg-[#056455] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#034e43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] ${loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
           >
-            {loading ? "Adding..." : "Add"}
+            {loading ? t("Adding...") : t("Add")}
           </button>
         </div>
       </div>

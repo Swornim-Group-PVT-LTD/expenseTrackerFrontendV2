@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from "react";
 import { ArrowRight, FileText, ImagePlus } from "lucide-react";
 import { toast } from "react-toastify";
@@ -23,6 +24,7 @@ interface ExpenseFormProps {
 }
 
 const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
+  const { t } = useTranslation();
   const [amount, setAmount] = useState<number | "">("");
 
   const [remarks, setRemarks] = useState("");
@@ -50,7 +52,7 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
         setCategories(data);
       } catch (err) {
         console.error("Failed to fetch expense categories:", err);
-        toast.error("Failed to fetch expense categories");
+        toast.error(t("Failed to fetch expense categories"));
       }
     };
 
@@ -86,7 +88,7 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
     }
 
     if (!file.type.startsWith("image/")) {
-      toast.error("Receipt must be an image file.");
+      toast.error(t("Receipt must be an image file."));
       event.target.value = "";
       setUploadReceipt(null);
       return;
@@ -114,7 +116,7 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
     );
 
     if (invalidFiles.length > 0) {
-      toast.error("Only image and PDF files are allowed.");
+      toast.error(t("Only image and PDF files are allowed."));
       event.target.value = "";
       setUploadDocs([]);
       return;
@@ -133,13 +135,13 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
     );
 
     if (!categoryExists) {
-      toast.error("Please select a valid category from the list");
+      toast.error(t("Please select a valid category from the list"));
       return;
     }
 
     // Validate amount
     if (amount === "" || Number(amount) <= 0) {
-      toast.error("Please enter a valid expense amount");
+      toast.error(t("Please enter a valid expense amount"));
       return;
     }
 
@@ -163,7 +165,7 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
 
       await addExpenseService(formData);
 
-      toast.success(`Expense of ${currency}${amount} added successfully.`);
+      toast.success(t("Expense of {{amount}} added successfully.", { amount: `${currency}${amount}` }));
 
       // Reset
       setAmount("");
@@ -192,7 +194,7 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
 
       loadTotalExpense();
     } catch (error: any) {
-      toast.error(error.message || "Failed to add expense");
+      toast.error(error.message || t("Failed to add expense"));
     } finally {
       setLoading(false);
     }
@@ -221,7 +223,7 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
         >
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-sm font-medium text-white/80">Total Expense</p>
+              <p className="text-sm font-medium text-white/80">{t("Total Expense")}</p>
 
               <p className="text-2xl sm:text-3xl font-bold text-white mt-1 tabular-nums break-words">
                 {maskAmount(totalExpense, isVisible, currency)}
@@ -250,14 +252,14 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
       </div>
 
       <section aria-labelledby="add-expense-heading" className="@container min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-        <h2 id="add-expense-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">Add expense</h2>
+        <h2 id="add-expense-heading" className="mb-4 text-lg font-bold tracking-tight text-[#082c28]">{t("Add expense")}</h2>
         <div className="space-y-4">
           <div className="grid gap-4 @min-[27rem]:grid-cols-2 @min-[53rem]:grid-cols-4">
             {/* AMOUNT */}
             <div className="min-w-0">
               <div className={labelRowClass}>
                 <label htmlFor="expense-amount" className="text-sm font-semibold text-[#374151]">
-                  Amount
+                  {t("Amount")}
                 </label>
               </div>
 
@@ -285,7 +287,7 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
                 <input
                   id="expense-amount"
                   type="number"
-                  placeholder="Enter expense amount"
+                  placeholder={t("Enter expense amount")}
                   className="
                     flex-1
                     min-w-0
@@ -315,7 +317,7 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
             <div className="min-w-0">
               <div className={labelRowClass}>
                 <label className="text-sm font-semibold text-[#374151]">
-                  Expense Category
+                  {t("Expense Category")}
                 </label>
               </div>
 
@@ -326,7 +328,7 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
                 }))}
                 value={remarks ?? ""}
                 onChange={setRemarks}
-                placeholder="Search expense category..."
+                placeholder={t("Search expense category...")}
                 className="
                   w-full
                   h-14
@@ -339,10 +341,10 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
             <div className="min-w-0">
               <div className={labelRowClass}>
                 <label className="text-sm font-semibold text-[#374151]">
-                  Upload Receipt
+                  {t("Upload Receipt")}
                 </label>
 
-                <span className="text-xs text-gray-400">Image only</span>
+                <span className="text-xs text-gray-400">{t("Image only")}</span>
               </div>
 
               <label htmlFor="upload_receipt" className={uploadTileClass}>
@@ -352,13 +354,13 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
 
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-gray-800 text-sm truncate">
-                    {uploadReceipt ? "Receipt selected" : "Upload receipt"}
+                    {uploadReceipt ? t("Receipt selected") : t("Upload receipt")}
                   </p>
 
                   <p className="text-xs text-gray-500 truncate">
                     {uploadReceipt
                       ? uploadReceipt.name
-                      : "Tap to choose an image"}
+                      : t("Tap to choose an image")}
                   </p>
                 </div>
 
@@ -378,10 +380,10 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
             <div className="min-w-0">
               <div className={labelRowClass}>
                 <label className="text-sm font-semibold text-[#374151]">
-                  Upload Documents
+                  {t("Upload Documents")}
                 </label>
 
-                <span className="text-xs text-gray-400">Images / PDF</span>
+                <span className="text-xs text-gray-400">{t("Images / PDF")}</span>
               </div>
 
               <label htmlFor="upload_doc" className={uploadTileClass}>
@@ -395,13 +397,13 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
                       ? `${uploadDocs.length} file${
                           uploadDocs.length > 1 ? "s" : ""
                         } selected`
-                      : "Upload files"}
+                      : t("Upload files")}
                   </p>
 
                   <p className="text-xs text-gray-500 truncate">
                     {uploadDocs.length > 0
                       ? uploadDocs.map((file) => file.name).join(", ")
-                      : "Tap to choose multiple files"}
+                      : t("Tap to choose multiple files")}
                   </p>
                 </div>
 
@@ -448,10 +450,10 @@ const ExpenseForm = ({ onSuccess, balanceCard }: ExpenseFormProps) => {
             `}
           >
             {loading ? (
-              "Saving..."
+              t("Saving...")
             ) : (
               <>
-                <span>Add Expense</span>
+                <span>{t("Add Expense")}</span>
                 <ArrowRight className="size-5" aria-hidden="true" />
               </>
             )}

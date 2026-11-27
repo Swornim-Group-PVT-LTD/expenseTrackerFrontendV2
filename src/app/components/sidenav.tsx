@@ -130,7 +130,7 @@ export default function Sidebar() {
           <button
             type="button"
             onClick={() => setCollapsed(!collapsed)}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={collapsed ? t("Expand sidebar") : t("Collapse sidebar")}
             aria-expanded={!collapsed}
             className="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/5 text-teal-50 transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-amber-300"
           >
@@ -139,7 +139,7 @@ export default function Sidebar() {
           {!collapsed && (
             <Link
               href="/dashboard"
-              aria-label="Expense Tracker dashboard"
+              aria-label={t("Expense Tracker dashboard")}
               className="ml-auto flex min-w-0 items-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-300"
             >
               <img src="/app-logo.png" alt="" className="h-10 max-w-full object-contain" />
@@ -147,7 +147,7 @@ export default function Sidebar() {
           )}
         </div>
 
-        <nav aria-label="Dashboard navigation" className="flex-1 space-y-1.5 overflow-y-auto px-3 py-4">
+        <nav aria-label={t("Dashboard navigation")} className="flex-1 space-y-1.5 overflow-y-auto px-3 py-4">
           {visibleDashboardData.map((item) => {
             const isActive = item.href === "/dashboard"
               ? pathname === item.href
@@ -267,7 +267,7 @@ export default function Sidebar() {
           </div>
 
           <span className="text-[10px] mt-1 text-white font-semibold">
-            Add
+            {t("Add")}
           </span>
         </button>
 

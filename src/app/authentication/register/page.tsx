@@ -1,6 +1,8 @@
 
 "use client";
 
+import LanguageSelector from "@/app/components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
@@ -28,6 +30,7 @@ const logoMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 const maxLogoSize = 2 * 1024 * 1024;
 
 const Register = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { login } = useAuth();
 
@@ -78,7 +81,7 @@ const Register = () => {
     if (!file) return;
 
     if (!logoMimeTypes.includes(file.type)) {
-      setMessage("Choose a JPEG, PNG, GIF, or WebP image.");
+      setMessage(t("Choose a JPEG, PNG, GIF, or WebP image."));
       setIsSuccess(false);
       setLogoUpload(null);
       setImagePreview(null);
@@ -87,7 +90,7 @@ const Register = () => {
     }
 
     if (file.size > maxLogoSize) {
-      setMessage("Image size must not exceed 2 MB.");
+      setMessage(t("Image size must not exceed 2 MB."));
       setIsSuccess(false);
       setLogoUpload(null);
       setImagePreview(null);
@@ -112,12 +115,12 @@ const Register = () => {
     setIsSuccess(false);
 
     if (logoUpload && !logoMimeTypes.includes(logoUpload.type)) {
-      setMessage("Choose a JPEG, PNG, GIF, or WebP image.");
+      setMessage(t("Choose a JPEG, PNG, GIF, or WebP image."));
       return;
     }
 
     if (logoUpload && logoUpload.size > maxLogoSize) {
-      setMessage("Image size must not exceed 2 MB.");
+      setMessage(t("Image size must not exceed 2 MB."));
       return;
     }
 
@@ -184,7 +187,7 @@ const Register = () => {
         }
       } else {
         setMessage(
-          "Something went wrong. Please check your registration service."
+          t("Something went wrong. Please check your registration service.")
         );
       }
     } finally {
@@ -204,7 +207,10 @@ const Register = () => {
       <div className="pointer-events-none absolute -bottom-40 -right-24 h-96 w-96 rounded-full bg-amber-100/60 blur-3xl" />
 
       <div className="relative w-full max-w-5xl">
-        <Breadcrumbs parents={[{ label: "Login", href: "/authentication/login" }]} current="Register" />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+        <Breadcrumbs parents={[{ label: t("Login"), href: "/authentication/login" }]} current={t("Register")} />
+          <LanguageSelector />
+        </div>
       </div>
       <div className="relative w-full max-w-5xl overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-2xl shadow-slate-200/60">
         <div className="grid lg:grid-cols-[0.78fr_1.22fr]">
@@ -218,36 +224,30 @@ const Register = () => {
               <div className="mb-10 inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/10 p-3">
                 <img
                   src="/app-logo.png"
-                  alt="Expense Tracker"
+                  alt={t("Expense Tracker")}
                   className="h-11 w-11 object-contain"
                 />
                 <div>
                   <p className="text-base font-bold tracking-wide">
-                    Expense Tracker
+                    {t("Expense Tracker")}
                   </p>
                   <p className="text-xs text-white/60">
-                    Smarter money management
+                    {t("Smarter money management")}
                   </p>
                 </div>
               </div>
 
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80">
                 <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                Your financial journey starts here
+                {t("Your financial journey starts here")}
               </span>
 
               <h1 className="mt-7 text-4xl font-bold leading-tight xl:text-5xl">
-                Take control
-                <br />
-                of your
-                <br />
-                <span className="text-amber-300">finances.</span>
+                {t("Take control of your finances.")}
               </h1>
 
               <p className="mt-5 max-w-sm text-sm leading-7 text-white/70">
-                Create your account and bring your expenses,
-                income, savings, and financial goals together
-                in one place.
+                {t("Create your account and bring your expenses, income, savings, and financial goals together in one place.")}
               </p>
             </div>
 
@@ -258,16 +258,16 @@ const Register = () => {
                 </div>
                 <div>
                   <p className="text-sm font-semibold">
-                    Your account, your control
+                    {t("Your account, your control")}
                   </p>
                   <p className="mt-1 text-xs leading-5 text-white/60">
-                    A simple place to organize your finances.
+                    {t("A simple place to organize your finances.")}
                   </p>
                 </div>
               </div>
 
               <p className="mt-6 text-xs text-white/40">
-                © {new Date().getFullYear()} Expense Tracker
+                © {new Date().getFullYear()} {t("Expense Tracker")}
               </p>
             </div>
           </aside>
@@ -278,16 +278,16 @@ const Register = () => {
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-(--color1)">
                 <img
                   src="/app-logo.png"
-                  alt="Expense Tracker"
+                  alt={t("Expense Tracker")}
                   className="h-9 w-9 object-contain"
                 />
               </div>
               <div>
                 <p className="font-bold text-slate-900">
-                  Expense Tracker
+                  {t("Expense Tracker")}
                 </p>
                 <p className="text-xs text-slate-500">
-                  Smarter money management
+                  {t("Smarter money management")}
                 </p>
               </div>
             </div>
@@ -295,15 +295,15 @@ const Register = () => {
             <div className="mb-7">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-800">
                 <UserRound size={14} />
-                CREATE YOUR ACCOUNT
+                {t("CREATE YOUR ACCOUNT")}
               </div>
 
               <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-                Get started
+                {t("Get started")}
               </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-500">
-                Enter your details below to create your account.
+                {t("Enter your details below to create your account.")}
               </p>
             </div>
 
@@ -315,14 +315,14 @@ const Register = () => {
                     <UserRound size={16} />
                   </div>
                   <h3 className="text-sm font-bold text-slate-800">
-                    Personal Information
+                    {t("Personal Information")}
                   </h3>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label htmlFor="first_name" className={labelClass}>
-                      First Name <span className="text-red-500">*</span>
+                      {t("First Name")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="first_name"
@@ -331,14 +331,14 @@ const Register = () => {
                       onChange={handleChange}
                       required
                       autoComplete="given-name"
-                      placeholder="Enter first name"
+                      placeholder={t("Enter first name")}
                       className={inputClass}
                     />
                   </div>
 
                   <div>
                     <label htmlFor="middle_name" className={labelClass}>
-                      Middle Name
+                      {t("Middle Name")}
                     </label>
                     <input
                       id="middle_name"
@@ -346,14 +346,14 @@ const Register = () => {
                       value={formData.middle_name}
                       onChange={handleChange}
                       autoComplete="additional-name"
-                      placeholder="Enter middle name"
+                      placeholder={t("Enter middle name")}
                       className={inputClass}
                     />
                   </div>
 
                   <div>
                     <label htmlFor="last_name" className={labelClass}>
-                      Last Name <span className="text-red-500">*</span>
+                      {t("Last Name")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <input
                       id="last_name"
@@ -362,14 +362,14 @@ const Register = () => {
                       onChange={handleChange}
                       required
                       autoComplete="family-name"
-                      placeholder="Enter last name"
+                      placeholder={t("Enter last name")}
                       className={inputClass}
                     />
                   </div>
 
                   <div>
                     <label htmlFor="phonenumber" className={labelClass}>
-                      Phone Number <span className="text-red-500">*</span>
+                      {t("Phone Number")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <Phone
@@ -384,7 +384,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                         autoComplete="tel"
-                        placeholder="Enter phone number"
+                        placeholder={t("Enter phone number")}
                         className={`${inputClass} pl-10`}
                       />
                     </div>
@@ -399,14 +399,14 @@ const Register = () => {
                     <LockKeyhole size={16} />
                   </div>
                   <h3 className="text-sm font-bold text-slate-800">
-                    Account Information
+                    {t("Account Information")}
                   </h3>
                 </div>
 
                 <div className="space-y-4">
                   <div>
                     <label htmlFor="email" className={labelClass}>
-                      Email Address <span className="text-red-500">*</span>
+                      {t("Email Address")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <Mail
@@ -429,7 +429,7 @@ const Register = () => {
 
                   <div>
                     <label htmlFor="password" className={labelClass}>
-                      Password <span className="text-red-500">*</span>
+                      {t("Password")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <LockKeyhole
@@ -444,7 +444,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                         autoComplete="new-password"
-                        placeholder="Create a password"
+                        placeholder={t("Create a password")}
                         className={`${inputClass} pl-10`}
                       />
                     </div>
@@ -452,7 +452,7 @@ const Register = () => {
 
                   <div>
                     <label className={labelClass}>
-                      Account Type <span className="text-red-500">*</span>
+                      {t("Account Type")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <div className="grid grid-cols-2 gap-3">
                       <label
@@ -479,7 +479,7 @@ const Register = () => {
                           }
                         />
                         <span className="text-sm font-semibold text-slate-700">
-                          Individual
+                          {t("Individual")}
                         </span>
                       </label>
 
@@ -507,7 +507,7 @@ const Register = () => {
                           }
                         />
                         <span className="text-sm font-semibold text-slate-700">
-                          Company
+                          {t("Company")}
                         </span>
                       </label>
                     </div>
@@ -522,14 +522,14 @@ const Register = () => {
                     <MapPin size={16} />
                   </div>
                   <h3 className="text-sm font-bold text-slate-800">
-                    Location Details
+                    {t("Location Details")}
                   </h3>
                 </div>
 
                 <div className="space-y-4">
                   <div>
                     <label htmlFor="country" className={labelClass}>
-                      Country <span className="text-red-500">*</span>
+                      {t("Country")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <Globe
@@ -543,7 +543,7 @@ const Register = () => {
                         onChange={handleChange}
                         required
                         autoComplete="country-name"
-                        placeholder="Enter your country"
+                        placeholder={t("Enter your country")}
                         className={`${inputClass} pl-10`}
                       />
                     </div>
@@ -551,7 +551,7 @@ const Register = () => {
 
                   <div>
                     <label htmlFor="address" className={labelClass}>
-                      Address <span className="text-red-500">*</span>
+                      {t("Address")}{" "} <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="address"
@@ -561,7 +561,7 @@ const Register = () => {
                       required
                       rows={3}
                       autoComplete="street-address"
-                      placeholder="Enter your full address"
+                      placeholder={t("Enter your full address")}
                       className={`${inputClass} resize-y`}
                     />
                   </div>
@@ -575,10 +575,10 @@ const Register = () => {
                     <ImagePlus size={16} />
                   </div>
                   <h3 className="text-sm font-bold text-slate-800">
-                    Profile Image / Company Logo
+                    {t("Profile Image / Company Logo")}
                   </h3>
                   <span className="ml-auto rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-500">
-                    Optional
+                    {t("Optional")}
                   </span>
                 </div>
 
@@ -588,7 +588,7 @@ const Register = () => {
                       {imagePreview ? (
                         <img
                           src={imagePreview}
-                          alt="Profile preview"
+                          alt={t("Profile preview")}
                           className="h-full w-full object-cover"
                         />
                       ) : (
@@ -603,11 +603,10 @@ const Register = () => {
                       <p className="text-sm font-semibold text-slate-800">
                         {logoUpload
                           ? logoUpload.name
-                          : "Upload your image"}
+                          : t("Upload your image")}
                       </p>
                       <p className="mt-1 text-xs leading-5 text-slate-500">
-                        Choose a profile picture or company logo.
-                        JPEG, PNG, GIF, or WebP up to 2 MB.
+                        {t("Choose a profile picture or company logo. JPEG, PNG, GIF, or WebP up to 2 MB.")}
                       </p>
 
                       <label
@@ -615,7 +614,7 @@ const Register = () => {
                         className="mt-3 inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm transition hover:border-teal-700 hover:text-teal-800"
                       >
                         <ImagePlus size={15} />
-                        Choose Image
+                        {t("Choose Image")}
                         <input
                           id="logo_uploads"
                           type="file"
@@ -640,11 +639,11 @@ const Register = () => {
                   {isLoading ? (
                     <>
                       <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-                      Creating your account...
+                      {t("Creating your account...")}
                     </>
                   ) : (
                     <>
-                      Create Account
+                      {t("Create Account")}
                       <ArrowRight
                         size={17}
                         className="transition-transform group-hover:translate-x-1"
@@ -654,12 +653,12 @@ const Register = () => {
                 </button>
 
                 <p className="mt-4 text-center text-sm text-slate-500">
-                  Already have an account?{" "}
+                  {t("Already have an account?")}{" "}
                   <Link
                     href="/authentication/login"
                     className="font-bold text-teal-800 underline-offset-4 transition hover:text-teal-600 hover:underline"
                   >
-                    Sign in
+                    {t("Sign in")}
                   </Link>
                 </p>
               </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import React, { useState, useEffect } from "react";
 import { IncomeCategoryResponse } from "../../../../types/catalolgueType/incomeCatalogueType";
@@ -18,6 +19,7 @@ export default function IncomeCatalogueTable({
 }: {
   refreshTrigger: number;
 }) {
+  const { t } = useTranslation();
   const [data, setData] = useState<IncomeCategoryResponse[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,7 +55,7 @@ export default function IncomeCatalogueTable({
   const handleDelete = async (id: number) => {
     try {
       await deleteIncomeCategoryService(id);
-      toast.success("Income category deleted successfully");
+      toast.success(t("Income category deleted successfully"));
       fetchData(); // Refresh data after deletion
     } catch (err: any) {
       toast.error(err);
@@ -85,7 +87,7 @@ export default function IncomeCatalogueTable({
       });
 
       fetchData(); // Refresh data after update
-      toast.success("Income category updated successfully");
+      toast.success(t("Income category updated successfully"));
 
       cancelEdit();
     } catch (err) {
@@ -102,7 +104,7 @@ export default function IncomeCatalogueTable({
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search..."
+          placeholder={t("Search...")}
           className="px-3 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-yellow-400"
         />
       </div>
@@ -116,16 +118,16 @@ export default function IncomeCatalogueTable({
                 ID
               </th>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Added Date
+                {t("Added Date")}
               </th>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Static Data
+                {t("Static Data")}
               </th>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Income Category
+                {t("Income Category")}
               </th>
               <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                Action
+                {t("Action")}
               </th>
             </tr>
           </thead>
@@ -172,13 +174,13 @@ export default function IncomeCatalogueTable({
                               className="text-green-600 mr-2 cursor-pointer hover:underline"
                               onClick={() => saveEdit(item.id)}
                             >
-                              Save
+                              {t("Save")}
                             </button>
                             <button
                               className="text-gray-600 cursor-pointer hover:underline"
                               onClick={cancelEdit}
                             >
-                              Cancel
+                              {t("Cancel")}
                             </button>
                           </>
                         ) : (
@@ -193,7 +195,7 @@ export default function IncomeCatalogueTable({
             ) : (
               <tr>
                 <td colSpan={5} className="px-4 py-2 text-center text-gray-500">
-                  No records found
+                  {t("No records found")}
                 </td>
               </tr>
             )}
@@ -209,7 +211,7 @@ export default function IncomeCatalogueTable({
           </div>
         ) : filteredData.length === 0 ? (
           <div className="text-center font-medium text-gray-500">
-            No records found
+            {t("No records found")}
           </div>
         ) : (
           filteredData.map((item) => (
@@ -228,14 +230,14 @@ export default function IncomeCatalogueTable({
                         onClick={() => saveEdit(item.id)}
                         className="text-green-600 hover:underline"
                       >
-                        Save
+                        {t("Save")}
                       </button>
                       <span className="text-gray-300">/</span>
                       <button
                         onClick={cancelEdit}
                         className="text-gray-500 hover:underline"
                       >
-                        Cancel
+                        {t("Cancel")}
                       </button>
                     </>
                   ) : (
@@ -249,7 +251,7 @@ export default function IncomeCatalogueTable({
 
               <div className="flex flex-col gap-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Category:</span>
+                  <span className="text-sm text-gray-500">{t("Category:")}</span>
                   {editingId === item.id ? (
                     <input
                       className="w-32 p-1 text-sm border rounded focus:ring-1 focus:ring-[#FFAA00]"
@@ -267,12 +269,12 @@ export default function IncomeCatalogueTable({
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-500">Static Data:</span>
+                  <span className="text-sm text-gray-500">{t("Static Data:")}</span>
                   <span className="font-semibold">{item.sn}</span>
                 </div>
 
                 <div className="flex justify-between items-center text-xs text-gray-400 mt-1">
-                  <span>Created: {item.created_date}</span>
+                  <span>{t("Created:")}{" "} {item.created_date}</span>
                 </div>
               </div>
             </div>

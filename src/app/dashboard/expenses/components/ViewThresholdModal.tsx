@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
@@ -15,6 +16,7 @@ interface ViewThresholdModalProps {
 }
 
 const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: ViewThresholdModalProps) => {
+  const { t } = useTranslation();
     const [thresholds, setThresholds] = useState<ThresholdResponse[]>([]);
     const [loading, setLoading] = useState(false);
     const [editingSn, setEditingSn] = useState<string | null>(null);
@@ -31,7 +33,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
             setThresholds(data);
             console.log(data);
         } catch (error: any) {
-            toast.error(error.message || "Failed to fetch thresholds");
+            toast.error(error.message || t("Failed to fetch thresholds"));
         } finally {
             setLoading(false);
         }
@@ -73,14 +75,14 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                 );
 
                 if (otherEnabledThreshold) {
-                    toast.error(`Cannot enable this ${editForm.frequency.toLowerCase()} threshold. Another ${editForm.frequency.toLowerCase()} threshold is already enabled. Please disable it first.`);
+                    toast.error(t("Disable the existing {{period}} threshold first.", { period: t(editForm.frequency) }));
                     return;
                 }
             }
 
             await updateThresholdService(sn, editForm);
             console.log(editForm);
-            toast.success("Threshold updated successfully");
+            toast.success(t("Threshold updated successfully"));
             setThresholds((prev) =>
                 prev.map((item) =>
                     item.sn === sn
@@ -96,7 +98,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
             cancelEdit();
             onSuccess && onSuccess(); // Trigger parent refresh
         } catch (error: any) {
-            toast.error(error.message || "Failed to update threshold");
+            toast.error(error.message || t("Failed to update threshold"));
         }
     };
 
@@ -104,11 +106,11 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
 
         try {
             await deleteThresholdService(sn);
-            toast.success("Threshold deleted successfully");
+            toast.success(t("Threshold deleted successfully"));
             fetchThresholds(); // Refresh the list
             onSuccess && onSuccess(); // Trigger parent refresh
         } catch (error: any) {
-            toast.error(error.message || "Failed to delete threshold");
+            toast.error(error.message || t("Failed to delete threshold"));
         }
     };
 
@@ -117,11 +119,11 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
         try {
             const date = new Date(dateString);
             if (isNaN(date.getTime())) {
-                return "Invalid Date";
+                return t("Invalid Date");
             }
             return date.toLocaleDateString();
         } catch (error) {
-            return "Invalid Date";
+            return t("Invalid Date");
         }
     };
 
@@ -137,7 +139,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
             <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[80vh] flex flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b">
-                    <h2 className="text-xl font-bold text-gray-800">View Expense Thresholds</h2>
+                    <h2 className="text-xl font-bold text-gray-800">{t("View Expense Thresholds")}</h2>
                     <button
                         onClick={onClose}
                         className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
@@ -150,11 +152,11 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                 <div className="p-6 overflow-y-auto flex-1">
                     {loading ? (
                         <div className="text-center py-8">
-                            <p className="text-gray-500">Loading thresholds...</p>
+                            <p className="text-gray-500">{t("Loading thresholds...")}</p>
                         </div>
                     ) : thresholds.length === 0 ? (
                         <div className="text-center py-8">
-                            <p className="text-gray-500">No thresholds found. Add one to get started!</p>
+                            <p className="text-gray-500">{t("No thresholds found. Add one to get started!")}</p>
                         </div>
                     ) : (
                         <>
@@ -164,11 +166,11 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                     <thead>
                                         <tr className="bg-gray-100">
                                             <th className="px-4 py-2 text-left">ID</th>
-                                            <th className="px-4 py-2 text-left">Amount</th>
-                                            <th className="px-4 py-2 text-left">Frequency</th>
-                                            <th className="px-4 py-2 text-left">Status</th>
-                                            <th className="px-4 py-2 text-left">Created Date</th>
-                                            <th className="px-4 py-2 text-center">Actions</th>
+                                            <th className="px-4 py-2 text-left">{t("Amount")}</th>
+                                            <th className="px-4 py-2 text-left">{t("Frequency")}</th>
+                                            <th className="px-4 py-2 text-left">{t("Status")}</th>
+                                            <th className="px-4 py-2 text-left">{t("Created Date")}</th>
+                                            <th className="px-4 py-2 text-center">{t("Actions")}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -204,11 +206,11 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                                 }))
                                                             }
                                                         >
-                                                            <option value="Monthly">Monthly</option>
-                                                            <option value="Yearly">Yearly</option>
+                                                            <option value="Monthly">{t("Monthly")}</option>
+                                                            <option value="Yearly">{t("Yearly")}</option>
                                                         </select>
                                                     ) : (
-                                                        <span className="capitalize">{threshold.frequency}</span>
+                                                        <span className="capitalize">{t(threshold.frequency)}</span>
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-2">
@@ -226,7 +228,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                                             t => t.sn !== threshold.sn && t.isEnable === true && t.frequency === editForm.frequency
                                                                         );
                                                                         if (otherEnabled) {
-                                                                            toast.warning(`Another ${editForm.frequency.toLowerCase()} threshold is already enabled. Disable it first.`);
+                                                                            toast.warning(t("Disable the existing {{period}} threshold first.", { period: t(editForm.frequency) }));
                                                                             return;
                                                                         }
                                                                     }
@@ -238,7 +240,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                             />
                                                             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FFA726]/30 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FFAA00]"></div>
                                                             <span className="ms-3 text-sm font-medium text-gray-700">
-                                                                {editForm.isEnable ? "Enabled" : "Disabled"}
+                                                                {editForm.isEnable ? t("Enabled") : t("Disabled")}
                                                             </span>
                                                         </label>
                                                     ) : (
@@ -248,7 +250,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                                 : "bg-red-100 text-red-800"
                                                                 }`}
                                                         >
-                                                            {threshold.isEnable ? "Enabled" : "Disabled"}
+                                                            {threshold.isEnable ? t("Enabled") : t("Disabled")}
                                                         </span>
                                                     )}
                                                 </td>
@@ -262,13 +264,13 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                                 className="text-green-600 hover:text-green-800 font-medium mr-2 cursor-pointer"
                                                                 onClick={() => saveEdit(threshold.sn)}
                                                             >
-                                                                Save
+                                                                {t("Save")}
                                                             </button>
                                                             <button
                                                                 className="text-gray-600 hover:text-gray-800 font-medium cursor-pointer"
                                                                 onClick={cancelEdit}
                                                             >
-                                                                Cancel
+                                                                {t("Cancel")}
                                                             </button>
                                                         </>
                                                     ) : (
@@ -303,14 +305,14 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                             onClick={() => saveEdit(threshold.sn)}
                                                             className="text-green-600 hover:underline"
                                                         >
-                                                            Save
+                                                            {t("Save")}
                                                         </button>
                                                         <span className="text-gray-300">/</span>
                                                         <button
                                                             onClick={cancelEdit}
                                                             className="text-gray-500 hover:underline"
                                                         >
-                                                            Cancel
+                                                            {t("Cancel")}
                                                         </button>
                                                     </>
                                                 ) : (
@@ -325,7 +327,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                         {/* Row 2: Content */}
                                         <div className="flex flex-col gap-2">
                                             <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-500">Amount:</span>
+                                                <span className="text-sm text-gray-500">{t("Amount:")}</span>
                                                 {editingSn === threshold.sn ? (
                                                     <input
                                                         type="number"
@@ -344,7 +346,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                             </div>
 
                                             <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-500">Frequency:</span>
+                                                <span className="text-sm text-gray-500">{t("Frequency:")}</span>
                                                 {editingSn === threshold.sn ? (
                                                     <select
                                                         className="w-32 p-1 text-sm border rounded"
@@ -356,16 +358,16 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                             }))
                                                         }
                                                     >
-                                                        <option value="Monthly">Monthly</option>
-                                                        <option value="Yearly">Yearly</option>
+                                                        <option value="Monthly">{t("Monthly")}</option>
+                                                        <option value="Yearly">{t("Yearly")}</option>
                                                     </select>
                                                 ) : (
-                                                    <span className="font-semibold capitalize">{threshold.frequency}</span>
+                                                    <span className="font-semibold capitalize">{t(threshold.frequency)}</span>
                                                 )}
                                             </div>
 
                                             <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-500">Status:</span>
+                                                <span className="text-sm text-gray-500">{t("Status:")}</span>
                                                 {editingSn === threshold.sn ? (
                                                     <label className="relative inline-flex items-center cursor-pointer">
                                                         <input
@@ -380,7 +382,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                                         t => t.sn !== threshold.sn && t.isEnable === true && t.frequency === editForm.frequency
                                                                     );
                                                                     if (otherEnabled) {
-                                                                        toast.warning(`Another ${editForm.frequency.toLowerCase()} threshold is already enabled. Disable it first.`);
+                                                                        toast.warning(t("Disable the existing {{period}} threshold first.", { period: t(editForm.frequency) }));
                                                                         return;
                                                                     }
                                                                 }
@@ -392,7 +394,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                         />
                                                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FFA726]/30 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FFAA00]"></div>
                                                         <span className="ms-3 text-xs font-medium text-gray-700">
-                                                            {editForm.isEnable ? "Enabled" : "Disabled"}
+                                                            {editForm.isEnable ? t("Enabled") : t("Disabled")}
                                                         </span>
                                                     </label>
                                                 ) : (
@@ -402,13 +404,13 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                             : "bg-red-100 text-red-800"
                                                             }`}
                                                     >
-                                                        {threshold.isEnable ? "Enabled" : "Disabled"}
+                                                        {threshold.isEnable ? t("Enabled") : t("Disabled")}
                                                     </span>
                                                 )}
                                             </div>
 
                                             <div className="flex justify-between items-center text-xs text-gray-400 mt-1">
-                                                <span>Created: {formatDate(threshold.create_date)}</span>
+                                                <span>{t("Created:")}{" "} {formatDate(threshold.create_date)}</span>
                                             </div>
                                         </div>
                                     </div>

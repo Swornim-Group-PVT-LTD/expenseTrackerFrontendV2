@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -40,6 +43,7 @@ export default function StatCard({
   label,
   labelColor,
 }: StatCardProps) {
+  const { t } = useTranslation();
   const { isVisible } = useBalanceVisibility();
 
   const getInitialValue = (label: string): FilterType => {
@@ -125,7 +129,7 @@ export default function StatCard({
           {/* Title + amount */}
           <div className="flex flex-col min-w-0">
             <span className="text-sm font-semibold text-[#082c28]">
-              {labelTitle[label]}
+              {t(labelTitle[label])}
             </span>
 
             <span className="break-words text-xl font-bold tracking-tight text-[#07371B] tabular-nums @min-[15rem]:text-2xl">
@@ -133,7 +137,7 @@ export default function StatCard({
             </span>
 
             <span className="text-xs text-slate-600">
-              {periodText[filterType]}
+              {t(periodText[filterType])}
             </span>
           </div>
         </div>
@@ -158,7 +162,7 @@ export default function StatCard({
             </div>
 
             <span className="text-xs text-slate-600 mt-1">
-              vs last month
+              {t("vs last month")}
             </span>
           </div>
         )}
@@ -167,7 +171,7 @@ export default function StatCard({
       <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
         <div className="relative">
           <select
-            aria-label={`${labelTitle[label]} period`}
+            aria-label={t("Period for {{name}}", { name: t(labelTitle[label]) })}
             value={filterType}
             onChange={(event) => {
               setLoading(true);
@@ -176,20 +180,20 @@ export default function StatCard({
             }}
             className="cursor-pointer appearance-none rounded-lg border border-slate-200 bg-slate-50 py-1.5 pr-8 pl-2.5 text-sm font-medium text-[#082c28] focus-visible:outline-2 focus-visible:outline-[#056455]"
           >
-            <option value="yearly">Yearly</option>
-            <option value="monthly">Monthly</option>
-            <option value="weekly">Weekly</option>
-            <option value="daily">Daily</option>
-            <option value="total">Total</option>
+            <option value="yearly">{t("Yearly")}</option>
+            <option value="monthly">{t("Monthly")}</option>
+            <option value="weekly">{t("Weekly")}</option>
+            <option value="daily">{t("Daily")}</option>
+            <option value="total">{t("Total")}</option>
           </select>
           <ChevronDown className="pointer-events-none absolute top-1/2 right-2 size-4 -translate-y-1/2 text-slate-500" aria-hidden="true" />
         </div>
         <Link
           href={`/dashboard/${label}`}
-          aria-label={`View ${labelTitle[label].toLowerCase()} details`}
+          aria-label={t("View details for {{name}}", { name: t(labelTitle[label]) })}
           className="inline-flex items-center gap-1 rounded text-sm font-semibold text-[#056455] hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
         >
-          View details <ChevronRight className="size-4" aria-hidden="true" />
+          {t("View details")}{" "} <ChevronRight className="size-4" aria-hidden="true" />
         </Link>
       </div>
     </article>

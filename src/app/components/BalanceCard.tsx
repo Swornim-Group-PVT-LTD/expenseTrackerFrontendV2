@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 
@@ -15,6 +18,7 @@ interface BalanceCardProps {
 }
 
 const BalanceCard = ({ refreshTrigger, linkToDetails = true }: BalanceCardProps) => {
+  const { t } = useTranslation();
   const [balance, setBalance] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [currency, setCurrency] = useState("NPR");
@@ -59,7 +63,7 @@ const BalanceCard = ({ refreshTrigger, linkToDetails = true }: BalanceCardProps)
       {linkToDetails && (
         <Link
           href="/dashboard/balance"
-          aria-label="View total balance details"
+          aria-label={t("View total balance details")}
           className="absolute inset-0 z-0 rounded-2xl focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-amber-300"
         />
       )}
@@ -68,12 +72,12 @@ const BalanceCard = ({ refreshTrigger, linkToDetails = true }: BalanceCardProps)
       </div>
       <div className="min-w-0 @min-[15rem]:border-l @min-[15rem]:border-white/15 @min-[15rem]:pl-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-teal-50">Total Balance</span>
+          <span className="text-sm font-semibold text-teal-50">{t("Total Balance")}</span>
           <button
             type="button"
             onClick={toggleVisibility}
-            aria-label={isVisible ? "Hide balance" : "Show balance"}
-            title={isVisible ? "Hide balance" : "Show balance"}
+            aria-label={isVisible ? t("Hide balance") : t("Show balance")}
+            title={isVisible ? t("Hide balance") : t("Show balance")}
             className="relative z-10 flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-md text-teal-100 transition-colors hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-amber-300"
           >
             {isVisible ? <Eye size={16} /> : <EyeOff size={16} />}
@@ -82,7 +86,7 @@ const BalanceCard = ({ refreshTrigger, linkToDetails = true }: BalanceCardProps)
         <div className="mt-0.5 break-words text-2xl font-bold tracking-tight tabular-nums @min-[18rem]:text-3xl">
           {renderBalanceValue()}
         </div>
-        <p className="mt-1 text-sm text-teal-100/80">Your current balance</p>
+        <p className="mt-1 text-sm text-teal-100/80">{t("Your current balance")}</p>
       </div>
     </div>
   );

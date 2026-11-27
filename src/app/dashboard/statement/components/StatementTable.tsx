@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import React from "react";
 import { CalendarDays } from "lucide-react";
 import {
@@ -31,6 +32,7 @@ export default function StatementTable({
   openingBalance,
   closingBalance,
 }: StatementTableProps) {
+  const { t, i18n } = useTranslation();
   const { isVisible } = useBalanceVisibility();
 
   // Group transactions by date
@@ -71,7 +73,7 @@ export default function StatementTable({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(i18n.language === "np" ? "ne-NP" : "en-US", {
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -95,14 +97,14 @@ export default function StatementTable({
             <div className="border-b border-white/10 bg-[#082c28] px-6 py-5 text-white">
               <div className="flex justify-between items-center">
                 <div>
-                  <h2 className="text-xl font-bold">Account Statement</h2>
+                  <h2 className="text-xl font-bold">{t("Account Statement")}</h2>
                   <p className="mt-1 text-sm text-teal-100/80">
-                    Currency: {currency.currency} ({currency.symbol}) -{" "}
+                    {t("Currency:")}{" "} {currency.currency} ({currency.symbol}) -{" "}
                     {currency.country}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-teal-100/80">Opening Balance</p>
+                  <p className="text-sm text-teal-100/80">{t("Opening Balance")}</p>
                   <p className="text-2xl font-bold tracking-tight tabular-nums">
                     {formatAmount(openingBalance)}
                   </p>
@@ -114,19 +116,19 @@ export default function StatementTable({
               <TableHead className="bg-gray-50">
                 <TableRow>
                   <TableHeadCell className="text-sm font-semibold">
-                    Date
+                    {t("Date")}
                   </TableHeadCell>
                   <TableHeadCell className="text-sm font-semibold">
-                    Particulars
+                    {t("Particulars")}
                   </TableHeadCell>
                   <TableHeadCell className="text-sm font-semibold text-right">
-                    Credit (+)
+                    {t("Credit (+)")}
                   </TableHeadCell>
                   <TableHeadCell className="text-sm font-semibold text-right">
-                    Debit (−)
+                    {t("Debit (−)")}
                   </TableHeadCell>
                   <TableHeadCell className="text-sm font-semibold text-right">
-                    Balance
+                    {t("Balance")}
                   </TableHeadCell>
                 </TableRow>
               </TableHead>
@@ -137,7 +139,7 @@ export default function StatementTable({
                       colSpan={5}
                       className="text-center font-medium text-gray-500 py-8"
                     >
-                      No transactions found for the selected period
+                      {t("No transactions found for the selected period")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -163,7 +165,7 @@ export default function StatementTable({
                           {formatDate(group.date)}
                         </TableCell>
                         <TableCell className="font-semibold text-gray-800">
-                          Opening Balance
+                          {t("Opening Balance")}
                         </TableCell>
                         <TableCell className="text-right">—</TableCell>
                         <TableCell className="text-right">—</TableCell>
@@ -193,7 +195,7 @@ export default function StatementTable({
                                     : "bg-red-100 text-red-800"
                                 }`}
                               >
-                                {entry.type}
+                                {t(entry.type)}
                               </span>
                             </div>
                           </TableCell>
@@ -225,7 +227,7 @@ export default function StatementTable({
                       <TableRow className="border-t border-amber-100 bg-amber-50/70">
                         <TableCell className="text-sm text-gray-600"></TableCell>
                         <TableCell className="font-semibold text-gray-800">
-                          Closing Balance
+                          {t("Closing Balance")}
                         </TableCell>
                         <TableCell className="text-right">—</TableCell>
                         <TableCell className="text-right">—</TableCell>
@@ -245,10 +247,10 @@ export default function StatementTable({
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="text-sm text-teal-50">
-                      Final Closing Balance
+                      {t("Final Closing Balance")}
                     </p>
                     <p className="text-xs text-teal-100 mt-1">
-                      As of{" "}
+                      {t("As of")}{" "}
                       {formatDate(
                         groupedData[groupedData.length - 1]?.date ||
                           new Date().toISOString(),
@@ -273,13 +275,13 @@ export default function StatementTable({
         <div className="rounded-2xl bg-[#082c28] p-4 text-white shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h2 className="text-lg font-bold">Account Statement</h2>
+              <h2 className="text-lg font-bold">{t("Account Statement")}</h2>
               <p className="text-xs text-teal-100/80 mt-1">
                 {currency.currency} ({currency.symbol})
               </p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-teal-100/80">Opening Balance</p>
+              <p className="text-xs text-teal-100/80">{t("Opening Balance")}</p>
               <p className="text-xl font-bold tabular-nums">
                 {formatAmount(openingBalance)}
               </p>
@@ -289,7 +291,7 @@ export default function StatementTable({
 
         {data.length === 0 ? (
           <div className="text-center font-medium text-gray-500 py-8 bg-white rounded-lg shadow-sm">
-            No transactions found for the selected period
+            {t("No transactions found for the selected period")}
           </div>
         ) : (
           groupedData.map((group, groupIndex) => (
@@ -303,7 +305,7 @@ export default function StatementTable({
                       {formatDate(group.date)}
                     </p>
                     <p className="text-xs text-gray-600">
-                      Opening: {formatAmount(group.opening_balance)}
+                      {t("Opening:")}{" "} {formatAmount(group.opening_balance)}
                     </p>
                   </div>
                 </div>
@@ -329,7 +331,7 @@ export default function StatementTable({
                               : "bg-red-100 text-red-800"
                           }`}
                         >
-                          {entry.type}
+                          {t(entry.type)}
                         </span>
                       </div>
                     </div>
@@ -338,19 +340,19 @@ export default function StatementTable({
                   {/* Credit/Debit and Balance */}
                   <div className="grid grid-cols-1 gap-2 border-t border-slate-100 pt-3 tabular-nums min-[400px]:grid-cols-3">
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Credit</p>
+                      <p className="text-xs text-gray-500 mb-1">{t("Credit")}</p>
                       <p className="text-sm font-bold text-green-600">
                         {entry.credit > 0 ? formatAmount(entry.credit) : "—"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Debit</p>
+                      <p className="text-xs text-gray-500 mb-1">{t("Debit")}</p>
                       <p className="text-sm font-bold text-red-600">
                         {entry.debit > 0 ? formatAmount(entry.debit) : "—"}
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 mb-1">Balance</p>
+                      <p className="text-xs text-gray-500 mb-1">{t("Balance")}</p>
                       <p
                         className={`text-sm font-bold ${
                           entry.balance >= 0 ? "text-green-700" : "text-red-700"
@@ -371,7 +373,7 @@ export default function StatementTable({
               <div className="rounded-xl border border-amber-100 bg-amber-50 p-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-semibold text-gray-700">
-                    Closing Balance
+                    {t("Closing Balance")}
                   </span>
                   <span className="text-base font-bold text-yellow-700">
                     {formatAmount(group.closing_balance)}
@@ -387,9 +389,9 @@ export default function StatementTable({
           <div className="bg-linear-to-r from-[#034e43] to-[#056455] rounded-2xl p-4 text-white shadow-sm">
             <div className="flex justify-between items-center">
               <div>
-                <p className="text-sm text-teal-50">Final Closing Balance</p>
+                <p className="text-sm text-teal-50">{t("Final Closing Balance")}</p>
                 <p className="text-xs text-teal-100 mt-1">
-                  As of{" "}
+                  {t("As of")}{" "}
                   {formatDate(
                     groupedData[groupedData.length - 1]?.date ||
                       new Date().toISOString(),

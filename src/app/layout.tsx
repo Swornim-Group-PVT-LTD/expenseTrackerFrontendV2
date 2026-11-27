@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans_Devanagari } from "next/font/google";
 // @ts-ignore
 import "./globals.css";
 import I18nProvider from "./i18n/I18nProvider";
@@ -18,6 +18,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const nepaliFont = Noto_Sans_Devanagari({
+  variable: "--font-nepali",
+  subsets: ["devanagari"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Expense Tracker",
   description: "Track Your Money",
@@ -31,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${nepaliFont.variable} antialiased`}
       >
         <BalanceVisibilityProvider>
           <AuthProvider>

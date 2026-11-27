@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -11,6 +14,7 @@ import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 const compactNumber = new Intl.NumberFormat(undefined, { notation: "compact" });
 
 export default function RemainingBalanceChart({ refreshTrigger }: { refreshTrigger: number }) {
+  const { t } = useTranslation();
   const [result, setResult] = useState<MonthlyRemainingBalanceResponse | null>();
   const [loadedRefresh, setLoadedRefresh] = useState<number | null>(null);
   const { currency } = useCurrency();
@@ -41,7 +45,7 @@ export default function RemainingBalanceChart({ refreshTrigger }: { refreshTrigg
     <section aria-labelledby="balance-chart-heading" className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <h2 id="balance-chart-heading" className="text-lg font-bold tracking-tight text-[#082c28]">
-          Monthly remaining balance
+          {t("Monthly remaining balance")}
         </h2>
         {!loading && result?.year && (
           <span className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-sm font-medium text-slate-700">{result.year}</span>
@@ -56,7 +60,7 @@ export default function RemainingBalanceChart({ refreshTrigger }: { refreshTrigg
             <YAxis width={52} axisLine={false} tickLine={false} tick={{ fill: "#475569", fontSize: 12 }} tickFormatter={(value) => isVisible ? compactNumber.format(value) : "XXX"} />
             <Tooltip
               cursor={{ stroke: "#cbd5e1" }}
-              formatter={(value) => [isVisible ? `${currency} ${Number(value).toLocaleString()}`.trim() : "XXX", "Remaining balance"]}
+              formatter={(value) => [isVisible ? `${currency} ${Number(value).toLocaleString()}`.trim() : "XXX", t("Remaining balance")]}
             />
             <Line
               type="monotone"
@@ -70,7 +74,7 @@ export default function RemainingBalanceChart({ refreshTrigger }: { refreshTrigg
         </ResponsiveContainer>
       ) : (
         <p role="status" className="grid h-[264px] place-items-center text-center text-sm text-slate-600">
-          {loading ? "Loading monthly balance…" : result === null ? "Monthly balance is unavailable." : "No monthly balance data yet."}
+          {loading ? t("Loading monthly balance…") : result === null ? t("Monthly balance is unavailable.") : t("No monthly balance data yet.")}
         </p>
       )}
     </section>

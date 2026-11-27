@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import React, { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Download, FileText, Printer, X } from "lucide-react";
@@ -71,7 +72,7 @@ const textValue = (value: unknown): string => {
         : "";
 };
 
-const formatDate = (date?: string | null): string => {
+const formatDate = (date: string | null | undefined, locale: string): string => {
     if (!date) {
         return "—";
     }
@@ -82,7 +83,7 @@ const formatDate = (date?: string | null): string => {
         return date;
     }
 
-    return parsed.toLocaleDateString("en-GB", {
+    return parsed.toLocaleDateString(locale, {
         day: "2-digit",
         month: "short",
         year: "numeric",
@@ -122,6 +123,8 @@ export default function InvoiceTemplate({
     invoice,
     onClose,
 }: InvoiceTemplateProps) {
+    const { t, i18n } = useTranslation();
+    const dateLocale = i18n.language === "np" ? "ne-NP" : "en-GB";
     const { user } = useAuth();
     const printRef = useRef<HTMLDivElement>(null);
     const [downloading, setDownloading] = useState(false);
@@ -207,7 +210,7 @@ export default function InvoiceTemplate({
         const source = printRef.current;
 
         if (!source) {
-            toast.error("Invoice preview is not ready.");
+            toast.error(t("Invoice preview is not ready."));
             return;
         }
 
@@ -348,10 +351,10 @@ export default function InvoiceTemplate({
 
             pdf.save(`${filename}.pdf`);
 
-            toast.success("Invoice PDF downloaded.");
+            toast.success(t("Invoice PDF downloaded."));
         } catch (error) {
             console.error("PDF download failed:", error);
-            toast.error("Unable to download the invoice PDF.");
+            toast.error(t("Unable to download the invoice PDF."));
         } finally {
             clone?.remove();
             setDownloading(false);
@@ -404,7 +407,7 @@ export default function InvoiceTemplate({
                     .invoice-print-area {
                         max-width: none !important;
                         color: #17252b;
-                        font: 11pt/1.4 Arial, Helvetica, sans-serif;
+                        font: 11pt/1.4 Arial, var(--font-nepali), Helvetica, sans-serif;
                     }
 
                     .invoice-print-header {
@@ -470,7 +473,7 @@ export default function InvoiceTemplate({
             <div
                 role="dialog"
                 aria-modal="true"
-                aria-label="Invoice preview"
+                aria-label={t("Invoice preview")}
                 className="invoice-modal-shell flex max-h-[96vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
             >
                     <div className="invoice-modal-toolbar flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 py-3 sm:px-6">
@@ -481,11 +484,11 @@ export default function InvoiceTemplate({
 
                             <div>
                                 <h2 className="font-bold text-gray-800">
-                                    Invoice Preview
+                                    {t("Invoice Preview")}
                                 </h2>
 
                                 <p className="text-xs text-gray-500">
-                                    {invoice.invoice_number || "Invoice"}
+                                    {invoice.invoice_number || t("Invoice")}
                                 </p>
                             </div>
                         </div>
@@ -497,7 +500,7 @@ export default function InvoiceTemplate({
                                 className="inline-flex items-center gap-2 rounded-lg bg-[#14383F] px-3 py-2 text-sm font-semibold text-white hover:bg-[#1b4b53]"
                             >
                                 <Printer size={16} />
-                                Print
+                                {t("Print")}
                             </button>
 
                             <button
@@ -514,21 +517,21 @@ export default function InvoiceTemplate({
 
                                 <span>
                                     {downloading
-                                        ? "Generating..."
-                                        : "Download PDF"}
+                                        ? t("Generating...")
+                                        : t("Download PDF")}
                                 </span>
                             </button>
 
                             <button
                                 type="button"
                                 onClick={onClose}
-                                aria-label="Close invoice preview"
+                                aria-label={t("Close invoice preview")}
                                 className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold text-[#082c28] hover:bg-teal-50"
                             >
                                 <X size={19} />
 
                                 <span>
-                                    Close
+                                    {t("Close")}
                                 </span>
                             </button>
                         </div>
@@ -545,7 +548,7 @@ export default function InvoiceTemplate({
                                 <div className="flex flex-col justify-between gap-6 sm:flex-row print:flex-row">
                                     <div>
                                         <AccountLogo
-                                            alt="Account logo"
+                                            alt={t("Account logo")}
                                             className="mb-4 h-14 max-w-40 object-contain object-left"
                                         />
                                         {issuerName && (
@@ -555,35 +558,35 @@ export default function InvoiceTemplate({
                                         )}
 
                                         <h2 className="mt-3 wrap-break-word text-3xl font-bold sm:text-4xl">
-                                            {invoice.invoice_number || "INVOICE"}
+                                            {invoice.invoice_number || t("Invoice")}
                                         </h2>
 
                                         <p className="mt-2 text-sm text-white/70">
                                             {invoice.purchase_order
-                                                ? `Purchase Order: ${invoice.purchase_order}`
-                                                : "Payment invoice"}
+                                                ? t("Purchase Order: {{number}}", { number: invoice.purchase_order })
+                                                : t("Payment invoice")}
                                         </p>
                                     </div>
 
                                     <div className="sm:text-right print:text-right">
                                         <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase text-[#F4C95D]">
-                                            {status}
+                                            {t(status)}
                                         </span>
 
                                         <p className="mt-4 text-sm text-white/70">
-                                            Invoice Date
+                                            {t("Invoice Date")}
                                         </p>
 
                                         <p className="font-semibold">
-                                            {formatDate(invoice.invoice_date)}
+                                            {formatDate(invoice.invoice_date, dateLocale)}
                                         </p>
 
                                         <p className="mt-3 text-sm text-white/70">
-                                            Due Date
+                                            {t("Due Date")}
                                         </p>
 
                                         <p className="font-semibold">
-                                            {formatDate(invoice.due_date)}
+                                            {formatDate(invoice.due_date, dateLocale)}
                                         </p>
                                     </div>
                                 </div>
@@ -593,28 +596,28 @@ export default function InvoiceTemplate({
                                 <div className="invoice-print-keep-together grid grid-cols-1 gap-8 sm:grid-cols-2 print:grid-cols-2 print:gap-5">
                                     <div>
                                         <h3 className="mb-3 border-l-4 border-[#F4C95D] pl-3 text-xs font-bold uppercase tracking-wider text-[#14383F]">
-                                            From
+                                            {t("From")}
                                         </h3>
 
                                         <div className="invoice-address whitespace-pre-line text-sm leading-7 text-gray-600">
-                                            {item.company_details || "Company details"}
+                                            {item.company_details || t("Company Details")}
                                         </div>
                                     </div>
 
                                     <div>
                                         <h3 className="mb-3 border-l-4 border-[#F4C95D] pl-3 text-xs font-bold uppercase tracking-wider text-[#14383F]">
-                                            Bill To
+                                            {t("Bill To")}
                                         </h3>
 
                                         <div className="invoice-address whitespace-pre-line text-sm leading-7 text-gray-600">
-                                            {item.bill_to || "Customer details"}
+                                            {item.bill_to || t("Customer details")}
                                         </div>
                                     </div>
                                 </div>
 
                                 <div>
                                     <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-[#14383F]">
-                                        Invoice Items
+                                        {t("Invoice Items")}
                                     </h3>
 
                                     <div className="invoice-print-table overflow-x-auto rounded-xl border border-slate-200">
@@ -622,16 +625,16 @@ export default function InvoiceTemplate({
                                             <thead>
                                                 <tr className="bg-slate-50 text-[#082c28]">
                                                     <th className="px-4 py-3">
-                                                        Description
+                                                        {t("Description")}
                                                     </th>
                                                     <th className="px-4 py-3 text-right">
-                                                        Unit Cost
+                                                        {t("Unit Cost")}
                                                     </th>
                                                     <th className="px-4 py-3 text-center">
-                                                        Qty
+                                                        {t("Qty")}
                                                     </th>
                                                     <th className="px-4 py-3 text-right">
-                                                        Amount
+                                                        {t("Amount")}
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -673,7 +676,7 @@ export default function InvoiceTemplate({
                                                             colSpan={4}
                                                             className="px-4 py-10 text-center text-gray-400"
                                                         >
-                                                            No invoice items found.
+                                                            {t("No invoice items found.")}
                                                         </td>
                                                     </tr>
                                                 )}
@@ -686,7 +689,7 @@ export default function InvoiceTemplate({
                                     <div className="w-full max-w-sm space-y-3 text-sm">
                                         <div className="flex justify-between gap-4">
                                             <span className="text-gray-500">
-                                                Subtotal
+                                                {t("Subtotal")}
                                             </span>
                                             <span className="font-semibold">
                                                 {formatMoney(subtotal)}
@@ -696,7 +699,7 @@ export default function InvoiceTemplate({
                                         {discount !== 0 && (
                                             <div className="flex justify-between gap-4">
                                                 <span className="text-gray-500">
-                                                    Discount{invoice.discount_type === "percent" ? ` (${numberValue(invoice.discount_amount)}%)` : ""}
+                                                    {t("Discount")}{invoice.discount_type === "percent" ? ` (${numberValue(invoice.discount_amount)}%)` : ""}
                                                 </span>
                                                 <span className="font-semibold text-green-700">
                                                     −{formatMoney(discount)}
@@ -707,7 +710,7 @@ export default function InvoiceTemplate({
                                         {taxPercentage !== 0 && (
                                             <div className="flex justify-between gap-4">
                                                 <span className="text-gray-500">
-                                                    Tax ({taxPercentage}%)
+                                                    {t("Tax (")}{taxPercentage}%)
                                                 </span>
                                                 <span className="font-semibold">
                                                     {formatMoney(tax)}
@@ -718,7 +721,7 @@ export default function InvoiceTemplate({
                                         {shippingFee !== 0 && (
                                             <div className="flex justify-between gap-4">
                                                 <span className="text-gray-500">
-                                                    Shipping Fee
+                                                    {t("Shipping Fee")}
                                                 </span>
                                                 <span className="font-semibold">
                                                     {formatMoney(shippingFee)}
@@ -729,7 +732,7 @@ export default function InvoiceTemplate({
                                         <div className="border-t-2 border-[#14383F] pt-4">
                                             <div className="flex justify-between gap-4">
                                                 <span className="font-bold uppercase text-[#14383F]">
-                                                    Grand Total
+                                                    {t("Grand Total")}
                                                 </span>
                                                 <span className="text-xl font-bold text-[#14383F]">
                                                     {formatMoney(numberValue(total))}
@@ -742,35 +745,34 @@ export default function InvoiceTemplate({
                                 <div className="invoice-print-keep-together grid grid-cols-1 gap-6 border-t border-gray-200 pt-6 sm:grid-cols-2 print:grid-cols-2 print:gap-5 print:pt-4">
                                     <div>
                                         <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-[#14383F]">
-                                            Payment Terms
+                                            {t("Payment Terms")}
                                         </h3>
 
                                         <p className="whitespace-pre-line text-sm leading-6 text-gray-500">
                                             {item.notes_payment_terms ||
-                                                "Please make payment by the due date."}
+                                                t("Please make payment by the due date.")}
                                         </p>
                                     </div>
 
                                     <div>
                                         <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-[#14383F]">
-                                            Bank Account Details
+                                            {t("Bank Account Details")}
                                         </h3>
 
                                         <p className="whitespace-pre-line text-sm leading-6 text-gray-500">
                                             {item.bank_account_details ||
-                                                "Please contact us for payment details."}
+                                                t("Please contact us for payment details.")}
                                         </p>
                                     </div>
                                 </div>
 
                                 <div className="invoice-print-keep-together border-t border-gray-200 pt-5 text-center print:pt-3">
                                     <p className="text-sm font-semibold text-[#14383F]">
-                                        Thank you for your business!
+                                        {t("Thank you for your business!")}
                                     </p>
 
                                     <p className="mt-1 text-xs text-gray-400">
-                                        Please contact us if you have any
-                                        questions regarding this invoice.
+                                        {t("Please contact us if you have any questions regarding this invoice.")}
                                     </p>
                                 </div>
                             </div>

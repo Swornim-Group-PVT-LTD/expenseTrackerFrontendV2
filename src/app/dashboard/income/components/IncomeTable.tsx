@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
@@ -38,6 +39,7 @@ export default function IncomeTable({
   onDataLoad?: (data: IncomeResponse[]) => void;
   isFilterActive: boolean;
 }) {
+  const { t } = useTranslation();
   const [income, setIncome] = useState<IncomeResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -70,7 +72,7 @@ export default function IncomeTable({
       setCategories(data);
     } catch (err) {
       console.error("Failed to fetch income categories:", err);
-      toast.error("Failed to fetch income categories");
+      toast.error(t("Failed to fetch income categories"));
     }
   };
 
@@ -105,7 +107,7 @@ export default function IncomeTable({
     );
 
     if (!categoryExists) {
-      toast.error("Please select a valid category from the list");
+      toast.error(t("Please select a valid category from the list"));
       return;
     }
 
@@ -114,7 +116,7 @@ export default function IncomeTable({
         add_income: editForm.add_income,
         income_category: editForm.income_category,
       });
-      toast.success("Income updated successfully");
+      toast.success(t("Income updated successfully"));
       onSuccess && onSuccess();
       setIncome((prev) =>
         prev.map((item) =>
@@ -139,10 +141,10 @@ export default function IncomeTable({
     try {
       await deleteIncomeService(sn);
       onSuccess && onSuccess();
-      toast.success("income deleted successfully");
+      toast.success(t("income deleted successfully"));
       setIncome(income.filter((income) => income.sn !== sn));
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to delete income.");
+      toast.error(error instanceof Error ? error.message : t("Failed to delete income."));
     }
   };
 
@@ -156,11 +158,11 @@ export default function IncomeTable({
               <TableHead className="text-lg">
                 <TableRow>
                   <TableHeadCell>ID</TableHeadCell>
-                  <TableHeadCell>Income</TableHeadCell>
-                  <TableHeadCell>Remarks</TableHeadCell>
-                  <TableHeadCell>Total Income</TableHeadCell>
-                  <TableHeadCell>Created Date</TableHeadCell>
-                  <TableHeadCell>Action</TableHeadCell>
+                  <TableHeadCell>{t("Income")}</TableHeadCell>
+                  <TableHeadCell>{t("Remarks")}</TableHeadCell>
+                  <TableHeadCell>{t("Total Income")}</TableHeadCell>
+                  <TableHeadCell>{t("Created Date")}</TableHeadCell>
+                  <TableHeadCell>{t("Action")}</TableHeadCell>
                 </TableRow>
               </TableHead>
 
@@ -180,7 +182,7 @@ export default function IncomeTable({
                       colSpan={6}
                       className="text-center font-medium text-gray-500"
                     >
-                      No income found
+                      {t("No income found")}
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -229,7 +231,7 @@ export default function IncomeTable({
                                 income_category: value,
                               }))
                             }
-                            placeholder="Type income category..."
+                            placeholder={t("Type income category...")}
                             className="w-full sm:w-80"
                           />
                         ) : (
@@ -251,13 +253,13 @@ export default function IncomeTable({
                               className="text-[#056455] mr-2 cursor-pointer"
                               onClick={() => saveEdit(row.sn)}
                             >
-                              Save
+                              {t("Save")}
                             </button>
                             <button
                               className="text-gray-600 cursor-pointer"
                               onClick={cancelEdit}
                             >
-                              Cancel
+                              {t("Cancel")}
                             </button>
                           </>
                         ) : (
@@ -277,7 +279,7 @@ export default function IncomeTable({
                         className="flex justify-between items-center p-4 text-white font-semibold rounded-lg shadow mt-2"
                         style={{ backgroundColor: "#056455" }}
                       >
-                        <span>Total Income</span>
+                        <span>{t("Total Income")}</span>
                         <span>
                           {maskAmount(
                             income[income.length - 1].total_income,
@@ -303,7 +305,7 @@ export default function IncomeTable({
           </div>
         ) : income.length === 0 ? (
           <div className="text-center font-medium text-gray-500">
-            No income found
+            {t("No income found")}
           </div>
         ) : (
           income.map((row) => (
@@ -323,14 +325,14 @@ export default function IncomeTable({
                         onClick={() => saveEdit(row.sn)}
                         className="text-[#056455] hover:underline"
                       >
-                        Save
+                        {t("Save")}
                       </button>
                       <span className="text-gray-300">/</span>
                       <button
                         onClick={() => cancelEdit()}
                         className="text-gray-500 hover:underline"
                       >
-                        Cancel
+                        {t("Cancel")}
                       </button>
                     </>
                   ) : (
@@ -358,7 +360,7 @@ export default function IncomeTable({
                           income_category: value,
                         }))
                       }
-                      placeholder="Category..."
+                      placeholder={t("Category...")}
                       className="w-full text-xs"
                     />
                   ) : (
@@ -387,7 +389,7 @@ export default function IncomeTable({
                     </div>
                   ) : (
                     <span className="text-sm font-bold text-gray-800">
-                      Income{" "}
+                      {t("Income")}{" "}
                       {maskAmount(
                         row.add_income,
                         isVisible,
@@ -404,7 +406,7 @@ export default function IncomeTable({
                   {row.created_date}
                 </span>
                 <span className="text-xs font-bold text-gray-700">
-                  Total Income{" "}
+                  {t("Total Income")}{" "}
                   {maskAmount(row.total_income, isVisible, row.symbol || "NPR")}
                 </span>
               </div>
@@ -419,7 +421,7 @@ export default function IncomeTable({
             style={{ backgroundColor: "#056455" }}
           >
             <div className="flex justify-between items-center">
-              <span>Total Income</span>
+              <span>{t("Total Income")}</span>
               <span>
                 {maskAmount(
                   income[income.length - 1].total_income,

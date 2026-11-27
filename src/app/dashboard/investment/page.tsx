@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 
 import InvestmentForm from "./components/InvestmentForm";
@@ -17,6 +18,7 @@ import { InvestmentResponse } from "@/app/types/investmentType";
 import { downloadService } from "@/app/services/downloadService";
 
 function Investment() {
+  const { t } = useTranslation();
   const [filteredData, setFilteredData] = useState<InvestmentResponse[]>([]);
   const [allData, setAllData] = useState<InvestmentResponse[]>([]);
   const [isFilterActive, setIsFilterActive] = useState(false);
@@ -72,7 +74,7 @@ function Investment() {
         const data = await getInvestmentCategoriesService();
         setCategories(data);
       } catch (err) {
-        toast.error("Failed to fetch investment categories");
+        toast.error(t("Failed to fetch investment categories"));
       }
     };
 
@@ -81,20 +83,20 @@ function Investment() {
 
   return (
     <main className="space-y-5">
-      <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">Investments</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-[#082c28] dark:text-white sm:text-3xl">{t("Investments")}</h1>
 
       <InvestmentForm
         onSuccess={handleRefresh}
         balanceCard={<BalanceCard refreshTrigger={refreshTrigger} />}
       />
 
-      <section aria-label="Investments charts" className="grid gap-4 xl:grid-cols-2">
+      <section aria-label={t("Investments charts")} className="grid gap-4 xl:grid-cols-2">
         <InvestmentLineChart refreshTrigger={refreshTrigger} />
         <InvestmentBarChart refreshTrigger={refreshTrigger} />
       </section>
 
       <section aria-labelledby="investment-history-heading" className="space-y-3">
-        <h2 id="investment-history-heading" className="text-lg font-bold tracking-tight text-[#082c28] dark:text-white">Investments history</h2>
+        <h2 id="investment-history-heading" className="text-lg font-bold tracking-tight text-[#082c28] dark:text-white">{t("Investments history")}</h2>
         <DateFilter
           fetchService={getInvestmentByDateRangeService}
           onFilter={handleFilter}
@@ -105,7 +107,7 @@ function Investment() {
 
             if (data.length === 0) {
               toast.warning(
-                "No data to download. Please apply filters or wait for data to load.",
+                t("No data to download. Please apply filters or wait for data to load."),
               );
               return;
             }
@@ -127,7 +129,7 @@ function Investment() {
 
             if (data.length === 0) {
               toast.warning(
-                "No data to download. Please apply filters or wait for data to load.",
+                t("No data to download. Please apply filters or wait for data to load."),
               );
               return;
             }
@@ -136,10 +138,10 @@ function Investment() {
               data,
               [
                 { header: "ID", field: "id" },
-                { header: "Investment", field: "add_investment" },
-                { header: "Category", field: "investment_category" },
-                { header: "Total Investment", field: "total_investment" },
-                { header: "Date", field: "created_date" },
+                { header: t("Investment"), field: "add_investment" },
+                { header: t("Category"), field: "investment_category" },
+                { header: t("Total Investment"), field: "total_investment" },
+                { header: t("Date"), field: "created_date" },
               ],
               "Investment_Report",
             );
@@ -149,14 +151,14 @@ function Investment() {
         {isFilterActive && (
           <div className="mb-4 flex items-center gap-2">
             <span className="text-sm text-gray-600">
-              Showing {filteredData.length} filtered results
+              {t("Showing {{count}} filtered results", { count: filteredData.length })}
             </span>
 
             <button
               onClick={clearFilter}
               className="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded"
             >
-              Show All
+              {t("Show All")}
             </button>
           </div>
         )}

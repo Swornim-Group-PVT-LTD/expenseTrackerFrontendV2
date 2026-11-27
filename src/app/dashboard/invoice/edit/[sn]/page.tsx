@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import InvoiceForm from "../../components/invoiceForm";
@@ -13,6 +14,7 @@ export default function EditInvoicePage() {
 }
 
 function InvoiceEditor({ sn }: { sn: string }) {
+    const { t } = useTranslation();
     const router = useRouter();
     const [edit, setEdit] = useState<{ sn: string; invoice: InvoiceResponse }>();
     const [error, setError] = useState("");
@@ -24,13 +26,13 @@ function InvoiceEditor({ sn }: { sn: string }) {
             if (!active) return;
             const invoice = (response.data ?? response) as InvoiceResponse;
             if (!invoice.invoice_date) {
-                setError("The invoice details are missing.");
+                setError(t("The invoice details are missing."));
                 return;
             }
             setEdit({ sn, invoice });
         }).catch((requestError: unknown) => {
             if (active) {
-                setError(requestError instanceof Error ? requestError.message : "Could not load the invoice.");
+                setError(requestError instanceof Error ? requestError.message : t("Could not load the invoice."));
             }
         });
 
@@ -41,9 +43,9 @@ function InvoiceEditor({ sn }: { sn: string }) {
 
     return (
         <div className="mt-5 space-y-5 p-4">
-            <h1 className="text-xl font-bold text-[#14383F]">Edit Invoice</h1>
+            <h1 className="text-xl font-bold text-[#14383F]">{t("Edit Invoice")}</h1>
             {error && <p role="alert" className="text-red-700">{error}</p>}
-            {!edit && !error && <p role="status">Loading invoice…</p>}
+            {!edit && !error && <p role="status">{t("Loading invoice…")}</p>}
             {edit && <InvoiceForm edit={edit} onSuccess={() => router.replace("/dashboard/invoice")} />}
         </div>
     );
