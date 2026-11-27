@@ -94,7 +94,7 @@ export default function SimpleDateFilter({
         {/* Date Inputs */}
         <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
           {/* From Date */}
-          <div className="flex flex-col">
+          <div className="flex min-w-0 flex-col">
             <label
               htmlFor="fromDate"
               className="text-sm font-semibold text-gray-700 mb-2"
@@ -110,13 +110,13 @@ export default function SimpleDateFilter({
                 id="fromDate"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="h-11 w-full min-w-0 rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 focus:border-[#056455] focus:outline-none focus:ring-2 focus:ring-[#056455]/25"
+                className="block h-11 w-full min-w-0 max-w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 focus:border-[#056455] focus:outline-none focus:ring-2 focus:ring-[#056455]/25 [@supports(-webkit-touch-callout:none)]:appearance-none [&::-webkit-date-and-time-value]:text-left"
               />
             </div>
           </div>
 
           {/* To Date */}
-          <div className="flex flex-col">
+          <div className="flex min-w-0 flex-col">
             <label
               htmlFor="toDate"
               className="text-sm font-semibold text-gray-700 mb-2"
@@ -132,7 +132,7 @@ export default function SimpleDateFilter({
                 id="toDate"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="h-11 w-full min-w-0 rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 focus:border-[#056455] focus:outline-none focus:ring-2 focus:ring-[#056455]/25"
+                className="block h-11 w-full min-w-0 max-w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 focus:border-[#056455] focus:outline-none focus:ring-2 focus:ring-[#056455]/25 [@supports(-webkit-touch-callout:none)]:appearance-none [&::-webkit-date-and-time-value]:text-left"
               />
             </div>
           </div>
