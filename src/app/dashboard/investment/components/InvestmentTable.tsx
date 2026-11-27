@@ -1,5 +1,6 @@
 "use client";
 
+import TableActionButton from "@/app/components/TableActionButton";
 import { ClipLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
@@ -261,20 +262,9 @@ export default function InvestmentTable({
                             </button>
                           </>
                         ) : (
-                          <button
-                            className="text-blue-600 cursor-pointer"
-                            onClick={() => startEdit(row)}
-                          >
-                            Edit
-                          </button>
+                          <TableActionButton action="edit" onClick={() => startEdit(row)} />
                         )}
-                        <a
-                          href="#"
-                          className="font-medium text-red-600 hover:underline dark:text-red-500 ml-2"
-                          onClick={() => handleDelete(row.sn)}
-                        >
-                          Delete
-                        </a>
+                        <TableActionButton action="delete" onClick={() => handleDelete(row.sn)} />
                       </TableCell>
                     </TableRow>
                   ))
@@ -346,19 +336,8 @@ export default function InvestmentTable({
                     </>
                   ) : (
                     <>
-                      <button
-                        onClick={() => startEdit(row)}
-                        className="text-[#FFAA00] hover:underline"
-                      >
-                        Edit
-                      </button>
-                      <span className="text-gray-300">/</span>
-                      <button
-                        onClick={() => handleDelete(row.sn)}
-                        className="text-red-600 hover:underline"
-                      >
-                        Delete
-                      </button>
+                      <TableActionButton action="edit" onClick={() => startEdit(row)} />
+                      <TableActionButton action="delete" onClick={() => handleDelete(row.sn)} />
                     </>
                   )}
                 </div>

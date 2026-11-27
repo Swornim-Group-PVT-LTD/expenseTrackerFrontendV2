@@ -1,5 +1,6 @@
 "use client";
 
+import TableActionButton from "@/app/components/TableActionButton";
 import React, { useState, useEffect } from "react";
 import { IncomeCategoryResponse } from "../../../../types/catalolgueType/incomeCatalogueType";
 
@@ -183,20 +184,10 @@ export default function IncomeCatalogueTable({
                             </button>
                           </>
                         ) : (
-                          <button
-                            className="text-green-400 cursor-pointer hover:underline"
-                            onClick={() => startEdit(item)}
-                          >
-                            Update
-                          </button>
+                          <TableActionButton action="edit" onClick={() => startEdit(item)} />
                         )}
                       </span>
-                      <span
-                        className="text-red-500 cursor-pointer hover:underline"
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        Delete
-                      </span>
+                      <TableActionButton action="delete" onClick={() => handleDelete(item.id)} />
                     </div>
                   </td>
                 </tr>
@@ -251,19 +242,8 @@ export default function IncomeCatalogueTable({
                     </>
                   ) : (
                     <>
-                      <button
-                        onClick={() => startEdit(item)}
-                        className="text-[#FFAA00] hover:underline"
-                      >
-                        Edit
-                      </button>
-                      <span className="text-gray-300">/</span>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="text-red-600 hover:underline"
-                      >
-                        Delete
-                      </button>
+                      <TableActionButton action="edit" onClick={() => startEdit(item)} />
+                      <TableActionButton action="delete" onClick={() => handleDelete(item.id)} />
                     </>
                   )}
                 </div>

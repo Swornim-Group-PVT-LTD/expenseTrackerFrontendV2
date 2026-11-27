@@ -1,5 +1,6 @@
 "use client";
 
+import TableActionButton from "@/app/components/TableActionButton";
 import { calculateInvoiceTotals } from "@/app/utils/invoiceTotals";
 import React, { useCallback, useEffect, useState } from "react";
 import {
@@ -13,8 +14,6 @@ import {
 import { ClipLoader } from "react-spinners";
 import {
   Eye,
-  Pencil,
-  Trash2,
   Save,
   FileText,
 } from "lucide-react";
@@ -404,35 +403,24 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
         </button>
 
         {sn !== null && getStatus(invoice) === "Active" && (
-          <button
-            type="button"
+          <TableActionButton
+            action="edit"
+            label="Edit Invoice"
             onClick={() => {
               window.location.href = `/dashboard/invoice/edit/${encodeURIComponent(
                 String(sn)
               )}`;
             }}
-            title="Edit Invoice"
-            aria-label="Edit Invoice"
-            className="rounded-md p-1 text-blue-600 hover:bg-blue-50"
-          >
-            <Pencil size={18} />
-          </button>
+          />
         )}
 
-        <button
-          type="button"
+        <TableActionButton
+          action="delete"
+          label="Delete Invoice"
           onClick={() => void handleDeleteInvoice(invoice)}
           disabled={deletingSn !== null}
-          title="Delete Invoice"
-          aria-label="Delete Invoice"
-          className="rounded-md p-1 text-red-600 hover:bg-red-50 disabled:opacity-50"
-        >
-          {deletingSn === sn ? (
-            <ClipLoader size={16} color="#dc2626" />
-          ) : (
-            <Trash2 size={18} />
-          )}
-        </button>
+          busy={deletingSn === sn}
+        />
       </div>
     );
   };
@@ -637,33 +625,24 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
                       </button>
 
                       {sn !== null && getStatus(invoice) === "Active" && (
-                        <button
-                          type="button"
+                        <TableActionButton
+                          action="edit"
+                          label="Edit Invoice"
                           onClick={() => {
                             window.location.href = `/dashboard/invoice/edit/${encodeURIComponent(
                               String(sn)
                             )}`;
                           }}
-                          className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600"
-                        >
-                          <Pencil size={17} />
-                          Edit
-                        </button>
+                        />
                       )}
 
-                      <button
-                        type="button"
+                      <TableActionButton
+                        action="delete"
+                        label="Delete Invoice"
                         onClick={() => void handleDeleteInvoice(invoice)}
                         disabled={deletingSn !== null}
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-red-600 disabled:opacity-50"
-                      >
-                        {deletingSn === sn ? (
-                          <ClipLoader size={14} color="#dc2626" />
-                        ) : (
-                          <Trash2 size={17} />
-                        )}
-                        Delete
-                      </button>
+                        busy={deletingSn === sn}
+                      />
                     </div>
                   </div>
                 );
