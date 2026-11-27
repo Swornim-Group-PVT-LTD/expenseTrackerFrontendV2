@@ -142,11 +142,7 @@ export default function SavingTable({
       setSaving((prev) =>
         prev.map((item) =>
           item.sn === sn
-            ? {
-                ...item,
-                add_saving: editForm.add_saving,
-                saving_category: editForm.saving_category,
-              }
+            ? { ...item, ...editForm }
             : item,
         ),
       );
@@ -210,6 +206,30 @@ export default function SavingTable({
         className="mr-2 rounded border-gray-300"
       />
     ) : null;
+
+  const deductFromBalanceToggle = (
+    <button
+      type="button"
+      role="switch"
+      aria-label={t("Deduct from balance")}
+      aria-checked={editForm.want_to_deduct_from_balance}
+      onClick={() =>
+        setEditForm((prev) => ({
+          ...prev,
+          want_to_deduct_from_balance: !prev.want_to_deduct_from_balance,
+        }))
+      }
+      className="group inline-flex min-h-9 shrink-0 cursor-pointer items-center gap-2 rounded-xl text-left text-xs font-medium text-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]"
+    >
+      <span
+        aria-hidden="true"
+        className="relative h-6 w-11 shrink-0 rounded-full bg-gray-300 transition-colors group-aria-checked:bg-[#056455]"
+      >
+        <span className="absolute left-0.5 top-0.5 size-5 rounded-full bg-white shadow-sm transition-transform group-aria-checked:translate-x-5" />
+      </span>
+      <span className="lg:hidden" aria-hidden="true">{t("Deduct from balance")}</span>
+    </button>
+  );
 
   return (
     <>
@@ -288,18 +308,7 @@ export default function SavingTable({
 
                       <TableCell>
                         {editingSn === row.sn ? (
-                          <input
-                            type="checkbox"
-                            checked={
-                              editForm.want_to_deduct_from_balance || false
-                            }
-                            onChange={(e) =>
-                              setEditForm((prev) => ({
-                                ...prev,
-                                want_to_deduct_from_balance: e.target.checked,
-                              }))
-                            }
-                          />
+                          deductFromBalanceToggle
                         ) : (
                           <span>
                             {row.is_transfer ? `Credited ${maskAmount(row.add_saving, isVisible, currency)}` : row.want_to_deduct_from_balance ? t("Yes") : t("No")}
@@ -462,22 +471,7 @@ export default function SavingTable({
                         placeholder={t("Category...")}
                         className="w-full text-xs"
                       />
-                      <label className="flex items-center gap-1.5 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          className="w-3.5 h-3.5 rounded text-[#FFAA00] focus:ring-[#FFAA00]"
-                          checked={editForm.want_to_deduct_from_balance}
-                          onChange={(e) =>
-                            setEditForm((prev) => ({
-                              ...prev,
-                              want_to_deduct_from_balance: e.target.checked,
-                            }))
-                          }
-                        />
-                        <span className="text-[10px] text-gray-500 font-medium leading-none">
-                          {t("Deduct from balance")}
-                        </span>
-                      </label>
+                      {deductFromBalanceToggle}
                     </>
                   ) : (
                     <span className="text-sm text-gray-600">
