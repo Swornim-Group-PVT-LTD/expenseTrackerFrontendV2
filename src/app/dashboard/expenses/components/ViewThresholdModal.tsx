@@ -3,8 +3,8 @@
 import { useTranslation } from "react-i18next";
 import TableActionButton from "@/app/components/TableActionButton";
 import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
-import { toast } from "react-toastify";
+import { ListChecks } from "lucide-react";
+import ThresholdDialog from "./ThresholdDialog";
 import { getThresholdsService, deleteThresholdService, updateThresholdService } from "@/app/services/thresholdService";
 import { ThresholdResponse } from "@/app/types/thresholdType";
 
@@ -19,6 +19,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
   const { t } = useTranslation();
     const [thresholds, setThresholds] = useState<ThresholdResponse[]>([]);
     const [loading, setLoading] = useState(false);
+    const [feedback, setFeedback] = useState<{ message: string; error: boolean } | null>(null);
     const [editingSn, setEditingSn] = useState<string | null>(null);
     const [editForm, setEditForm] = useState({
         expense_threshold_amount: 0,
@@ -31,9 +32,8 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
             setLoading(true);
             const data = await getThresholdsService();
             setThresholds(data);
-            console.log(data);
         } catch (error: any) {
-            toast.error(error.message || t("Failed to fetch thresholds"));
+            setFeedback({ message: error.message || t("Failed to fetch thresholds"), error: true });
         } finally {
             setLoading(false);
         }
@@ -44,6 +44,11 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
             fetchThresholds();
         }
     }, [isOpen, refreshTrigger]);
+
+    const close = () => {
+        setFeedback(null);
+        onClose();
+    };
 
     // Start editing a row
     const startEdit = (threshold: ThresholdResponse) => {
@@ -75,14 +80,13 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                 );
 
                 if (otherEnabledThreshold) {
-                    toast.error(t("Disable the existing {{period}} threshold first.", { period: t(editForm.frequency) }));
+                    setFeedback({ message: t("Disable the existing {{period}} threshold first.", { period: t(editForm.frequency) }), error: true });
                     return;
                 }
             }
 
             await updateThresholdService(sn, editForm);
-            console.log(editForm);
-            toast.success(t("Threshold updated successfully"));
+            setFeedback({ message: t("Threshold updated successfully"), error: false });
             setThresholds((prev) =>
                 prev.map((item) =>
                     item.sn === sn
@@ -98,7 +102,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
             cancelEdit();
             onSuccess && onSuccess(); // Trigger parent refresh
         } catch (error: any) {
-            toast.error(error.message || t("Failed to update threshold"));
+            setFeedback({ message: error.message || t("Failed to update threshold"), error: true });
         }
     };
 
@@ -106,11 +110,11 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
 
         try {
             await deleteThresholdService(sn);
-            toast.success(t("Threshold deleted successfully"));
+            setFeedback({ message: t("Threshold deleted successfully"), error: false });
             fetchThresholds(); // Refresh the list
             onSuccess && onSuccess(); // Trigger parent refresh
         } catch (error: any) {
-            toast.error(error.message || t("Failed to delete threshold"));
+            setFeedback({ message: error.message || t("Failed to delete threshold"), error: true });
         }
     };
 
@@ -130,38 +134,25 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
     if (!isOpen) return null;
 
     return (
-        <div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={(e) => {
-                if (e.target === e.currentTarget) onClose();
-            }}
-        >
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[80vh] flex flex-col">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b">
-                    <h2 className="text-xl font-bold text-gray-800">{t("View Expense Thresholds")}</h2>
-                    <button
-                        onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-                    >
-                        <X className="w-6 h-6" />
-                    </button>
-                </div>
-
-                {/* Content */}
-                <div className="p-6 overflow-y-auto flex-1">
+        <ThresholdDialog title={t("View Expense Thresholds")} icon={ListChecks} onClose={close} wide>
+            <div className="@container space-y-4 p-5 sm:p-6">
+                    {feedback && (
+                        <p role={feedback.error ? "alert" : "status"} className={`rounded-xl border p-3 text-sm ${feedback.error ? "border-red-200 bg-red-50 text-red-800" : "border-teal-200 bg-teal-50 text-teal-900"}`}>
+                            {feedback.message}
+                        </p>
+                    )}
                     {loading ? (
-                        <div className="text-center py-8">
+                        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 py-8 text-center">
                             <p className="text-gray-500">{t("Loading thresholds...")}</p>
                         </div>
                     ) : thresholds.length === 0 ? (
-                        <div className="text-center py-8">
+                        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 py-8 text-center">
                             <p className="text-gray-500">{t("No thresholds found. Add one to get started!")}</p>
                         </div>
                     ) : (
                         <>
                             {/* Desktop Table View */}
-                            <div className="table-surface hidden overflow-x-auto lg:block">
+                            <div className="table-surface hidden overflow-x-auto @min-[40rem]:block">
                                 <table className="ledger-table w-full min-w-[640px] border-collapse">
                                     <thead>
                                         <tr className="bg-gray-100">
@@ -228,7 +219,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                                             t => t.sn !== threshold.sn && t.isEnable === true && t.frequency === editForm.frequency
                                                                         );
                                                                         if (otherEnabled) {
-                                                                            toast.warning(t("Disable the existing {{period}} threshold first.", { period: t(editForm.frequency) }));
+                                                                            setFeedback({ message: t("Disable the existing {{period}} threshold first.", { period: t(editForm.frequency) }), error: true });
                                                                             return;
                                                                         }
                                                                     }
@@ -287,11 +278,11 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                             </div>
 
                             {/* Mobile Card View */}
-                            <div className="lg:hidden space-y-4">
+                            <div className="@min-[40rem]:hidden space-y-4">
                                 {thresholds.map((threshold) => (
                                     <div
                                         key={threshold.id}
-                                        className="bg-white rounded-lg shadow-sm p-4 border border-gray-100 flex flex-col gap-3"
+                                        className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
                                     >
                                         {/* Row 1: ID and Actions */}
                                         <div className="flex justify-between items-center">
@@ -382,7 +373,7 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                                                                         t => t.sn !== threshold.sn && t.isEnable === true && t.frequency === editForm.frequency
                                                                     );
                                                                     if (otherEnabled) {
-                                                                        toast.warning(t("Disable the existing {{period}} threshold first.", { period: t(editForm.frequency) }));
+                                                                        setFeedback({ message: t("Disable the existing {{period}} threshold first.", { period: t(editForm.frequency) }), error: true });
                                                                         return;
                                                                     }
                                                                 }
@@ -418,9 +409,8 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
                             </div>
                         </>
                     )}
-                </div>
             </div>
-        </div>
+        </ThresholdDialog>
     );
 };
 

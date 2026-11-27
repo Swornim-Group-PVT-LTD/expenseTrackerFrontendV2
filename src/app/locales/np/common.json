@@ -522,6 +522,7 @@
   "You’ve reached your {{period}} spending limit.": "तपाईं {{period}} खर्च सीमामा पुग्नुभयो।",
   "You’re approaching your {{period}} spending limit.": "तपाईं {{period}} खर्च सीमाको नजिक हुनुहुन्छ।",
   "No active {{period}} threshold. Use Add Threshold to set one.": "सक्रिय {{period}} सीमा छैन। सीमा थप्नुहोस् बटन प्रयोग गर्नुहोस्।",
+  "An active {{period}} threshold already exists.": "सक्रिय {{period}} सीमा पहिले नै छ।",
   "Only one active threshold per period is allowed. Disable the existing {{period}} threshold in View Thresholds before adding another.": "प्रत्येक अवधिमा एउटा मात्र सक्रिय सीमा राख्न मिल्छ। अर्को थप्नुअघि सीमा हेर्नुहोस् खण्डबाट हालको {{period}} सीमा निष्क्रिय गर्नुहोस्।",
   "Showing {{count}} filtered results": "फिल्टर गरिएका {{count}} नतिजा देखाइँदै छ",
   "Income Catalogue": "आम्दानी क्याटलग",

@@ -1,8 +1,9 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import React, { useState, useEffect } from "react";
-import { X, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { AlertCircle, Plus, Target } from "lucide-react";
+import ThresholdDialog from "./ThresholdDialog";
 import { toast } from "react-toastify";
 import { addThresholdService, getThresholdsService } from "@/app/services/thresholdService";
 import { AddThresholdPayload } from "@/app/types/thresholdType";
@@ -19,6 +20,7 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
     const [frequency, setFrequency] = useState<"Monthly" | "Yearly">("Monthly");
     const [isEnabled, setIsEnabled] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const [hasEnabledThreshold, setHasEnabledThreshold] = useState(false);
     const [checkingThresholds, setCheckingThresholds] = useState(false);
 
@@ -52,15 +54,16 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
     }, [isOpen, frequency]); // Re-check when frequency changes
 
     const handleSubmit = async () => {
+        setErrorMessage("");
         // Validation
         if (!amount || amount <= 0) {
-            toast.error(t("Please enter a valid threshold amount"));
+            setErrorMessage(t("Please enter a valid threshold amount"));
             return;
         }
 
         // Check if trying to enable when another threshold of the same frequency is already enabled
         if (isEnabled && hasEnabledThreshold) {
-            toast.error(t("Disable the existing {{period}} threshold first.", { period: t(frequency) }));
+            setErrorMessage(t("Disable the existing {{period}} threshold first.", { period: t(frequency) }));
             return;
         }
 
@@ -86,13 +89,14 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
             onSuccess && onSuccess();
             onClose();
         } catch (error: any) {
-            toast.error(error.message || t("Failed to add threshold"));
+            setErrorMessage(error.message || t("Failed to add threshold"));
         } finally {
             setLoading(false);
         }
     };
 
     const handleClose = () => {
+        setErrorMessage("");
         setAmount("");
         setFrequency("Monthly");
         setIsEnabled(true);
@@ -102,123 +106,88 @@ const ThresholdForm = ({ isOpen, onClose, onSuccess }: ThresholdFormProps) => {
 
     if (!isOpen) return null;
 
-    return (
-        <div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={(e) => {
-                if (e.target === e.currentTarget) handleClose();
-            }}
-        >
-            <div className="bg-white rounded-lg shadow-xl w-full max-w-5xl">
-                {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b">
-                    <h2 className="text-xl font-bold text-gray-800">{t("Add Expense Threshold")}</h2>
-                    <button
-                        onClick={handleClose}
-                        className="text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-                    >
-                        <X className="w-6 h-6" />
-                    </button>
-                </div>
+    const fieldClass = "h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-900 focus-visible:border-[#056455] focus-visible:outline-2 focus-visible:outline-[#056455]";
 
-                {/* Form */}
-                <div className="p-6">
-                    {/* Warning Message */}
+    return (
+        <ThresholdDialog title={t("Add Expense Threshold")} icon={Target} onClose={handleClose}>
+            <form
+                aria-busy={loading}
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    if (!loading) void handleSubmit();
+                }}
+            >
+                <div className="space-y-4 px-5 py-5 sm:px-6">
+                    {errorMessage && (
+                        <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+                            {errorMessage}
+                        </p>
+                    )}
                     {hasEnabledThreshold && (
-                        <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-3">
-                            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                            <div className="flex-1">
-                                <h4 className="text-sm font-semibold text-amber-800 mb-1">
-                                    {t("Enabled")}{" "} {frequency} {t("Threshold Already Exists")}
-                                </h4>
-                                <p className="text-sm text-amber-700">
+                        <div role="status" className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-amber-900">
+                            <AlertCircle className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
+                            <div>
+                                <p className="text-sm font-bold">{t("An active {{period}} threshold already exists.", { period: t(frequency) })}</p>
+                                <p className="mt-1 text-sm leading-5">
                                     {t("Only one active threshold per period is allowed. Disable the existing {{period}} threshold in View Thresholds before adding another.", { period: t(frequency) })}
                                 </p>
                             </div>
                         </div>
                     )}
 
-                    <div className="flex flex-col lg:flex-row gap-4 lg:items-end">
-                        {/* Threshold Amount */}
-                        <div className="flex-1 min-w-0">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2 whitespace-nowrap">
-                                {t("Expense Threshold Amount")}
-                            </label>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <label className="space-y-1.5 text-sm font-semibold">
+                            <span className="block">{t("Expense Threshold Amount")}</span>
                             <input
                                 type="number"
                                 inputMode="decimal"
+                                step="any"
                                 placeholder="0"
-                                className="w-full h-12 px-3 text-md font-bold text-[#716A6A] 
-                       border border-[#574A4A]/50 rounded outline-none 
-                       focus:border-[#FFA726]
-                       [appearance:textfield] 
-                       [&::-webkit-outer-spin-button]:appearance-none 
-                       [&::-webkit-inner-spin-button]:appearance-none"
+                                className={fieldClass}
                                 value={amount}
-                                onChange={(e) =>
-                                    setAmount(e.target.value === "" ? "" : Number(e.target.value))
-                                }
+                                onChange={(event) => setAmount(event.target.value === "" ? "" : Number(event.target.value))}
                             />
-                        </div>
-
-                        {/* Frequency */}
-                        <div className="flex-1 min-w-0">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2 whitespace-nowrap">
-                                {t("Frequency")}
-                            </label>
+                        </label>
+                        <label className="space-y-1.5 text-sm font-semibold">
+                            <span className="block">{t("Frequency")}</span>
                             <select
-                                className="w-full h-12 px-3 text-md font-bold text-[#716A6A] 
-                       border border-[#574A4A]/50 rounded outline-none 
-                       focus:border-[#FFA726] bg-white"
+                                className={fieldClass}
                                 value={frequency}
-                                onChange={(e) => setFrequency(e.target.value as "Monthly" | "Yearly")}
+                                onChange={(event) => setFrequency(event.target.value as "Monthly" | "Yearly")}
                             >
                                 <option value="Monthly">{t("Monthly")}</option>
                                 <option value="Yearly">{t("Yearly")}</option>
                             </select>
-                        </div>
-
-                        {/* Enable/Disable Checkbox */}
-                        <div className="flex-1 min-w-0">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2 whitespace-nowrap">
-                                {t("Enable Threshold")}
-                            </label>
-                            <div className="flex items-center h-12">
-                                <label className={`flex items-center gap-2 ${hasEnabledThreshold ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}>
-                                    <input
-                                        type="checkbox"
-                                        className="w-5 h-5 text-[#FFAA00] bg-gray-100 border-gray-300 rounded focus:ring-[#FFA726] focus:ring-2"
-                                        checked={isEnabled}
-                                        onChange={(e) => setIsEnabled(e.target.checked)}
-                                        disabled={hasEnabledThreshold}
-                                    />
-                                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">
-                                        {isEnabled ? t("Enabled") : t("Disabled")}
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-
-                        {/* Add Button */}
-                        <div className="shrink-0 w-full lg:w-auto">
-                            <label className="block text-sm font-semibold text-gray-700 mb-2 invisible whitespace-nowrap">
-                                {t("Action")}
-                            </label>
-                            <button
-                                onClick={handleSubmit}
-                                disabled={loading}
-                                className={`bg-[#FFAA00] hover:bg-[#FFAA00]/90 text-white font-bold 
-                        text-md px-8 h-12 w-full lg:w-auto rounded transition-colors 
-                        cursor-pointer ${loading ? "opacity-50 cursor-not-allowed" : ""
-                                    }`}
-                            >
-                                {loading ? t("Adding...") : t("Add")}
-                            </button>
-                        </div>
+                        </label>
                     </div>
+
+                    <label className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 has-[:enabled]:cursor-pointer">
+                        <span>
+                            <span className="block text-sm font-semibold">{t("Enable Threshold")}</span>
+                            <span className="mt-0.5 block text-xs text-slate-600">{isEnabled ? t("Enabled") : t("Disabled")}</span>
+                        </span>
+                        <input
+                            type="checkbox"
+                            aria-label={t("Enable Threshold")}
+                            className="size-5 shrink-0 accent-[#056455] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] disabled:opacity-60"
+                            checked={isEnabled}
+                            onChange={(event) => setIsEnabled(event.target.checked)}
+                            disabled={hasEnabledThreshold || checkingThresholds}
+                        />
+                    </label>
                 </div>
-            </div>
-        </div>
+
+                <div className="flex flex-wrap justify-end gap-2 border-t border-slate-100 bg-slate-50 px-5 py-4 sm:px-6">
+                    <button type="button" onClick={handleClose} className="min-h-11 rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455]">
+                        {t("Cancel")}
+                    </button>
+                    <button type="submit" disabled={loading} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#056455] px-4 text-sm font-semibold text-white enabled:hover:bg-[#034e43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] disabled:opacity-60">
+                        <Plus className="size-4" aria-hidden="true" />
+                        {loading ? t("Adding...") : t("Add Threshold")}
+                    </button>
+                </div>
+            </form>
+        </ThresholdDialog>
     );
 };
 
