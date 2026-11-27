@@ -442,6 +442,7 @@
   "The due date cannot be earlier than the invoice date.": "भुक्तानीको अन्तिम मिति बीजक मितिभन्दा अघिको हुन सक्दैन।",
   "The invoice details are missing.": "बीजकको विवरण भेटिएन।",
   "This action cannot be undone.": "यो काम उल्टाउन सकिँदैन।",
+  "You can review your changes before saving.": "सुरक्षित गर्नुअघि आफ्ना परिवर्तनहरू जाँच गर्न सक्नुहुन्छ।",
   "This amount will be added to your total balance.": "यो रकम तपाईंको कुल मौज्दातमा थपिनेछ।",
   "Threshold Already Exists": "सीमा पहिले नै छ",
   "Threshold deleted successfully": "सीमा मेटाइयो",
