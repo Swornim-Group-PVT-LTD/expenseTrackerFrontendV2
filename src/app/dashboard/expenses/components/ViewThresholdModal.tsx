@@ -101,9 +101,6 @@ const ViewThresholdModal = ({ isOpen, onClose, refreshTrigger, onSuccess }: View
     };
 
     const handleDelete = async (sn: string) => {
-        if (!confirm("Are you sure you want to delete this threshold?")) {
-            return;
-        }
 
         try {
             await deleteThresholdService(sn);

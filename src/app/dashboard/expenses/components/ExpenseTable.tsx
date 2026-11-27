@@ -373,12 +373,6 @@ const ExpensesTable = ({
 
   // DELETE EXPENSE
   const handleDelete = async (sn: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this expense?",
-    );
-
-    if (!confirmed) return;
-
     try {
       setLoading(true);
 
@@ -703,7 +697,7 @@ const ExpensesTable = ({
 
         <TableActionButton
           action="delete"
-          onClick={() => void handleDelete(expense.sn)}
+          onClick={() => handleDelete(expense.sn)}
           disabled={loading}
         />
       </div>

@@ -135,15 +135,14 @@ export default function IncomeTable({
     }
   };
 
-  const handleDelete = (sn: string) => {
-    if (!confirm("Are you sure you want to delete this income?")) return;
+  const handleDelete = async (sn: string) => {
     try {
-      deleteIncomeService(sn);
+      await deleteIncomeService(sn);
       onSuccess && onSuccess();
       toast.success("income deleted successfully");
       setIncome(income.filter((income) => income.sn !== sn));
     } catch (error) {
-      console.error("Error deleting income:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to delete income.");
     }
   };
 

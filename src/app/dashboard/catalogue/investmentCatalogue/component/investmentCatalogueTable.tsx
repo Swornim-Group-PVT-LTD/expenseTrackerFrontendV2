@@ -33,7 +33,6 @@ export default function InvestmentCatalogueTable({ refreshTrigger }: { refreshTr
 
   const handleDelete = async (id: number) => {
     try {
-      if (!confirm("Are you sure you want to delete this investment category?")) return;
       await deleteInvestmentCategoryService(id);
       toast.success('Investment category deleted successfully');
       fetchData();

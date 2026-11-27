@@ -42,7 +42,6 @@ export default function ExpenseCatalogueTable({ refreshTrigger }: { refreshTrigg
 
   const handleDelete = async (id: number) => {
     try {
-      if (!confirm("Are you sure you want to delete this expense category?")) return;
       await deleteExpenseCategoryService(id);
       toast.success("Expense category deleted successfully");
       fetchData(); // Refresh data after deletion

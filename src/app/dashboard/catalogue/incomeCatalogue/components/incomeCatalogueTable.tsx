@@ -52,8 +52,6 @@ export default function IncomeCatalogueTable({
 
   const handleDelete = async (id: number) => {
     try {
-      if (!confirm("Are you sure you want to delete this income category?"))
-        return;
       await deleteIncomeCategoryService(id);
       toast.success("Income category deleted successfully");
       fetchData(); // Refresh data after deletion

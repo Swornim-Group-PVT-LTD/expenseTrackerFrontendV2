@@ -40,7 +40,6 @@ export default function SavingCatalogueTable({ refreshTrigger }: { refreshTrigge
 
   const handleDelete = async (id: number) => {
     try {
-      if (!confirm("Are you sure you want to delete this saving category?")) return;
       await deleteSavingCategoryService(id);
       toast.success('Saving category deleted successfully');
       fetchData();

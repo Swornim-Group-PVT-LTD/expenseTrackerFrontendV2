@@ -1,9 +1,12 @@
-import type { MouseEventHandler } from "react";
+"use client";
+
+import { useRef } from "react";
+import Swal from "sweetalert2";
 import { LoaderCircle, Pencil, Trash2 } from "lucide-react";
 
 interface TableActionButtonProps {
   action: "edit" | "delete";
-  onClick: MouseEventHandler<HTMLButtonElement>;
+  onClick: () => void | Promise<void>;
   label?: string;
   disabled?: boolean;
   busy?: boolean;
@@ -16,6 +19,32 @@ export default function TableActionButton({
   disabled,
   busy,
 }: TableActionButtonProps) {
+  const active = useRef(false);
+  const isDelete = action === "delete";
+
+  const confirmAction = async () => {
+    if (active.current || disabled || busy) return;
+
+    active.current = true;
+    try {
+      const result = await Swal.fire({
+        title: isDelete ? "Delete this record?" : "Edit this record?",
+        text: isDelete ? "This action cannot be undone." : undefined,
+        icon: isDelete ? "warning" : "question",
+        showCancelButton: true,
+        focusCancel: true,
+        reverseButtons: true,
+        confirmButtonText: isDelete ? "Delete" : "Edit",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: isDelete ? "#b91c1c" : "#056455",
+      });
+
+      if (result.isConfirmed) await onClick();
+    } finally {
+      active.current = false;
+    }
+  };
+
   const Icon = busy ? LoaderCircle : action === "edit" ? Pencil : Trash2;
   const color = action === "edit"
     ? "text-blue-700 enabled:hover:bg-blue-50 dark:text-blue-300 dark:enabled:hover:bg-blue-950"
@@ -28,7 +57,7 @@ export default function TableActionButton({
       aria-label={label}
       aria-busy={busy || undefined}
       disabled={disabled || busy}
-      onClick={onClick}
+      onClick={confirmAction}
       className={`inline-grid size-9 shrink-0 place-items-center rounded-lg align-middle transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#056455] disabled:cursor-not-allowed disabled:opacity-50 ${color}`}
     >
       <Icon aria-hidden="true" className={`size-[18px] ${busy ? "motion-safe:animate-spin" : ""}`} />

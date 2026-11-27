@@ -152,7 +152,6 @@ export default function SavingTable({
   };
 
   const handleDelete = async (sn: string) => {
-    if (!confirm("Are you sure you want to delete this saving?")) return;
     try {
       await deleteSavingService(sn);
       onSuccess && onSuccess();

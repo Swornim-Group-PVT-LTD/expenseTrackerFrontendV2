@@ -141,15 +141,14 @@ export default function InvestmentTable({
     }
   };
 
-  const handleDelete = (sn: string) => {
-    if (!confirm("Are you sure you want to delete this investment?")) return;
+  const handleDelete = async (sn: string) => {
     try {
-      deleteInvestmentService(sn);
+      await deleteInvestmentService(sn);
       onSuccess && onSuccess();
       toast.success("investment deleted successfully");
       setInvestment(investment.filter((investment) => investment.sn !== sn));
     } catch (error) {
-      console.error("Error deleting investment:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to delete investment.");
     }
   };
 

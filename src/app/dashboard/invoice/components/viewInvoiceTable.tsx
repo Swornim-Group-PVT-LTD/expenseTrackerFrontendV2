@@ -251,13 +251,6 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
       return;
     }
 
-    const confirmed = window.confirm(
-      `Are you sure you want to delete invoice ${invoice.invoice_number || sn
-      }?`
-    );
-
-    if (!confirmed) return;
-
     try {
       setDeletingSn(sn);
 
@@ -417,7 +410,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
         <TableActionButton
           action="delete"
           label="Delete Invoice"
-          onClick={() => void handleDeleteInvoice(invoice)}
+          onClick={() => handleDeleteInvoice(invoice)}
           disabled={deletingSn !== null}
           busy={deletingSn === sn}
         />
@@ -639,7 +632,7 @@ const ViewInvoiceTable: React.FC<ViewInvoiceTableProps> = ({
                       <TableActionButton
                         action="delete"
                         label="Delete Invoice"
-                        onClick={() => void handleDeleteInvoice(invoice)}
+                        onClick={() => handleDeleteInvoice(invoice)}
                         disabled={deletingSn !== null}
                         busy={deletingSn === sn}
                       />
