@@ -26,7 +26,11 @@ export default function SimpleDateFilter({
   onDownloadPDF,
   onDownloadExcel,
 }: SimpleDateFilterProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const mobileDateFormat = new Intl.DateTimeFormat(
+    i18n.language === "np" ? "ne-NP" : "en-GB",
+    { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" },
+  );
   const formatDateForInput = (date: Date): string => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -93,49 +97,33 @@ export default function SimpleDateFilter({
       <div className="flex flex-col lg:flex-row gap-4 lg:items-end">
         {/* Date Inputs */}
         <div className="grid min-w-0 flex-1 grid-cols-1 gap-3 sm:grid-cols-2">
-          {/* From Date */}
-          <div className="flex min-w-0 flex-col">
-            <label
-              htmlFor="fromDate"
-              className="text-sm font-semibold text-gray-700 mb-2"
-            >
-              {t("From Date")}
-            </label>
+          {[
+            { id: "fromDate", label: t("From Date"), value: fromDate, setValue: setFromDate },
+            { id: "toDate", label: t("To Date"), value: toDate, setValue: setToDate },
+          ].map(({ id, label, value, setValue }) => (
+            <div key={id} className="flex min-w-0 flex-col">
+              <label htmlFor={id} className="mb-2 text-sm font-semibold text-gray-700">
+                {label}
+              </label>
 
-            <div className="relative">
-              <Calendar aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-
-              <input
-                type="date"
-                id="fromDate"
-                value={fromDate}
-                onChange={(e) => setFromDate(e.target.value)}
-                className="block h-11 w-full min-w-0 max-w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 focus:border-[#056455] focus:outline-none focus:ring-2 focus:ring-[#056455]/25 [@supports(-webkit-touch-callout:none)]:appearance-none [&::-webkit-date-and-time-value]:text-left"
-              />
+              <div className="relative rounded-lg pointer-coarse:focus-within:ring-2 pointer-coarse:focus-within:ring-[#056455]/25">
+                <Calendar aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 z-10 size-4 -translate-y-1/2 text-gray-400" />
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 hidden items-center rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 pointer-coarse:flex"
+                >
+                  {value && mobileDateFormat.format(new Date(value))}
+                </span>
+                <input
+                  type="date"
+                  id={id}
+                  value={value}
+                  onChange={(event) => setValue(event.target.value)}
+                  className="relative block h-11 w-full min-w-0 max-w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 focus:border-[#056455] focus:outline-none focus:ring-2 focus:ring-[#056455]/25 pointer-coarse:opacity-0 pointer-coarse:[&::-webkit-calendar-picker-indicator]:absolute pointer-coarse:[&::-webkit-calendar-picker-indicator]:inset-0 pointer-coarse:[&::-webkit-calendar-picker-indicator]:h-full pointer-coarse:[&::-webkit-calendar-picker-indicator]:w-full [@supports(-webkit-touch-callout:none)]:appearance-none"
+                />
+              </div>
             </div>
-          </div>
-
-          {/* To Date */}
-          <div className="flex min-w-0 flex-col">
-            <label
-              htmlFor="toDate"
-              className="text-sm font-semibold text-gray-700 mb-2"
-            >
-              {t("To Date")}
-            </label>
-
-            <div className="relative">
-              <Calendar aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-
-              <input
-                type="date"
-                id="toDate"
-                value={toDate}
-                onChange={(e) => setToDate(e.target.value)}
-                className="block h-11 w-full min-w-0 max-w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm text-slate-900 focus:border-[#056455] focus:outline-none focus:ring-2 focus:ring-[#056455]/25 [@supports(-webkit-touch-callout:none)]:appearance-none [&::-webkit-date-and-time-value]:text-left"
-              />
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Buttons */}
