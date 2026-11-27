@@ -27,6 +27,8 @@ import { useBalanceVisibility } from "@/app/context/BalanceHideShowContext";
 import { maskAmount } from "@/app/utils/maskAmount";
 import { useCurrency } from "@/app/context/CurrencyContext";
 
+const selectionLimit = 100;
+
 export default function SavingTable({
   refreshTrigger,
   filteredData,
@@ -34,6 +36,7 @@ export default function SavingTable({
   onDataLoad,
   selectedIds,
   onSelect,
+  onSelectAll,
 }: {
   refreshTrigger: number;
   filteredData?: SavingResponse[] | null;
@@ -41,6 +44,7 @@ export default function SavingTable({
   onDataLoad?: (data: SavingResponse[]) => void;
   selectedIds: number[];
   onSelect: (row: SavingResponse, checked: boolean) => void;
+  onSelectAll: (rows: SavingResponse[]) => void;
 }) {
   const { t } = useTranslation();
   const [saving, setSaving] = useState<SavingResponse[]>([]);
@@ -164,12 +168,43 @@ export default function SavingTable({
     }
   };
 
+  const eligibleRows = saving.filter((row) =>
+    !row.is_transfer && Number(row.transferable_amount) > 0,
+  );
+  const selectedIdSet = new Set(selectedIds);
+  const selectedRows = eligibleRows.filter((row) => selectedIdSet.has(row.id));
+  const selectedCount = selectedRows.length;
+  const allChecked = eligibleRows.length > 0 && selectedCount === eligibleRows.length;
+  const partiallyChecked = selectedCount > 0 && !allChecked;
+
+  const selectAllCheckbox = () => (
+    <input
+      type="checkbox"
+      ref={(input) => {
+        if (input) input.indeterminate = partiallyChecked;
+      }}
+      checked={allChecked}
+      disabled={loading || eligibleRows.length === 0}
+      aria-label={t("Select all available savings")}
+      title={eligibleRows.length > selectionLimit ? t("Select up to 100 savings entries") : undefined}
+      onChange={() => {
+        if (allChecked || selectedCount >= selectionLimit) {
+          onSelectAll([]);
+        } else {
+          const remainingRows = eligibleRows.filter((row) => !selectedIdSet.has(row.id));
+          onSelectAll([...selectedRows, ...remainingRows].slice(0, selectionLimit));
+        }
+      }}
+      className="cursor-pointer rounded border-gray-300 accent-[#056455] disabled:cursor-not-allowed"
+    />
+  );
+
   const selectionCheckbox = (row: SavingResponse) =>
     !row.is_transfer && Number(row.transferable_amount) > 0 ? (
       <input
         type="checkbox"
-        checked={selectedIds.includes(row.id)}
-        disabled={selectedIds.length >= 100 && !selectedIds.includes(row.id)}
+        checked={selectedIdSet.has(row.id)}
+        disabled={selectedIds.length >= selectionLimit && !selectedIdSet.has(row.id)}
         onChange={(event) => onSelect(row, event.target.checked)}
         aria-label={t("Select saving {{id}} from {{category}}", { id: row.id, category: row.saving_category })}
         className="mr-2 rounded border-gray-300"
@@ -186,7 +221,12 @@ export default function SavingTable({
               {/* TableHead */}
               <TableHead className="text-lg">
                 <TableRow>
-                  <TableHeadCell>ID</TableHeadCell>
+                  <TableHeadCell>
+                    <label className="inline-flex items-center gap-2">
+                      {selectAllCheckbox()}
+                      ID
+                    </label>
+                  </TableHeadCell>
                   <TableHeadCell>{t("Saving")}</TableHeadCell>
                   <TableHeadCell>{t("Deduct from balance")}</TableHeadCell>
                   <TableHeadCell>{t("Remarks")}</TableHeadCell>
@@ -350,6 +390,12 @@ export default function SavingTable({
 
       {/* Mobile Card View */}
       <div className="lg:hidden space-y-4">
+        {!loading && eligibleRows.length > 0 && (
+          <label className="inline-flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+            {selectAllCheckbox()}
+            {t("Select all available savings")}
+          </label>
+        )}
         {loading ? (
           <div className="text-center font-medium text-gray-500">
             <ClipLoader size={22} color="#000000" />

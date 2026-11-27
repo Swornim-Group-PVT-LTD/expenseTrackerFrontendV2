@@ -192,6 +192,7 @@ function Saving() {
           onSuccess={handleRefresh}
           onDataLoad={setAllData}
           selectedIds={selected.map((row) => row.id)}
+          onSelectAll={setSelected}
           onSelect={(row, checked) =>
             setSelected((rows) => checked ? [...rows, row] : rows.filter((item) => item.id !== row.id))
           }

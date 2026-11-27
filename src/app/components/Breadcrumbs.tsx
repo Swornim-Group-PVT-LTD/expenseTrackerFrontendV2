@@ -38,7 +38,8 @@ export default function Breadcrumbs({ parents = [], current }: {
                 ))}
                 <li className="flex items-center gap-2">
                     {parents.length > 0 && <ChevronRight size={14} className="text-gray-400" aria-hidden="true" />}
-                    <span aria-current="page" className="font-semibold text-gray-900 dark:text-white">
+                    <span aria-current="page" className="inline-flex items-center gap-1.5 font-semibold text-gray-900 dark:text-white">
+                        {parents.length === 0 && current === "Dashboard" && <Home size={16} aria-hidden="true" />}
                         {t(current)}
                     </span>
                 </li>

@@ -554,6 +554,8 @@
   "Please input code": "कोड लेख्नुहोस्",
   "Expense added successfully.": "खर्च थपियो।",
   "Status for invoice {{number}}": "बीजक {{number}} को स्थिति",
+  "Select all available savings": "उपलब्ध सबै बचत छान्नुहोस्",
+  "Select up to 100 savings entries": "बढीमा १०० वटा बचत अभिलेख छान्नुहोस्",
   "Select saving {{id}} from {{category}}": "{{category}} बाट बचत {{id}} छान्नुहोस्",
   "Expense {{number}}": "खर्च {{number}}",
   "{{count}} selected savings entries": "छानिएका बचत अभिलेख: {{count}}",
