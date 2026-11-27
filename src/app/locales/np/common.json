@@ -594,5 +594,9 @@
   "Please contact us for payment details.": "भुक्तानी विवरणका लागि हामीलाई सम्पर्क गर्नुहोस्।",
   "Add {{amount}} as your opening balance?": "सुरुको मौज्दातमा {{amount}} थप्ने हो?",
   "Opening balance of {{amount}} added successfully.": "सुरुको मौज्दातमा {{amount}} थपियो।",
-  "Failed to add opening balance. Please try again.": "सुरुको मौज्दात थप्न सकिएन। फेरि प्रयास गर्नुहोस्।"
+  "Failed to add opening balance. Please try again.": "सुरुको मौज्दात थप्न सकिएन। फेरि प्रयास गर्नुहोस्।",
+  "Type to search...": "खोज्न लेख्नुहोस्…",
+  "Show options": "विकल्पहरू देखाउनुहोस्",
+  "Hide options": "विकल्पहरू लुकाउनुहोस्",
+  "No matching options": "मिल्ने विकल्प भेटिएनन्"
 }
