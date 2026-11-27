@@ -596,7 +596,6 @@
   "Opening balance of {{amount}} added successfully.": "सुरुको मौज्दातमा {{amount}} थपियो।",
   "Failed to add opening balance. Please try again.": "सुरुको मौज्दात थप्न सकिएन। फेरि प्रयास गर्नुहोस्।",
   "Type to search...": "खोज्न लेख्नुहोस्…",
-  "Show options": "विकल्पहरू देखाउनुहोस्",
-  "Hide options": "विकल्पहरू लुकाउनुहोस्",
+  "Clear selection": "छनोट हटाउनुहोस्",
   "No matching options": "मिल्ने विकल्प भेटिएनन्"
 }

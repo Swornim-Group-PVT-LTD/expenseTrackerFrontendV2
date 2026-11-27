@@ -25,11 +25,11 @@ export default function SearchInput({
 }: SearchInputProps) {
   const { t } = useTranslation();
   const listId = useId();
-  const anchorRef = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-  const [searching, setSearching] = useState(false);
+  const [searchText, setSearchText] = useState("");
   const [activeIndex, setActiveIndex] = useState(-1);
   const [position, setPosition] = useState<{
     left: number;
@@ -39,11 +39,15 @@ export default function SearchInput({
     maxHeight: number;
   } | null>(null);
 
-  const inputLabel = placeholder ?? t("Type to search...");
-  const query = searching ? value.trim().toLowerCase() : "";
-  const displayOptions = query
-    ? options.filter((option) => option.value.toLowerCase().includes(query))
-    : options;
+  const triggerLabel = placeholder ?? t("Select category...");
+  const searchLabel = t("Type to search...");
+  const query = searchText.trim().toLowerCase();
+  const matchingOptions = options
+    .filter((option) => !query || option.value.toLowerCase().includes(query))
+    .map((option) => ({ id: String(option.id), value: option.value, label: option.value }));
+  const displayOptions = value && !query
+    ? [...matchingOptions, { id: "clear", value: "", label: t("Clear selection") }]
+    : matchingOptions;
   const activeOption = displayOptions[activeIndex];
 
   useEffect(() => {
@@ -70,7 +74,7 @@ export default function SearchInput({
 
     const handlePointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
-      if (!anchorRef.current?.contains(target) && !listRef.current?.contains(target)) {
+      if (!anchorRef.current?.contains(target) && !panelRef.current?.contains(target)) {
         setOpen(false);
       }
     };
@@ -92,115 +96,135 @@ export default function SearchInput({
     }
   }, [activeOption?.id, listId, open]);
 
+  const expanded = Boolean(open && position);
+
+  useEffect(() => {
+    if (expanded) inputRef.current?.focus({ preventScroll: true });
+  }, [expanded]);
+
   const openOptions = () => {
-    setSearching(false);
+    setSearchText("");
     setActiveIndex(-1);
     setOpen(true);
   };
 
-  const selectOption = (optionValue: string) => {
-    onChange(optionValue);
+  const closeAndFocusTrigger = () => {
     setOpen(false);
-    setActiveIndex(-1);
+    anchorRef.current?.focus({ preventScroll: true });
   };
 
-  const expanded = Boolean(open && position);
+  const selectOption = (optionValue: string) => {
+    onChange(optionValue);
+    closeAndFocusTrigger();
+  };
 
   return (
-    <div ref={anchorRef} className={`relative ${className}`}>
-      <div className="flex h-full min-h-11 min-w-0 items-center gap-2 rounded-xl border border-slate-300 bg-slate-50 pl-3 transition-colors focus-within:border-[#056455] focus-within:bg-white focus-within:ring-2 focus-within:ring-[#056455]/20">
-        <Search className="size-4 shrink-0 text-[#056455]" aria-hidden="true" />
-        <input
-          ref={inputRef}
-          type="text"
-          role="combobox"
-          aria-label={inputLabel}
-          aria-autocomplete="list"
-          aria-expanded={expanded}
-          aria-controls={expanded ? listId : undefined}
-          aria-activedescendant={expanded && activeOption ? `${listId}-${activeOption.id}` : undefined}
-          autoComplete="off"
-          placeholder={inputLabel}
-          value={value}
-          onFocus={openOptions}
-          onClick={() => { if (!open) openOptions(); }}
-          onBlur={() => setOpen(false)}
-          onChange={(event) => {
-            onChange(event.target.value);
-            setSearching(true);
-            setActiveIndex(-1);
-            setOpen(true);
-          }}
-          onKeyDown={(event) => {
-            if (event.nativeEvent.isComposing) return;
-
-            if (event.key === "Escape" && open) {
-              event.stopPropagation();
-              setOpen(false);
-            } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-              event.preventDefault();
-              const direction = event.key === "ArrowDown" ? 1 : -1;
-              const optionCount = open ? displayOptions.length : options.length;
-              if (!open) openOptions();
-              setActiveIndex((index) => {
-                if (!optionCount) return -1;
-                if (!open || index < 0 || index >= optionCount) return direction > 0 ? 0 : optionCount - 1;
-                return (index + direction + optionCount) % optionCount;
-              });
-            } else if (event.key === "Enter" && open && activeOption) {
-              event.preventDefault();
-              selectOption(activeOption.value);
-            }
-          }}
-          className="min-h-11 min-w-0 flex-1 border-0 bg-transparent px-0 text-sm font-medium text-[#082c28] outline-none placeholder:text-slate-500 focus:ring-0"
-        />
-        <button
-          type="button"
-          tabIndex={-1}
-          aria-label={open ? t("Hide options") : t("Show options")}
-          onMouseDown={(event) => event.preventDefault()}
-          onClick={() => {
-            if (open) {
-              setOpen(false);
-            } else {
-              inputRef.current?.focus();
-              openOptions();
-            }
-          }}
-          className="grid size-10 shrink-0 place-items-center rounded-r-xl text-slate-600 transition-colors hover:bg-teal-50 hover:text-[#056455]"
-        >
-          <ChevronDown className={`size-4 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden="true" />
-        </button>
-      </div>
+    <div className={`relative ${className}`}>
+      <button
+        ref={anchorRef}
+        type="button"
+        aria-label={value ? `${triggerLabel} ${value}` : triggerLabel}
+        aria-haspopup="listbox"
+        aria-expanded={expanded}
+        aria-controls={expanded ? listId : undefined}
+        onClick={() => {
+          if (open) setOpen(false);
+          else openOptions();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+            event.preventDefault();
+            openOptions();
+          }
+        }}
+        className="flex h-full min-h-11 w-full min-w-0 cursor-pointer items-center justify-between gap-2 rounded-xl border border-slate-300 bg-slate-50 px-3 text-left text-sm font-medium transition-colors hover:border-[#056455] focus-visible:border-[#056455] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#056455]/20"
+      >
+        <span className={`truncate ${value ? "text-[#082c28]" : "text-slate-500"}`}>{value || triggerLabel}</span>
+        <ChevronDown className={`size-4 shrink-0 text-[#056455] transition-transform ${expanded ? "rotate-180" : ""}`} aria-hidden="true" />
+      </button>
 
       {open && position && createPortal(
-        <ul
-          id={listId}
-          ref={listRef}
-          role="listbox"
-          aria-label={inputLabel}
+        <div
+          ref={panelRef}
           style={position}
-          onMouseDown={(event) => event.preventDefault()}
-          className="fixed z-[80] overflow-y-auto overscroll-contain rounded-xl border border-slate-200 bg-white p-1.5 shadow-[0_12px_30px_rgba(8,44,40,0.16)]"
+          className="fixed z-[80] flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_12px_30px_rgba(8,44,40,0.16)]"
         >
-          {displayOptions.length ? displayOptions.map((option, index) => (
-            <li
-              id={`${listId}-${option.id}`}
-              key={option.id}
-              role="option"
-              aria-selected={option.value === value}
-              onClick={() => selectOption(option.value)}
-              className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-800 hover:bg-teal-50 ${index === activeIndex ? "bg-teal-50 ring-1 ring-inset ring-teal-100" : ""}`}
-            >
-              <span className="min-w-0 break-words">{option.value}</span>
-              {option.value === value && <Check className="size-4 shrink-0 text-[#056455]" aria-hidden="true" />}
-            </li>
-          )) : (
-            <li role="presentation" className="px-2.5 py-2 text-sm text-slate-600">
-              <span role="status">{t("No matching options")}</span>
-            </li>
-          )}
-        </ul>,
+          <div className="border-b border-slate-100 p-2">
+            <div className="flex items-center gap-2 rounded-lg border border-slate-300 bg-slate-50 px-2.5 focus-within:border-[#056455] focus-within:ring-2 focus-within:ring-[#056455]/20">
+              <Search className="size-4 shrink-0 text-[#056455]" aria-hidden="true" />
+              <input
+                ref={inputRef}
+                type="text"
+                role="combobox"
+                aria-label={searchLabel}
+                aria-autocomplete="list"
+                aria-expanded={true}
+                aria-controls={listId}
+                aria-activedescendant={activeOption ? `${listId}-${activeOption.id}` : undefined}
+                autoComplete="off"
+                placeholder={searchLabel}
+                value={searchText}
+                onBlur={(event) => {
+                  if (event.relatedTarget !== anchorRef.current) setOpen(false);
+                }}
+                onChange={(event) => {
+                  setSearchText(event.target.value);
+                  setActiveIndex(-1);
+                }}
+                onKeyDown={(event) => {
+                  if (event.nativeEvent.isComposing) return;
+
+                  if (event.key === "Escape") {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    closeAndFocusTrigger();
+                  } else if (event.key === "Tab") {
+                    closeAndFocusTrigger();
+                  } else if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                    event.preventDefault();
+                    const direction = event.key === "ArrowDown" ? 1 : -1;
+                    const count = displayOptions.length;
+                    setActiveIndex((index) => {
+                      if (!count) return -1;
+                      if (index < 0 || index >= count) return direction > 0 ? 0 : count - 1;
+                      return (index + direction + count) % count;
+                    });
+                  } else if (event.key === "Enter") {
+                    event.preventDefault();
+                    if (activeOption) selectOption(activeOption.value);
+                  }
+                }}
+                className="min-h-9 w-full min-w-0 border-0 bg-transparent px-0 text-sm text-[#082c28] outline-none placeholder:text-slate-500 focus:ring-0"
+              />
+            </div>
+          </div>
+
+          <ul
+            id={listId}
+            role="listbox"
+            aria-label={triggerLabel}
+            className="min-h-0 overflow-y-auto overscroll-contain p-1.5"
+          >
+            {displayOptions.length ? displayOptions.map((option, index) => (
+              <li
+                id={`${listId}-${option.id}`}
+                key={option.id}
+                role="option"
+                aria-selected={option.value === value}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => selectOption(option.value)}
+                className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-800 hover:bg-teal-50 ${index === activeIndex ? "bg-teal-50 ring-1 ring-inset ring-teal-100" : ""}`}
+              >
+                <span className="min-w-0 break-words">{option.label}</span>
+                {option.value === value && <Check className="size-4 shrink-0 text-[#056455]" aria-hidden="true" />}
+              </li>
+            )) : (
+              <li role="presentation" className="px-2.5 py-2 text-sm text-slate-600">
+                <span role="status">{t("No matching options")}</span>
+              </li>
+            )}
+          </ul>
+        </div>,
         document.body,
       )}
     </div>
